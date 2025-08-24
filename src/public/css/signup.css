@@ -1,0 +1,58 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-container {
+  min-height: 100vh;
+}
+
+.branding {
+  background: #2fb5a6; /* Teal like in design */
+  text-align: center;
+}
+
+.logo {
+  width: 100px;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+.brand-subtitle {
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.tagline {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form-section {
+  background: #f9f9f9;
+}
+
+.signup-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  width: 400px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.google-icon {
+  width: 20px;
+  margin-right: 8px;
+}
