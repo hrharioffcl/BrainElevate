@@ -1,11 +1,22 @@
 const mongoose = require("mongoose")
 const validator = require("validator")
+const bcrypt = require("bcrypt")
 const userSchema = new mongoose.Schema(
     {
         fullName: {
             type: String,
             required: true,
-            trim: true
+            trim: true,
+            minlength: [4, "Full name must be at least 4 characters"],
+            maxlength: [30, "Full name can be max 30 characters"],
+            validate(value) {
+                if (!/^[A-Za-z\s]+$/.test(value)) {
+                    throw new Error("Full name must contain only letters and spaces")
+                }
+
+            }
+
+
         },
         email: {
             type: String,
@@ -61,3 +72,14 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 
 )
+
+
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10)
+    }
+    next()
+
+})
+
+module.exports = mongoose.model('User', userSchema)
