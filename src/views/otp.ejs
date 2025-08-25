@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #2fb5a6;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .otp-container {
+            background-color: aliceblue;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .otp-inputs input {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            margin: 5px;
+            border-radius:10px;
+        }
+
+        #resend {
+            color: #007bff;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        #timer {
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            font-size: 18px;
+            padding: 10px;
+        }
+#resend.disabled {
+    color: gray;
+    cursor: not-allowed;
+    pointer-events: none;
+    text-decoration: none;
+}
+        /* Responsive adjustments for mobile */
+        @media (max-width: 576px) {
+            .otp-container img {
+                width: 60%;
+                /* bigger image on mobile */
+            }
+
+            .otp-inputs input {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            button {
+                font-size: 20px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container otp-container">
+        <img src="/images/logo.png" alt="BrainElevate Logo" class="img-fluid mb-3">
+        <h2>Enter OTP Sent to Mail</h2>
+        <div class="otp-inputs d-flex justify-content-center my-3">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+        </div>
+        <div class="my-2">
+            <a id="resend" onclick="resendOTP()">Resend Code</a>
+            <span id="timer"></span>
+        </div>
+        <div>
+            <button class="btn" style="background-color:#3BADCD;">Confirm</button>
+        </div>
+    </div>
+
+
+    <script>
+        let timerDuration = 90; // 3 minutes in seconds
+        let countdown;
+
+        function startTimer() {
+            clearInterval(countdown); // clear previous timer if any
+            let time = timerDuration;
+            const timerSpan = document.getElementById("timer");
+            const resendLink = document.getElementById("resend");
+
+            resendLink.classList.add("disabled");
+
+            countdown = setInterval(() => {
+                let minutes = Math.floor(time / 60);
+                let seconds = time % 60;
+                timerSpan.textContent = ` (${minutes}:${seconds < 10 ? '0' + seconds : seconds})`;
+                time--;
+
+                if (time < 0) {
+                    clearInterval(countdown);
+                    timerSpan.textContent = "";
+                    resendLink.classList.remove("disabled");
+                }
+            }, 1000);
+        }
+        startTimer();
+
+        function resendOTP() {
+            if (document.getElementById("resend").classList.contains("disabled")) return;
+
+            // Call backend to resend OTP (example fetch)
+            fetch("/resend-otp", { method: "POST" })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("OTP resent:", data);
+                    startTimer();
+                })
+                .catch(err => console.log(err));
+        }
+// OTP auto move logic
+const inputs = document.querySelectorAll('.otp-inputs input');
+
+inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+        if(input.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if(e.key === 'Backspace' && input.value === '' && index > 0) {
+            inputs[index - 1].focus();
+        }
+    });
+});
+
+        // Optional: start timer immediately if needed
+        // startTimer();
+    </script>
+</body>
+
+</html>

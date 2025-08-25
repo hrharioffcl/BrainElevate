@@ -13,25 +13,18 @@
       <!-- Left side branding -->
       <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-white branding">
         <img src="/images/logo.png" alt="BrainElevate Logo" class="logo mb-3">
-        <h1 class="brand-title">BrainElevate</h1>
-        <p class="brand-subtitle">LEARNING WEBSITE</p>
         <h4 class="tagline">Defy the Past<br>Step into the Future</h4>
       </div>
 
       <!-- Right side signup form -->
-      <div class="col-md-6 d-flex justify-content-center align-items-center form-section">
+      <div class="col-md-6 d-flex justify-content-center align-items-center form-section mt-3 p-4
+      ">
         <div class="signup-card">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="fw-bold">Create Account</h3>
-            <select class="form-select form-select-sm w-auto">
-              <option selected>English (UK)</option>
-              <option>English (US)</option>
-              <option>हिन्दी</option>
-              <option>Français</option>
-            </select>
           </div>
           
-          <form action="/auth/signup" method="POST">
+          <form action="/signup" method="POST">
             <div class="mb-3">
               <input type="text" name="fullName" class="form-control" placeholder="Full Name" required>
             </div>
@@ -43,22 +36,21 @@
               <span class="toggle-password">👁</span>
             </div>
             <div class="mb-3 position-relative">
-              <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>
-              <span class="toggle-password">👁</span>
+              <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>              
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="terms">
+              <input class="form-check-input" type="checkbox" id="terms" name="terms" value="true">
               <label class="form-check-label" for="terms">
                 I have read and agreed to the Terms of Service and Privacy Policy
               </label>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Create Account</button>
+            <button type="submit" class="btn w-100" style="background-color:#3BADCD;">Create Account</button>
           </form>
 
           <div class="text-center my-3">Or</div>
 
           <button class="btn btn-outline-dark w-100">
-            <img src="/images/google-icon.png" class="google-icon"> Signup with Google
+            <img src="/images/Google__G__logo.svg.png" class="google-icon"> Signup with Google
           </button>
 
           <p class="text-center mt-3">
@@ -69,4 +61,20 @@
     </div>
   </div>
 </body>
+<!--togglepassword jscode-->
+<script>
+  const togglePassword = document.querySelectorAll('.toggle-password');
+
+  togglePassword.forEach(span => {
+    span.addEventListener('click', () => {
+      const input = span.previousElementSibling;
+      if(input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    });
+  });
+</script>
+
 </html>

@@ -12,15 +12,29 @@ const createOtpcode = () => {
 //SIGNUP ROUTE
 exports.signup = async (req, res) => {
     try {
-        const { fullName, email, password } = req.body;
 
+        const { fullName, email, password, confirmPassword, terms } = req.body;
 
         //adding fullname password and email to session
         req.session.signupData = { fullName, email, password }
 
-
+        //confirm existing user
         const existinguser = await User.findOne({ email });
         if (existinguser) return res.status(400).send("user already exist")
+
+        //confirm password check
+        if (password !== confirmPassword) {
+            return res.status(400).send("password match disqaulified")
+        }
+        //terms and condition check
+        if (terms !== "true") {
+            return res.status(400).send("Accept termss and conditions")
+
+        }
+        //place user without saving anad validate
+        const user = new User({ fullName, email, password })
+        await user.validate()
+        //delete otp records
         await Otp.deleteMany({ email, purpose: "signup" })
         //otp generate
         const otpcode = createOtpcode();
@@ -36,10 +50,13 @@ exports.signup = async (req, res) => {
         res.status(500).send("error signing up")
     }
 }
+
+
+
 //otp verification
 exports.verifyOtp = async (req, res) => {
     try {
-        const {otp} = req.body
+        const { otp } = req.body
         const { fullName, email, password } = req.session.signupData;
         const otpRecord = await Otp.findOne({ email, purpose: "signup" }).sort({ createdAt: -1 })
         if (otpRecord.otpcode != otp) {
@@ -65,7 +82,7 @@ exports.verifyOtp = async (req, res) => {
 //resend otp
 exports.resendotp = async function (req, res) {
     try {
-    const { email } = req.session.signupData;
+        const { email } = req.session.signupData;
         await Otp.deleteOne({ email, purpose: "signup" });
         const otpcode = createOtpcode()
         const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
