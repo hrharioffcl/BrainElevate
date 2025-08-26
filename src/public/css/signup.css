@@ -4,7 +4,9 @@ body {
   margin: 0;
   padding: 0;
 }
-
+.error{
+color: red;
+}
 .signup-container {
   min-height: 100vh;
 }
@@ -15,7 +17,8 @@ body {
 }
 
 .logo {
-  width: 300px;
+  max-width: 80%; /* shrink logo on mobile */
+  height: auto;
 }
 
 .brand-title {
@@ -43,7 +46,9 @@ body {
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  width: 400px;
+   max-width: 400px;   /* instead of fixed width */
+  width: 100%; 
+ 
 }
 
 .toggle-password {

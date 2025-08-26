@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/signup.css">
 </head>
+
 <body>
   <div class="container-fluid signup-container">
     <div class="row">
@@ -23,26 +25,52 @@
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="fw-bold">Create Account</h3>
           </div>
-          
-          <form action="/signup" method="POST">
+
+          <form action="/signup" method="POST" novalidate>
             <div class="mb-3">
-              <input type="text" name="fullName" class="form-control" placeholder="Full Name" required>
+              <input type="text" name="fullName" class="form-control" placeholder="Full Name"
+                value="<%= formData?.fullName || '' %>" required>
             </div>
             <div class="mb-3">
-              <input type="email" name="email" class="form-control" placeholder="Email" required>
+              <input type="email" name="email" class="form-control" placeholder="Email"
+                value="<%= formData?.email || '' %>">
+              <% if (fieldErrors?.email) { %>
+                <div class="error">
+                  <%= fieldErrors.email %>
+                </div>
+                <% } %>
             </div>
             <div class="mb-3 position-relative">
-              <input type="password" name="password" class="form-control" placeholder="Password" required>
+              <input type="password" name="password" class="form-control" placeholder="Password"
+                value="<%= formData?.password || '' %>" required>
               <span class="toggle-password">👁</span>
+              <% if (fieldErrors?.password) { %>
+                <div class="error">
+                  <%= fieldErrors.password %>
+                </div>
+                <% } %>
             </div>
             <div class="mb-3 position-relative">
-              <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>              
+              <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password"
+                value="<%= formData?.confirmPassword || '' %>" required>
+              <% if (fieldErrors?.confirmPassword) { %>
+                <div class="error">
+                  <%= fieldErrors.confirmPassword %>
+                </div>
+                <% } %>
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="terms" name="terms" value="true">
+              <input class="form-check-input" type="checkbox" id="terms" name="terms" value="true"
+                <%=formData?.terms==="true" ? "checked" : "" %> >
               <label class="form-check-label" for="terms">
                 I have read and agreed to the Terms of Service and Privacy Policy
               </label>
+              <% if (fieldErrors?.terms) { %>
+                <div class="error">
+                  <%= fieldErrors.terms %>
+                </div>
+                <% } %>
+
             </div>
             <button type="submit" class="btn w-100" style="background-color:#3BADCD;">Create Account</button>
           </form>
@@ -54,7 +82,7 @@
           </button>
 
           <p class="text-center mt-3">
-            Already have an account? <a href="/auth/login">Log In</a>
+            Already have an account? <a href="/login">Log In</a>
           </p>
         </div>
       </div>
@@ -68,7 +96,7 @@
   togglePassword.forEach(span => {
     span.addEventListener('click', () => {
       const input = span.previousElementSibling;
-      if(input.type === 'password') {
+      if (input.type === 'password') {
         input.type = 'text';
       } else {
         input.type = 'password';

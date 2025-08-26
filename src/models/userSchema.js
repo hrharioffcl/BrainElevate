@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
             trim: true,
             validate(value) {
                 if (!validator.isEmail(value)) {
-                    throw new Error("Invalid email address")
+                    throw new Error("*Invalid email address")
                 }
             }
         },
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
             trim: true,
             validate(value) {
                 if (!validator.isStrongPassword(value)) {
-                    throw new Error("Password must be at least 8 characters long, with at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol.")
+                    throw new Error("*Password must be at least 8 characters long, with at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol.")
                 }
             }
         },
@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema(
 
 )
 
-
+//hashing password
 userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10)

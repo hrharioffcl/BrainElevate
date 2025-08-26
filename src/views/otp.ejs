@@ -30,7 +30,7 @@
             font-size: 24px;
             text-align: center;
             margin: 5px;
-            border-radius:10px;
+            border-radius: 10px;
         }
 
         #resend {
@@ -49,12 +49,14 @@
             font-size: 18px;
             padding: 10px;
         }
-#resend.disabled {
-    color: gray;
-    cursor: not-allowed;
-    pointer-events: none;
-    text-decoration: none;
-}
+
+        #resend.disabled {
+            color: gray;
+            cursor: not-allowed;
+            pointer-events: none;
+            text-decoration: none;
+        }
+
         /* Responsive adjustments for mobile */
         @media (max-width: 576px) {
             .otp-container img {
@@ -81,24 +83,35 @@
     <div class="container otp-container">
         <img src="/images/logo.png" alt="BrainElevate Logo" class="img-fluid mb-3">
         <h2>Enter OTP Sent to Mail</h2>
-        <div class="otp-inputs d-flex justify-content-center my-3">
-            <input type="text" maxlength="1">
-            <input type="text" maxlength="1">
-            <input type="text" maxlength="1">
-            <input type="text" maxlength="1">
-        </div>
-        <div class="my-2">
-            <a id="resend" onclick="resendOTP()">Resend Code</a>
-            <span id="timer"></span>
-        </div>
-        <div>
-            <button class="btn" style="background-color:#3BADCD;">Confirm</button>
-        </div>
+        <form action="/verify-otp" method="POST">
+            <div class="otp-inputs d-flex justify-content-center my-3">
+                <input type="text" name="otp1" maxlength="1" required>
+                <input type="text" name="otp2" maxlength="1" required>
+                <input type="text" name="otp3" maxlength="1" required>
+                <input type="text" name="otp4" maxlength="1" required>
+                <input type="text" name="otp5" maxlength="1" required>
+                <input type="text" name="otp6" maxlength="1" required>
+            </div>
+            <div class="my-2">
+                <a id="resend" onclick="resendOTP()">Resend Code</a>
+                <span id="timer"></span>
+                <% if (errorMessage) { %>
+                    <div class="alert alert-danger">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+
+            </div>
+
+            <div>
+                <button class="btn" style="background-color:#3BADCD;">Confirm</button>
+            </div>
+        </form>
+
     </div>
 
-
     <script>
-        let timerDuration = 90; // 3 minutes in seconds
+        let timerDuration = 30; // 3 minutes in seconds
         let countdown;
 
         function startTimer() {
@@ -112,46 +125,53 @@
             countdown = setInterval(() => {
                 let minutes = Math.floor(time / 60);
                 let seconds = time % 60;
-                timerSpan.textContent = ` (${minutes}:${seconds < 10 ? '0' + seconds : seconds})`;
+                resendLink.textContent = `Resend Code (${minutes}:${seconds < 10 ? '0' + seconds : seconds})`;
                 time--;
 
                 if (time < 0) {
                     clearInterval(countdown);
-                    timerSpan.textContent = "";
+                    resendLink.textContent = "Resend Code";
                     resendLink.classList.remove("disabled");
                 }
             }, 1000);
+
         }
         startTimer();
 
         function resendOTP() {
-            if (document.getElementById("resend").classList.contains("disabled")) return;
+            const resendLink = document.getElementById("resend");
 
-            // Call backend to resend OTP (example fetch)
+            if (resendLink.classList.contains("disabled")) return;
+
             fetch("/resend-otp", { method: "POST" })
                 .then(res => res.json())
                 .then(data => {
                     console.log("OTP resent:", data);
-                    startTimer();
+                    startTimer(); // restart countdown
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    console.error("Resend OTP failed:", err);
+                    // still restart timer to prevent spam clicking
+                    startTimer();
+                });
         }
-// OTP auto move logic
-const inputs = document.querySelectorAll('.otp-inputs input');
 
-inputs.forEach((input, index) => {
-    input.addEventListener('input', () => {
-        if(input.value.length === 1 && index < inputs.length - 1) {
-            inputs[index + 1].focus();
-        }
-    });
+        // OTP auto move logic
+        const inputs = document.querySelectorAll('.otp-inputs input');
 
-    input.addEventListener('keydown', (e) => {
-        if(e.key === 'Backspace' && input.value === '' && index > 0) {
-            inputs[index - 1].focus();
-        }
-    });
-});
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
 
         // Optional: start timer immediately if needed
         // startTimer();
