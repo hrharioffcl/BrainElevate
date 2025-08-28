@@ -1,24 +1,35 @@
-const express= require ("express")
-const{signup,verifyOtp,resendotp, login, forgotpassword}= require("../controllers/authcontrollers")
+const express = require("express")
+const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = require("../controllers/authcontrollers")
 const router = express.Router();
-router.get('/signup',(req,res)=>{
-res.render('signup', { fieldErrors: {}, formData: {} })
+const { verifytoken } = require("../middlewaares/userAuthMiddleware");
+const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
+
+router.get('/signup',restrictUnauthenticatedRoutes, (req, res) => {
+    res.render('signup', { fieldErrors: {}, formData: {} })
 })
-router.get('/verify-otp',(req,res)=>{
-    res.render('otp',{errorMessage:null})
+router.get('/verify-otp',restrictUnauthenticatedRoutes, (req, res) => {
+    res.render('otp', { errorMessage: null })
 })
 
-router.get('/login',(req,res)=>{
-    res.render('login',{ fieldErrors: {}, formData: {} })
+router.get('/login',restrictUnauthenticatedRoutes, (req, res) => {
+    res.render('login', { fieldErrors: {}, formData: {} })
 })
-router.get('/forgot-password',(req,res)=>{
-    res.render('forgotpassword',{ fieldErrors: {}, formData: {} })
+router.get('/forgot-password', restrictUnauthenticatedRoutes,(req, res) => {
+    res.render('forgotpassword', { fieldErrors: {}, formData: {} })
 })
 
-router.post("/signup",signup);
-router.post("/verify-otp",verifyOtp);
-router.post("/resend-otp",resendotp)
-router.post('/login',login)
-router.post('/forgot-password',forgotpassword)
+router.get('/reset-password',restrictUnauthenticatedRoutes, (req, res) => {
+    res.render('resetpassword', { fieldErrors: {} })
+})
+router.get('/home', verifytoken, (req, res) => {
 
-module.exports=router;
+    res.render('home', { fullName: req.user.fullName })
+})
+router.post("/signup",restrictUnauthenticatedRoutes, signup);
+router.post("/verify-otp",restrictUnauthenticatedRoutes, verifyOtp);
+router.post("/resend-otp",restrictUnauthenticatedRoutes, resendotp)
+router.post('/login',restrictUnauthenticatedRoutes, login)
+router.post('/forgot-password',restrictUnauthenticatedRoutes, forgotpassword)
+router.post('/reset-password',restrictUnauthenticatedRoutes, resetpassword)
+
+module.exports = router;

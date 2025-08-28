@@ -9,14 +9,6 @@ const userSchema = new mongoose.Schema(
             trim: true,
             minlength: [4, "Full name must be at least 4 characters"],
             maxlength: [30, "Full name can be max 30 characters"],
-            validate(value) {
-                if (!/^[A-Za-z\s]+$/.test(value)) {
-                    throw new Error("Full name must contain only letters and spaces")
-                }
-
-            }
-
-
         },
         email: {
             type: String,

@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #40e0d0; /* turquoise shade like in screenshot */
+  padding: 0.5rem 1rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.logo img {
+  height: 40px;
+  margin-right: 0.5rem;
+}
+
+.search-form input {
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  outline: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.nav-right a {
+  text-decoration: none;
+  color: black;
+  font-size: 0.9rem;
+}
+
+.nav-right i {
+  font-size: 1.2rem;
+}

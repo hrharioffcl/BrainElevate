@@ -3,6 +3,8 @@ require("dotenv").config()
 const express = require("express")
 const app = express()
 const path = require("path");
+const cookieParser = require("cookie-parser")
+app.use(cookieParser());
 
 const session = require("express-session")
 app.use(session({
@@ -11,6 +13,13 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
+
+const passport = require("passport");
+require("./config/passport"); // passport config
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +43,9 @@ connectDB().then(() => {
 const authRoutes = require("./routes/userauth")
 //usee routes
 app.use("/", authRoutes)
+const googleauthRoutes = require("./routes/googleauth");
+app.use("/", googleauthRoutes);
+
 
 app.get('/', (req, res) => {
     res.send("started the application")

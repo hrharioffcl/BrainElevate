@@ -23,10 +23,6 @@ exports.signup = async (req, res) => {
         terms: terms === "true" ? "true" : "false"
     };
 
-
-    //adding fullname password and email to session
-    req.session.signupData = { fullName, email, password }
-
     //confirm existing user
     const existinguser = await User.findOne({ email });
     if (existinguser) fieldErrors.email = "*User already exists, try logging in!";
@@ -55,6 +51,11 @@ exports.signup = async (req, res) => {
         await Otp.create({ email, otpcode, purpose: "signup", expiresAt })
         //send dOTP via email
         await sendOtp(email, otpcode)
+
+
+        //adding fullname password and email to session
+        req.session.signupData = { fullName, email, password, purpose: "signup" }
+
         console.log("redirecting to verify")
         res.redirect('/verify-otp')
     } catch (error) {
@@ -75,28 +76,42 @@ exports.verifyOtp = async (req, res) => {
     try {
         const { otp1, otp2, otp3, otp4, otp5, otp6 } = req.body
         const otp = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
-        const { fullName, email, password } = req.session.signupData;
-        const otpRecord = await Otp.findOne({ email, purpose: "signup" }).sort({ createdAt: -1 })
+        //getting purpuse and email from session memmory
+        const { purpose } = req.session.signupData || req.session.forgotPassword;
+        const email = req.session.signupData?.email || req.session.forgotPassword?.email;
+        //find otp in collection
+        const otpRecord = await Otp.findOne({ email, purpose }).sort({ createdAt: -1 });
+        //compare otp
         if (!otpRecord || otpRecord.otpcode !== otp || otpRecord.expiresAt < Date.now()) {
             return res.render("otp", {
                 errorMessage: "❌ Invalid or expired OTP"
             });
         }
-        ///create user if otp verified
-        const user = await User.create({ fullName, email, password, isVerified: true })
-        await Otp.deleteOne({ _id: otpRecord._id })
-        req.session.signupData = null
+        //signup otp verification
+        if (purpose === "signup") {
+            const { fullName, email, password } = req.session.signupData;
+            ///create user if otp verified
+            const user = await User.create({ fullName, email, password, isVerified: true })
+            await Otp.deleteOne({ _id: otpRecord._id })
+            req.session.signupData = null
 
-        //generate jwt
-        const token = generateusertoken(user._id)
-        res.cookie('jwt', token, {
-            httpOnly: true,
-            maxAge: 1 * 60 * 60 * 1000 // 1 hour
-        });
-        res.redirect('/home')
+            //generate jwt
+            const token = generateusertoken(user._id)
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                maxAge: 1 * 60 * 60 * 1000 // 1 hour
+            });
+            res.redirect('/home')
 
 
-    } catch (error) {
+        }
+        // forgot password otp verification
+        else if (purpose === "forgotpassword") {
+            await Otp.deleteOne({ _id: otpRecord._id })
+            res.redirect('/reset-password')
+        }
+    }
+    catch (error) {
         console.error(error)
         res.status(500).send("some error occured")
     }
@@ -106,11 +121,13 @@ exports.verifyOtp = async (req, res) => {
 //resend otp
 exports.resendotp = async function (req, res) {
     try {
-        const { email } = req.session.signupData;
-        await Otp.deleteMany({ email, purpose: "signup" });
+        //getting purpuse and email from session memmory
+        const { purpose } = req.session.signupData || req.session.forgotPassword;
+        const email = req.session.signupData?.email || req.session.forgotPassword?.email;
+        await Otp.deleteMany({ email, purpose });
         const otpcode = createOtpcode()
         const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
-        await Otp.create({ otpcode, email, purpose: "signup", expiresAt })
+        await Otp.create({ otpcode, email, purpose, expiresAt })
         await sendOtp(email, otpcode)
         res.status(200).send("resend otp  successfully")
 
@@ -150,7 +167,7 @@ exports.login = async (req, res) => {
         // generate JWT
         const token = generateusertoken(existinguser._id);
         const rememberMeChecked = rememberMe === "on"; // standard HTML checkbox
-        // If remember me is checked/notchecked )
+        // If remember me is checked/notchecked 
         res.cookie('jwt', token, {
             httpOnly: true,
             maxAge: rememberMeChecked ? 7 * 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000
@@ -172,7 +189,7 @@ exports.login = async (req, res) => {
 //FORGOT PASSWORD
 exports.forgotpassword = async (req, res) => {
     const { email } = req.body;
-     const fieldErrors = {};
+    const fieldErrors = {};
     const formData = {
         email: email || '',
     };
@@ -192,8 +209,9 @@ exports.forgotpassword = async (req, res) => {
         await Otp.create({ email, otpcode, purpose: "forgotpassword", expiresAt })
         //send dOTP via email
         await sendOtp(email, otpcode)
+        req.session.forgotPassword = { email, purpose: "forgotpassword" }
         console.log("redirecting to verify otp")
-        res.redirect('/verifyotp')
+        res.redirect('/verify-otp')
 
 
 
@@ -203,5 +221,48 @@ exports.forgotpassword = async (req, res) => {
         res.status(400).send("error")
     }
 
+}
+
+
+//reset password
+exports.resetpassword = async (req, res) => {
+    const fieldErrors = {};
+    const { email } = req.session.forgotPassword
+    const { password, confirmPassword } = req.body;
+
+
+    if (password !== confirmPassword) {
+        fieldErrors.confirmPassword = "*Passwords do not match";
+        return res.render('resetpassword', { fieldErrors })
+    }
+    try {
+        const existinguser = await User.findOne({ email });
+        const isMatch = await bcrypt.compare(password, existinguser.password)
+        if (isMatch) {
+            fieldErrors.password = "cannot use old password";
+            return res.render('resetpassword', { fieldErrors })
+        }
+        // set new password
+        existinguser.password = password
+        await existinguser.save();
+
+        req.session.forgotPassword = null;
+
+
+        res.redirect('/login')
+
+
+    } catch (error) {
+        if (error.name === "ValidationError") {
+            // Extract mongoose validation errors
+            Object.keys(error.errors).forEach((key) => {
+                fieldErrors[key] = error.errors[key].message;
+            });
+            return res.render("resetpassword", { fieldErrors });
+        }
+
+        console.log(error);
+        res.status(500).send("Server error");
+    }
 }
 
