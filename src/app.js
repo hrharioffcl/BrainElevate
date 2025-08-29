@@ -5,7 +5,9 @@ const app = express()
 const path = require("path");
 const cookieParser = require("cookie-parser")
 app.use(cookieParser());
+const nocache = require("nocache");
 
+app.use(nocache());
 const session = require("express-session")
 app.use(session({
     secret: process.env.SESSION_SECRET || "mysecretkey",
@@ -40,16 +42,17 @@ connectDB().then(() => {
 })
 
 //import routes
-const authRoutes = require("./routes/userauth")
-//usee routes
-app.use("/", authRoutes)
+const userroutes= require("./routes/userauth")
+const adminroutes = require("./routes/adminauth")
 const googleauthRoutes = require("./routes/googleauth");
+
+//usee routes
+
+app.use("/", userroutes)
 app.use("/", googleauthRoutes);
+app.use('/admin',adminroutes)
 
 
-app.get('/', (req, res) => {
-    res.send("started the application")
-})
 
 
 

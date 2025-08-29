@@ -3,6 +3,9 @@ const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = r
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
+router.get('/',restrictUnauthenticatedRoutes, (req, res) => {
+    res.render('homewithoutlogin')
+})
 
 router.get('/signup',restrictUnauthenticatedRoutes, (req, res) => {
     res.render('signup', { fieldErrors: {}, formData: {} })
@@ -15,21 +18,22 @@ router.get('/login',restrictUnauthenticatedRoutes, (req, res) => {
     res.render('login', { fieldErrors: {}, formData: {} })
 })
 router.get('/forgot-password', restrictUnauthenticatedRoutes,(req, res) => {
-    res.render('forgotpassword', { fieldErrors: {}, formData: {} })
+    res.render('forgotpassword', { fieldErrors: {}, formData: {},type: "user" })
 })
 
 router.get('/reset-password',restrictUnauthenticatedRoutes, (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
 router.get('/home', verifytoken, (req, res) => {
+            console.log("Token is:", req.cookies.jwt);
 
     res.render('home', { fullName: req.user.fullName })
 })
 router.post("/signup",restrictUnauthenticatedRoutes, signup);
-router.post("/verify-otp",restrictUnauthenticatedRoutes, verifyOtp);
-router.post("/resend-otp",restrictUnauthenticatedRoutes, resendotp)
+router.post("/verify-otp", verifyOtp);
+router.post("/resend-otp", resendotp)
 router.post('/login',restrictUnauthenticatedRoutes, login)
-router.post('/forgot-password',restrictUnauthenticatedRoutes, forgotpassword)
-router.post('/reset-password',restrictUnauthenticatedRoutes, resetpassword)
+router.post('/forgot-password', forgotpassword)
+router.post('/reset-password',resetpassword)
 
 module.exports = router;

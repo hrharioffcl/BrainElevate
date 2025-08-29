@@ -1,7 +1,9 @@
 const User = require("../models/userSchema")
+const Admin = require("../models/adminschema")
 const Otp = require("../models/otp")
 const sendOtp = require("../utils/sendotp")
 const generateusertoken = require("../utils/usertoken")
+const generateadmintoken = require("../utils/admintoken")
 const bcrypt = require("bcrypt")
 
 //create otp logic
@@ -101,12 +103,17 @@ exports.verifyOtp = async (req, res) => {
                 httpOnly: true,
                 maxAge: 1 * 60 * 60 * 1000 // 1 hour
             });
+            console.log("Token:", req.cookies.jwt);
+
             res.redirect('/home')
 
 
         }
         // forgot password otp verification
-        else if (purpose === "forgotpassword") {
+        else if (purpose === "adminforgotpassword") {
+            await Otp.deleteOne({ _id: otpRecord._id })
+            res.redirect('/admin/reset-password')
+        } else if (purpose === "forgotpassword") {
             await Otp.deleteOne({ _id: otpRecord._id })
             res.redirect('/reset-password')
         }
@@ -172,6 +179,7 @@ exports.login = async (req, res) => {
             httpOnly: true,
             maxAge: rememberMeChecked ? 7 * 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000
         });
+        console.log("Token:", req.cookies.jwt);
 
         res.redirect('/home');
     } catch (error) {
@@ -188,31 +196,52 @@ exports.login = async (req, res) => {
 
 //FORGOT PASSWORD
 exports.forgotpassword = async (req, res) => {
-    const { email } = req.body;
+    const { email, type } = req.body;
+    console.log(type)
     const fieldErrors = {};
     const formData = {
         email: email || '',
     };
     try {
-        const existinguser = await User.findOne({ email });
-        if (!existinguser) {
-            fieldErrors.email = "User not registered";
-            return res.render('forgotpassword', { fieldErrors, formData })
+        if (type === "user") {
+            const existinguser = await User.findOne({ email });
+            if (!existinguser) {
+                fieldErrors.email = "User not registered";
+                return res.render('forgotpassword', { fieldErrors, formData, type: "user" })
+            }
+
+            //delete otp records
+            await Otp.deleteMany({ email, purpose: "forgotpassword" })
+            //otp generate
+            const otpcode = createOtpcode();
+            const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
+
+            await Otp.create({ email, otpcode, purpose: "forgotpassword", expiresAt })
+            //send dOTP via email
+            await sendOtp(email, otpcode)
+            req.session.forgotPassword = { email, purpose: "forgotpassword" }
+            console.log("redirecting to verify otp")
+            res.redirect('/verify-otp')
         }
+        else if (type === "admin") {
+            const isadmin = await Admin.findOne({ email });
+            if (!isadmin) {
+                fieldErrors.email = "Not allowed";
+                return res.render('forgotpassword', { fieldErrors, formData, type: "admin" })
+            }
+            //delete otp records
+            await Otp.deleteMany({ email, purpose: "adminforgotpassword" })
+            //otp generate
+            const otpcode = createOtpcode();
+            const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
 
-        //delete otp records
-        await Otp.deleteMany({ email, purpose: "forgotpassword" })
-        //otp generate
-        const otpcode = createOtpcode();
-        const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
-
-        await Otp.create({ email, otpcode, purpose: "forgotpassword", expiresAt })
-        //send dOTP via email
-        await sendOtp(email, otpcode)
-        req.session.forgotPassword = { email, purpose: "forgotpassword" }
-        console.log("redirecting to verify otp")
-        res.redirect('/verify-otp')
-
+            await Otp.create({ email, otpcode, purpose: "adminforgotpassword", expiresAt })
+            //send dOTP via email
+            await sendOtp(email, otpcode)
+            req.session.forgotPassword = { email, purpose: "adminforgotpassword" }
+            console.log("redirecting to verify otp")
+            res.redirect('/admin/verify-otp')
+        }
 
 
     } catch (error) {
@@ -227,29 +256,45 @@ exports.forgotpassword = async (req, res) => {
 //reset password
 exports.resetpassword = async (req, res) => {
     const fieldErrors = {};
-    const { email } = req.session.forgotPassword
+    const { email, purpose } = req.session.forgotPassword
     const { password, confirmPassword } = req.body;
-
-
     if (password !== confirmPassword) {
         fieldErrors.confirmPassword = "*Passwords do not match";
         return res.render('resetpassword', { fieldErrors })
     }
     try {
-        const existinguser = await User.findOne({ email });
-        const isMatch = await bcrypt.compare(password, existinguser.password)
-        if (isMatch) {
-            fieldErrors.password = "cannot use old password";
-            return res.render('resetpassword', { fieldErrors })
+        if (purpose === "forgotpassword") {
+            const existinguser = await User.findOne({ email });
+            const isMatch = await bcrypt.compare(password, existinguser.password)
+            if (isMatch) {
+                fieldErrors.password = "cannot use old password";
+                return res.render('resetpassword', { fieldErrors })
+            }
+            // set new password
+            existinguser.password = password
+            await existinguser.save();
+
+            req.session.forgotPassword = null;
+
+
+            res.redirect('/login')
+        } else if (purpose === "adminforgotpassword") {
+
+            const isadmin = await Admin.findOne({ email });
+
+            const isMatch = await bcrypt.compare(password, isadmin.password)
+            if (isMatch) {
+                fieldErrors.password = "cannot use old password";
+                return res.render('resetpassword', { fieldErrors })
+            }
+            isadmin.password = password;
+            await isadmin.save()
+            res.redirect('/admin/login')
+
+
         }
-        // set new password
-        existinguser.password = password
-        await existinguser.save();
-
-        req.session.forgotPassword = null;
 
 
-        res.redirect('/login')
 
 
     } catch (error) {
@@ -266,3 +311,49 @@ exports.resetpassword = async (req, res) => {
     }
 }
 
+
+
+exports.adminlogin = async (req, res) => {
+    fieldErrors = {}
+    const { email, password } = req.body;
+
+    try {
+
+        const isadmin = await Admin.findOne({ email });
+        if (!isadmin) {
+            fieldErrors.email = "Not allowed";
+            return res.render('adminlogin', { fieldErrors })
+        }
+        const isMatch = await bcrypt.compare(password, isadmin.password)
+        if (!isMatch) {
+            fieldErrors.password = "Invalid credentials";
+            return res.render('adminlogin', { fieldErrors })
+        }
+
+        // generate JWT
+        const token = generateadmintoken(isadmin.id, isadmin.role);
+        // If remember me is checked/notchecked 
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: 1 * 24 * 60 * 60 * 1000
+        });
+        console.log("Token:", req.cookies.jwt);
+
+        if (isadmin.role === "super_admin") {
+            res.redirect('/superadmindashboard')
+        }
+        else if (isadmin.role === "manager") {
+            res.redirect('/managerdashboard')
+        }
+        else if (isadmin.role === "contributer") {
+            res.redirect('/contributerdashboard')
+        }
+
+    } catch (error) {
+        res.send("error")
+
+    }
+
+
+
+}

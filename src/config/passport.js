@@ -1,6 +1,7 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/userSchema");
+const{generateRandomPassword}=require("../utils/randompassword")
 
 // Serialize user for session (required by passport)
 passport.serializeUser((user, done) => done(null, user.id));
@@ -21,6 +22,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "/auth/google/callback",
 }, async (accessToken, refreshToken, profile, done) => {
     try {
+        const randompassword = generateRandomPassword()
         const email = profile.emails[0].value;
         let user = await User.findOne({ email });
 
@@ -35,7 +37,7 @@ passport.use(new GoogleStrategy({
             user = await User.create({
                 fullName: profile.displayName,
                 email: email,
-                password: "Passwor@123",
+                password: randompassword,
                 profilepic: profile.photos[0]?.value,
                 isVerified: true,
                 lastLogin: new Date()
