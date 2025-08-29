@@ -357,3 +357,20 @@ exports.adminlogin = async (req, res) => {
 
 
 }
+const adduser =  async (req,res)=>{
+const{email, username} = req.boy;
+try {
+    const exists = await user.findOne({email})
+if(exists){
+    throw error
+}
+await user.create({email,username})
+    
+} catch (error) {
+    console.log(error)
+res.status(400).send("server error")
+}
+
+
+
+}

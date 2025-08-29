@@ -1,4 +1,5 @@
 require("dotenv").config()
+const ngrok = require("ngrok");
 
 const express = require("express")
 const app = express()
@@ -35,9 +36,29 @@ const connectDB = require("./config/db")
 connectDB().then(() => {
     const PORT = process.env.PORT || 8100;
 
-    app.listen(PORT, () => {
+    app.listen(PORT,async  () => {
+console.log(`✅ Server started on http://localhost:${PORT}`);
 
-        console.log("server started")
+  // only run ngrok in development
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const url = await ngrok.connect({
+        addr: PORT,
+        authtoken: process.env.NGROK_AUTHTOKEN,
+      });
+      console.log(`🌍 Ngrok tunnel: ${url}`);
+
+      // optional: cleanly stop ngrok on exit
+      const stop = async () => {
+        try { await ngrok.disconnect(); await ngrok.kill(); } catch {}
+        process.exit(0);
+      };
+      process.on("SIGINT", stop);
+      process.on("SIGTERM", stop);
+    } catch (err) {
+      console.error("❌ Ngrok failed to start:", err.message);
+    }
+  }
     })
 })
 
