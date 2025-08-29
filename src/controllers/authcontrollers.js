@@ -340,7 +340,7 @@ exports.adminlogin = async (req, res) => {
         console.log("Token:", req.cookies.jwt);
 
         if (isadmin.role === "super_admin") {
-            res.redirect('/superadmindashboard')
+            res.redirect('/admin/superadmindashboard')
         }
         else if (isadmin.role === "manager") {
             res.redirect('/managerdashboard')

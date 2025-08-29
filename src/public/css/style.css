@@ -38,3 +38,28 @@ body {
   background: black;
   color: white;
 }
+.logo-img {
+  width: 80px;
+  height: auto;
+}
+
+.profile-pic-wrapper {
+  position: relative;
+}
+
+
+
+.edit-btn {
+  top: 0; /* adjust vertical position */
+  right: -10px; /* adjust horizontal position */
+  border-radius: 50%;
+  padding: 4px 6px;
+  font-size: 14px;
+  background-color: #2fb5a6;;
+}
+.sidebar .nav-link.active {
+  background-color: #242020;  /* dark shade for active item */
+  border-left:3px solid  #40e0d0; /* vertical line on left */
+  padding-left: 8px;              /* add some padding so text doesn't overlap */
+  color:  #40e0d0 !important; /* optional, makes text color different */
+}
