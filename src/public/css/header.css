@@ -3,7 +3,34 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+.popup {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+  }
+  .popup-content {
+    background: #40e0d0;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+      width: 50vw;      /* 50% of viewport width */
+  height: 50vw;     /* same as width */
+  max-width: 500px; /* optional max size */
+  max-height: 300px;
+  }
+  .popup-content input {
+    width: 80%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: none;
+  }
+  .popup-content button {
+    margin: 5px;
+  }
 
 .navbar {
   display: flex;

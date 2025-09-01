@@ -13,6 +13,9 @@
   </div>
 
   <div class="nav-right">
+    
+    <!-- Refer Now -->
+    <a href="#" id="referNow">Refer Now</a>
     <a href="/career">Career</a>
     <a href="/courses">Courses</a>
     <a href="/mylearning">My Learning</a>
@@ -22,4 +25,42 @@
     <a href="/cart"><i class="fa fa-shopping-cart"></i></a>
     <a href="/profile"><i class="fa fa-user"></i></a>
   </div>
+  <!-- Hidden Popup for Referral -->
+<div id="referPopup" class="popup" style="display:none;">
+  <div class="popup-content">
+<h3>Invite Your Friends & Earn Rewards!</h3>
+  <p>Share your referral link with friends and earn 🥳🥳🎇<strong >💵💵₹100 cashback</strong> when they make their first purchase.</p>
+    <input type="text" id="referralLink" readonly value="https://yourdomain.com/ref/USER123" />
+    <button class="btn btn-dark"   id="copyReferral">Copy Link</button>
+    <button class="btn btn-danger" id="closePopup">Close</button>
+  </div>
+</div>
+
+<script>
+  const referNow = document.getElementById("referNow");
+  const popup = document.getElementById("referPopup");
+  const closePopup = document.getElementById("closePopup");
+  const copyBtn = document.getElementById("copyReferral");
+  const referralInput = document.getElementById("referralLink");
+
+  // Open popup
+  referNow.addEventListener("click", (e) => {
+    e.preventDefault();
+    popup.style.display = "flex";
+  });
+
+  // Close popup
+  closePopup.addEventListener("click", () => {
+    popup.style.display = "none";
+  });
+
+  // Copy referral link
+  copyBtn.addEventListener("click", () => {
+    referralInput.select();
+    document.execCommand("copy");
+    copyBtn.textContent = "Copied!";
+    setTimeout(() => (copyBtn.textContent = "Copy Link"), 2000);
+  });
+</script>
+
 </header>

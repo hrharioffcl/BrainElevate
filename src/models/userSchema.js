@@ -48,6 +48,14 @@ const userSchema = new mongoose.Schema(
             enum: ["Male", "Female", "Other"],//enum for dropdown
             default: "Other",
         },
+        referralCode: {
+            type: String,
+            unique: true,
+        },
+        referredBy: {
+            type: String, // store referralCode or userId of the referrer
+            default: null,
+        },
         isVerified: {
             type: Boolean,
             default: false,

@@ -1,5 +1,6 @@
 const User = require("../models/userSchema")
 const Admin = require("../models/adminschema")
+const { createrefferalcode } = require('../utils/refferalcodegenerator')
 const Otp = require("../models/otp")
 const sendOtp = require("../utils/sendotp")
 const generateusertoken = require("../utils/usertoken")
@@ -92,8 +93,17 @@ exports.verifyOtp = async (req, res) => {
         //signup otp verification
         if (purpose === "signup") {
             const { fullName, email, password } = req.session.signupData;
+            //check refferal code exist!!
+            let referredBy = null;
+            if (req.session.referral) {
+                const referrer = await User.findOne({ referralCode: req.session.referral });
+                if (referrer) {
+                    referredBy = referrer._id;
+                }
+                req.session.referral = null; // clear after use
+            }
             ///create user if otp verified
-            const user = await User.create({ fullName, email, password, isVerified: true })
+            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(),referredBy})
             await Otp.deleteOne({ _id: otpRecord._id })
             req.session.signupData = null
 

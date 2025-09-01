@@ -1,7 +1,8 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/userSchema");
-const{generateRandomPassword}=require("../utils/randompassword")
+const { generateRandomPassword } = require("../utils/randompassword")
+const { createrefferalcode } = require('../utils/refferalcodegenerator')
 
 // Serialize user for session (required by passport)
 passport.serializeUser((user, done) => done(null, user.id));
@@ -20,7 +21,9 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback",
-}, async (accessToken, refreshToken, profile, done) => {
+        passReqToCallback: true,   // ✅ important!
+
+}, async (req,accessToken, refreshToken, profile, done) => {
     try {
         const randompassword = generateRandomPassword()
         const email = profile.emails[0].value;
@@ -33,6 +36,14 @@ passport.use(new GoogleStrategy({
             user.lastLogin = new Date();
             await user.save();
         } else {
+            let referredBy = null;
+            if (req.session.referral) {
+                const referrer = await User.findOne({ referralCode: req.session.referral });
+                if (referrer) {
+                    referredBy = referrer._id;
+                }
+                req.session.referral = null; // clear after use
+            }
             // Create new user
             user = await User.create({
                 fullName: profile.displayName,
@@ -40,7 +51,9 @@ passport.use(new GoogleStrategy({
                 password: randompassword,
                 profilepic: profile.photos[0]?.value,
                 isVerified: true,
-                lastLogin: new Date()
+                lastLogin: new Date(),
+                referralCode: await createrefferalcode(),
+                 referredBy: referredBy,
             });
         }
 
