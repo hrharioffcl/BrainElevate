@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema(
             type: Date,
             default: null,
         },
+        // Soft delete field
+        isDeleted: { type: Boolean, 
+            default: false
+         }
     },
     { timestamps: true }
 

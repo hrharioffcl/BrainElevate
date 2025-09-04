@@ -3,6 +3,8 @@ const{verifyadmintoken}= require('../middlewaares/adminAuthMiddleware')
 const { adminlogin } = require("../controllers/authcontrollers")
 const{getsuperadmindashboard}=require("../controllers/admindashboard.controller")
 const{getmanageadmin,addadmin,deleteadmin,editadmin}=require("../controllers/manageadmincontroller")
+const{getmanagestudents,deletestudent,geteditstudent,editstudent}=require("../controllers/managestudentcontroller")
+const User= require('../models/userSchema')
 const router = express.Router()
 
 router.get("/login", (req, res) => {
@@ -21,13 +23,16 @@ router.get('/reset-password', (req, res) => {
 router.get('/superadmindashboard',verifyadmintoken,getsuperadmindashboard)
 
 
-router.post("/login", adminlogin)
-
-
-
+router.get('/edit-student/:id',geteditstudent)
 router.get('/manage-admin',verifyadmintoken,getmanageadmin)
+router.get('/manage-students',verifyadmintoken,getmanagestudents)
+
+
+router.post("/login", adminlogin)
 router.post("/addadmin",addadmin);
 router.post('/delete/:id',deleteadmin)
 router.post('/update/:id',editadmin)
+router.post('/deletestudent/:id',deletestudent)
+router.post('/edit-student/:id',editstudent)
 
 module.exports = router;

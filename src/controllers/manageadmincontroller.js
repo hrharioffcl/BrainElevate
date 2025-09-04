@@ -45,13 +45,13 @@ if (search) {
     }
 
 
+const totalAdmins = await Admin.countDocuments(filter)
 
 
 const admins = await Admin.find(filter).skip(skip).limit(limit)
 
 
 
-const totalAdmins = await Admin.countDocuments(filter)
 //export filtered admins
  if (exportType === "csv") {
       const allAdminsForExport = await Admin.find(filter).sort({ createdAt: -1 });

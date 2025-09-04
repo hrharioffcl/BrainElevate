@@ -28,8 +28,8 @@ passport.use(new GoogleStrategy({
         const randompassword = generateRandomPassword()
         const email = profile.emails[0].value;
         let user = await User.findOne({ email });
-
         if (user) {
+            
             // Update user info if necessary
             user.fullName = profile.displayName || user.fullName;
             user.profilepic = profile.photos[0]?.value || user.profilepic;

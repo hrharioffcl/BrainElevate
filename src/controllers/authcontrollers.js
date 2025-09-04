@@ -173,6 +173,10 @@ exports.login = async (req, res) => {
             fieldErrors.email = "User not registered";
             return res.render('login', { fieldErrors, formData })
         }
+        if(existinguser.isDeleted===true){
+            fieldErrors.email = "Unauthorized Access";
+            return res.render('login', { fieldErrors, formData })
+        }
 
         const isMatch = await bcrypt.compare(password, existinguser.password)
         if (!isMatch) {
@@ -219,6 +223,10 @@ exports.forgotpassword = async (req, res) => {
                 fieldErrors.email = "User not registered";
                 return res.render('forgotpassword', { fieldErrors, formData, type: "user" })
             }
+             if(existinguser.isDeleted===true){
+            fieldErrors.email = "Unauthorized Access";
+            return res.render('login', { fieldErrors, formData,type: "user" })
+        }
 
             //delete otp records
             await Otp.deleteMany({ email, purpose: "forgotpassword" })
@@ -239,6 +247,10 @@ exports.forgotpassword = async (req, res) => {
                 fieldErrors.email = "Not allowed";
                 return res.render('forgotpassword', { fieldErrors, formData, type: "admin" })
             }
+             if(isadmin.isActive===false){
+            fieldErrors.email = "Unauthorized Access";
+            return res.render('login', { fieldErrors, formData,type: "admin" })
+        }
             //delete otp records
             await Otp.deleteMany({ email, purpose: "adminforgotpassword" })
             //otp generate
@@ -334,6 +346,10 @@ exports.adminlogin = async (req, res) => {
             fieldErrors.email = "Not allowed";
             return res.render('adminlogin', { fieldErrors })
         }
+        if(isadmin.isActive===false){
+            fieldErrors.email = "Unauthorized Access";
+            return res.render('login', { fieldErrors, formData,type: "admin" })}
+            
         const isMatch = await bcrypt.compare(password, isadmin.password)
         if (!isMatch) {
             fieldErrors.password = "Invalid credentials";

@@ -34,7 +34,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="/manage-students" class="nav-link text-white"> 
+      <a href="/admin/manage-students" class="nav-link text-white"> 
         <i class="bi bi-people"></i> Manage Students
       </a>
     </li>
@@ -62,13 +62,23 @@
 </nav>
 
 <script>
-  // Highlight active link
   const currentPath = window.location.pathname;
   const links = document.querySelectorAll('.sidebar .nav-link');
 
   links.forEach(link => {
-    if(link.getAttribute('href') === currentPath) {
+    const href = link.getAttribute('href');
+
+    // Match exact OR sub-routes
+    if (currentPath === href || currentPath.startsWith(href)) {
       link.classList.add('active');
+    }
+
+    // Special mapping: edit-student/edit-admin should highlight manage-students/manage-admin
+    if (href === "/admin/manage-students" && currentPath.startsWith("/admin/edit-student")) {
+      link.classList.add("active");
+    }
+    if (href === "/admin/manage-admin" && currentPath.startsWith("/admin/edit-admin")) {
+      link.classList.add("active");
     }
   });
 </script>

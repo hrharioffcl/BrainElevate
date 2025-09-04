@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage-Students</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="d-flex " style="background-color: black">
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+
+    }
+
+    .modal {
+      color: #000000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .addadminbtn {
+      background-color: #1abc9c;
+    }
+
+
+    .custom-select {
+      background-color: transparent !important;
+      border: 2px solid #1abc9c !important;
+      color: #1abc9c !important;
+    }
+
+    .custom-select:focus {
+      border-color: #1abc9c !important;
+      box-shadow: 0 0 0 0 rgba(26, 188, 156, 0.25) !important;
+      /* green glow instead of blue */
+      outline: none !important;
+    }
+
+    /* Dropdown options */
+    .custom-select option {
+      background-color: transparent !important;
+      color: #1abc9c !important;
+    }
+
+
+    .search-box {
+      background: #1a1a1a;
+      border: none;
+      color: #fff;
+    }
+
+    .search-box::placeholder {
+      color: #888;
+    }
+
+    .table-header {
+      background: #000000;
+    }
+
+    .table td,
+    .table th {
+      vertical-align: middle;
+    }
+
+    .btn-teal {
+      background-color: #1abc9c;
+      color: #fff;
+    }
+
+    /* Dark theme pagination */
+    .pagination-dark .page-link {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      margin: 0 5px;
+      /* tighter spacing */
+      width: 32px;
+      /* equal width/height */
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      /* smaller font */
+      padding: 0;
+      /* remove Bootstrap default padding */
+    }
+
+    /* Active page circle */
+    .pagination-dark .active .page-link {
+      background: #1abc9c;
+      border-radius: 50%;
+    }
+
+    /* Round prev/next as well */
+    .page-link.rounded-circle {
+      border-radius: 50% !important;
+    }
+
+    /* On small screens make them even smaller */
+    @media (max-width: 576px) {
+      .pagination-dark .page-link {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+    }
+  </style>
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+    <div class="main-content p-4 w-100">
+      <h4 class="text-white mb-4">Student Management</h4>
+
+      <!-- Top controls -->
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+
+        <!-- Search -->
+        <form method="GET" action="/admin/manage-students" class="d-flex gap-2">
+          <input type="text" name="search" class="form-control search-box w-auto" placeholder="Search students..."
+            value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
+          <% if (sortStatus && sortStatus !=='all' ) { %>
+            <input type="hidden" name="Status" value="<%= sortStatus %>">
+            <% } %>
+              <% if (timeFilter) { %>
+                <input type="hidden" name="time" value="<%= timeFilter %>">
+                <% } %>
+        </form>
+
+        <!-- Status filter -->
+        <form method="GET" action="/admin/manage-students" class="d-inline-block">
+          <select name="Status" class="form-select custom-select rounded-pill w-auto" onchange="this.form.submit()">
+            <option value="all" <%=sortStatus==='all' ? 'selected' : '' %>>All Status</option>
+            <option value="active" <%=sortStatus==='active' ? 'selected' : '' %>>Active</option>
+            <option value="suspended" <%=sortStatus==='suspended' ? 'selected' : '' %>>Suspended</option>
+          </select>
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (timeFilter) { %><input type="hidden" name="time" value="<%= timeFilter %>">
+                <% } %>
+        </form>
+
+        <!-- Time filter -->
+        <form method="GET" action="/admin/manage-students" class="d-inline-block">
+          <select name="time" class="form-select custom-select rounded-pill w-auto" onchange="this.form.submit()">
+            <option value="">Joined Anytime</option>
+            <option value="lastMonth" <%=timeFilter==="lastMonth" ? 'selected' : '' %>>Last 30 days</option>
+            <option value="lastYear" <%=timeFilter==="lastYear" ? 'selected' : '' %>>Last Year</option>
+          </select>
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (sortStatus && sortStatus!=='all' ) { %><input type="hidden" name="Status"
+                  value="<%= sortStatus %>">
+                <% } %>
+        </form>
+
+        <!-- Export -->
+        <form method="GET" action="/admin/manage-students" class="d-inline-block">
+          <input type="hidden" name="export" value="csv">
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (sortStatus && sortStatus!=='all' ) { %><input type="hidden" name="Status"
+                  value="<%= sortStatus %>">
+                <% } %>
+                  <% if (timeFilter) { %><input type="hidden" name="time" value="<%= timeFilter %>">
+                    <% } %>
+                      <button type="submit" class="btn btn-outline-light rounded-pill">Export</button>
+        </form>
+
+      </div>
+
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table table-dark align-middle table-borderless">
+          <thead class="table-header">
+            <tr>
+              <th>Full Name</th>
+              <th>Email Address</th>
+              <th>Location</th>
+              <th>Joined</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (Student.length> 0) { %>
+              <% Student.forEach(student=> { %>
+                <tr>
+                  <td>
+                    <%= student.fullName %>
+                  </td>
+                  <td>
+                    <%= student.email %>
+                  </td>
+                  <td><i class="bi bi-geo-alt-fill text-danger"></i>
+                    <%= student.location %>
+                  </td>
+                  <td>
+                    <%= student.createdAt ? new Date(student.createdAt).toLocaleString("en-GB", { day: "2-digit" ,
+                      month: "short" , year: "numeric" , hour: "2-digit" , minute: "2-digit" , hour12: true }) : "" %>
+                  </td>
+                  <td>
+                    <% if(student.isBlocked){ %>
+                      <span class="badge bg-danger">Suspended</span>
+                      <% } else { %>
+                        <span class="badge bg-success">Active</span>
+                        <% } %>
+                  </td>
+                  <td>
+                    <!-- Example action: view details -->
+                    <a href="/admin/edit-student/<%= student._id %>" class="text-info">View</a>
+                       <form action="/admin/deletestudent/<%= student._id %>" method="POST" style="display:inline;">
+                          <button type="submit" class="btn btn-link text-danger p-0 m-0"
+                            onclick="return confirm('Are you sure you want to remove this Student?');">
+                            Delete
+                          </button>
+                        </form>
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="6" class="text-center">No results found</td>
+                    </tr>
+                    <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="d-flex justify-content-center mt-3">
+        <ul class="pagination pagination-dark pagination-sm flex-wrap">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link rounded-circle"
+              href="/admin/manage-students?page=<%= currentPage-1 %>&Status=<%= sortStatus %>&time=<%= timeFilter %>&search=<%= search %>">‹</a>
+          </li>
+          <% for(let i=1; i<=totalPages; i++){ %>
+            <li class="page-item <%= currentPage===i ? 'active' : '' %>">
+              <a class="page-link rounded-circle"
+                href="/admin/manage-students?page=<%= i %>&Status=<%= sortStatus %>&time=<%= timeFilter %>&search=<%= search %>">
+                <%= i %>
+              </a>
+            </li>
+            <% } %>
+              <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle"
+                  href="/admin/manage-students?page=<%= currentPage+1 %>&Status=<%= sortStatus %>&time=<%= timeFilter %>&search=<%= search %>">›</a>
+              </li>
+        </ul>
+      </nav>
+    </div>
+
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+</html>

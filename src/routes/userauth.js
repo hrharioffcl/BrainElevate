@@ -32,6 +32,7 @@ router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
 router.get('/home', verifytoken,createReferralLink, (req, res) => {
+   
     console.log("Token is:", req.cookies.jwt);
     res.render('home', { fullName: req.user.fullName,referralLink:res.locals.referralLink })
 })

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Student</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex" style="background-color: black;">
+<style>
+  /* Card background */
+.custom-card {
+    background-color: #ffffff !important;
+}
+
+
+/* Save Changes button */
+.btn-save {
+  background-color: #40e0d0 /* turquoise */  !important;
+  color: rgb(50, 49, 49)!important;
+  border: none!important;
+  border-radius: 40px;
+  transition: background-color 0.3s ease!important;
+}
+
+.btn-save:hover {
+  background-color: #2bb3a0!important; /* darker shade on hover */
+  color: rgb(62, 60, 60)!important;
+}
+
+</style>
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+ <div class="main-content p-4 w-100">
+  <h4 class="text mb-4">Student Details</h4>
+
+  <!-- Basic Details -->
+<div class="card custom-card p-3">
+    <div class="d-flex align-items-center gap-3">
+      <img src="<%= student.profilePic %>" class="rounded-circle" width="100" height="100">
+      <div>
+        <h5 class="text-dark"><%= student.fullName %></h5>
+        <span class="badge <%= student.isBlocked ? 'bg-danger' : 'bg-success' %>">
+          <%= student.isBlocked ? 'Suspended' : 'Active' %>
+        </span>
+      </div>
+    </div>
+
+    <form action="/admin/edit-student/<%= student._id %>" method="POST" class="mt-3">
+      <div class="row text-dark">
+        <div class="col-md-6 mb-3 ">
+          <label>Full Name</label>
+          <input type="text" name="fullName" class="form-control" value="<%= student.fullName %>">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" value="<%= student.email %>">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label>Contact</label>
+          <input type="text" name="Contact" class="form-control" value="<%= student.location %>">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label>Status</label>
+          <select name="isBlocked" class="form-select">
+            <option value="false" <%= !student.isBlocked ? 'selected' : '' %>>Active</option>
+            <option value="true" <%= student.isBlocked ? 'selected' : '' %>>Suspended</option>
+          </select>
+        </div>
+      </div>
+<button type="submit" class="btn-save  p-2">Save Changes</button>
+    </form>
+  </div>
+
+
+</body>
+
+
+
+</html>
