@@ -2,7 +2,7 @@ const express = require("express")
 const{verifyadmintoken}= require('../middlewaares/adminAuthMiddleware')
 const { adminlogin } = require("../controllers/authcontrollers")
 const{getsuperadmindashboard}=require("../controllers/admindashboard.controller")
-const{getmanageadmin,addadmin}=require("../controllers/manageadmincontroller")
+const{getmanageadmin,addadmin,deleteadmin}=require("../controllers/manageadmincontroller")
 const router = express.Router()
 
 router.get("/login", (req, res) => {
@@ -27,5 +27,6 @@ router.post("/login", adminlogin)
 
 router.get('/manage-admin',verifyadmintoken,getmanageadmin)
 router.post("/addadmin",addadmin);
+router.post('/delete/:id',deleteadmin)
 
 module.exports = router;

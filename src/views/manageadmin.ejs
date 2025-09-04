@@ -62,7 +62,6 @@
     .table-header {
       background: #000000;
     }
-
     .table td,
     .table th {
       vertical-align: middle;
@@ -73,15 +72,43 @@
       color: #fff;
     }
 
+    /* Dark theme pagination */
     .pagination-dark .page-link {
       background: #1a1a1a;
       color: #fff;
       border: none;
+      margin: 0 5px;
+      /* tighter spacing */
+      width: 32px;
+      /* equal width/height */
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      /* smaller font */
+      padding: 0;
+      /* remove Bootstrap default padding */
     }
 
+    /* Active page circle */
     .pagination-dark .active .page-link {
       background: #1abc9c;
       border-radius: 50%;
+    }
+
+    /* Round prev/next as well */
+    .page-link.rounded-circle {
+      border-radius: 50% !important;
+    }
+
+    /* On small screens make them even smaller */
+    @media (max-width: 576px) {
+      .pagination-dark .page-link {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
     }
   </style>
   <!-- Sidebar -->
@@ -92,25 +119,66 @@
     <div class="main-content p-4 w-100">
       <h4 class="text-white mb-4">Admin Management</h4>
 
+
+
       <!-- Top controls -->
       <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
-        <!-- Search -->
-        <input type="text" class="form-control search-box w-auto" placeholder="Search items...">
 
-        <!-- Filters + Export -->
-        <div class="d-flex gap-2 flex-wrap">
-          <select class="form-select custom-select rounded-pill w-auto">
-            <option selected>Permissions All</option>
-            <option>Admin</option>
-            <option>Contributor</option>
+
+        <!-- <form method="GET" action="/admin/manage-admin" class="d-flex gap-2 flex-wrap">
+<!-- 🔍 Search -->
+        <form method="GET" action="/admin/manage-admin" class="d-flex gap-2">
+          <input type="text" name="search" class="form-control search-box w-auto" placeholder="Search admins..."
+            value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
+          <% if (sortRole && sortRole !=='all' ) { %>
+            <input type="hidden" name="role" value="<%= sortRole %>">
+            <% } %>
+              <% if (timeFilter) { %>
+                <input type="hidden" name="time" value="<%= timeFilter %>">
+                <% } %>
+        </form>
+
+        <!--Role filter -->
+        <form method="GET" action="/admin/manage-admin" class="d-inline-block">
+          <select name="role" class="form-select custom-select rounded-pill w-auto" onchange="this.form.submit()">
+            <option value="all" <%=sortRole==='all' ? 'selected' : '' %>>Permissions All</option>
+            <option value="admin" <%=sortRole==='admin' ? 'selected' : '' %>>Admin</option>
+            <option value="contributor" <%=sortRole==='contributor' ? 'selected' : '' %>>Contributor</option>
           </select>
-          <select class="form-select custom-select rounded-pill w-auto">
-            <option selected>Joined Anytime</option>
-            <option>Last 30 days</option>
-            <option>Last Year</option>
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (timeFilter) { %><input type="hidden" name="time" value="<%= timeFilter %>">
+                <% } %>
+        </form>
+
+        <!-- time filter -->
+        <form method="GET" action="/admin/manage-admin" class="d-inline-block">
+          <select name="time" class="form-select custom-select rounded-pill w-auto" onchange="this.form.submit()">
+            <option value="">Joined Anytime</option>
+            <option value="lastMonth" <%=timeFilter==="lastMonth" ? 'selected' : '' %>>Last 30 days</option>
+            <option value="lastYear" <%=timeFilter==="lastYear" ? 'selected' : '' %>>Last Year</option>
           </select>
-          <button class="btn btn-outline-light rounded-pill">Export</button>
-        </div>
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (sortRole && sortRole !=='all' ) { %><input type="hidden" name="role" value="<%= sortRole %>">
+                <% } %>
+        </form>
+
+        <!--Export -->
+        <form method="GET" action="/admin/manage-admin" class="d-inline-block">
+          <input type="hidden" name="export" value="csv">
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (sortRole && sortRole !=='all' ) { %><input type="hidden" name="role" value="<%= sortRole %>">
+                <% } %>
+                  <% if (timeFilter) { %><input type="hidden" name="time" value="<%= timeFilter %>">
+                    <% } %>
+                      <button type="submit" class="btn btn-outline-light rounded-pill">Export</button>
+        </form>
+
+
+
+
 
         <!-- Add new -->
         <button class="btn addadminbtn rounded-pill" data-bs-toggle="modal" data-bs-target="#addAdminModal">
@@ -225,55 +293,90 @@
             </tr>
           </thead>
           <tbody>
-            <% admins.forEach(admin=> { %>
-              <% if (admin.role !=='super_admin' ) { %>
-                <tr>
+            <% if (admins.length> 0) { %>
+              <% admins.forEach(admin=> { %>
+                <% if (admin.role !=='super_admin' ) { %>
+                  <tr>
+                    <td class="d-flex align-items-center gap-2">
+                      <img src="<%= admin.profilePic %>" class="rounded-circle" width="35" height="35">
+                      <span>
+                        <%= admin.fullName %>
+                      </span>
+                    </td>
+                    <td>
+                      <%= admin.email %>
+                    </td>
+                    <td><i class="bi bi-geo-alt-fill text-danger"></i>
+                      <%= admin.location %>
+                    </td>
+                    <td>
+                      <%= admin.createdAt ? new Date(admin.createdAt).toLocaleString("en-GB", { day: "2-digit" ,
+                        month: "short" , year: "numeric" , hour: "2-digit" , minute: "2-digit" , hour12: true }) : "" %>
+                    </td>
+                    <td>
+                      <% if(admin.role==='admin' ){ %>
+                        <span class="badge bg-danger">Admin</span>
+                        <% } else { %>
+                          <span class="badge bg-info">Contributor</span>
+                          <% } %>
+                    </td>
+                
+                    <td>
+                      <a href="/admin/edit/<%= admin._id %>" class="text-info me-2 ">Edit</a>
 
-                  <td class="d-flex align-items-center gap-2">
-                    <img src="<%= admin.profilePic %>"  class="rounded-circle" width="35" height="35">
-                    <span>
-                      <%= admin.fullName %>
-                    </span>
-                  </td>
-                  <td>
-                    <%= admin.email %>
-                  </td>
-                  <td><i class="bi bi-geo-alt-fill text-danger"></i>
-                    <%= admin.location %>
-                  </td>
-                  <td>
-                    <%= admin.joined %>
-                  </td>
-                  <td>
-                    <% if(admin.role==='admin' ){ %>
-                      <span class="badge bg-danger">Admin</span>
+                      <form action="/admin/delete/<%= admin._id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-link text-danger p-0 m-0"
+                          onclick="return confirm('Are you sure you want to delete this admin?');">
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+
+                   
+                  </tr>
+                  <% } %>
+                    <% }) %>
                       <% } else { %>
-                        <span class="badge bg-info">Contributor</span>
+                        <tr>
+                          <td colspan="6" class="text-center">No results found</td>
+                          <% if (search) { %> for search "<%= search %>" <% } %>
+                                <% if (sortRole && sortRole !=='all' ) { %> with role "<%= sortRole %>" <% } %>
+                                      <% if (timeFilter && timeFilter !=='all' ) { %> in "<%= timeFilter %>" <% } %>
+                        </tr>
                         <% } %>
-                  </td>
-                  <td>
-                    <a href="/admin/edit/<%= admin.id %>" class="text-info me-2">Edit</a>
-                    <a href="/admin/delete/<%= admin.id %>" class="text-danger">Delete</a>
-                  </td>
-                </tr>
-                <% } %>
-                  <% }) %>
           </tbody>
         </table>
       </div>
 
+
+
       <!-- Pagination -->
-      <nav class="d-flex justify-content-center mt-3">
-        <ul class="pagination pagination-dark">
-          <li class="page-item"><a class="page-link" href="#">‹</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">…</a></li>
-          <li class="page-item"><a class="page-link" href="#">10</a></li>
-          <li class="page-item"><a class="page-link" href="#">›</a></li>
+      <nav class="d-flex  justify-content-center mt-3">
+        <ul class="pagination pagination-dark pagination-sm flex-wrap">
+          <!-- Previous button -->
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link rounded-circle"
+              href="/admin/manage-admin?page=<%= currentPage - 1 %>&role=<%= sortRole %>&time=<%= timeFilter %>&search=<%= search %>">‹</a>
+          </li>
+
+          <!-- Page numbers -->
+          <% for(let i=1; i <=totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+              <a class="page-link rounded-circle"
+                href="/admin/manage-admin?page=<%= i %>&role=<%= sortRole %>&time=<%= timeFilter %>&search=<%= search %>">
+                <%= i %>
+              </a>
+            </li>
+            <% } %>
+
+              <!-- Next button -->
+              <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle"
+                  href="/admin/manage-admin?page=<%= currentPage + 1 %>&role=<%= sortRole %>&time=<%= timeFilter %>&search=<%= search %>">›</a>
+              </li>
         </ul>
       </nav>
+
     </div>
 </body>
 
