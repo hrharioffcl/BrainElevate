@@ -1,0 +1,66 @@
+<div class="modal fade" id="editAdminModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content p-4">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title">Edit Admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/admin/update/<%= admin._id %>" method="POST" id="editAdminForm">
+                <div class="modal-body">
+                    <% if (messages.error && messages.error.length > 0) { %>
+                        <div class="alert alert-danger">
+                            <%= messages.error[0] %>
+                        </div>
+                    <% } %>
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="fullName" value="<%= admin.fullName %>">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" value="<%= admin.email %>">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Enter new password if you want to change">
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm new password">
+                    </div>
+
+                    <!-- Role -->
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" name="role">
+                            <option value="admin" <%= admin.role === "admin" ? "selected" : "" %>>Admin/Manager</option>
+                            <option value="contributor" <%= admin.role === "contributor" ? "selected" : "" %>>Contributor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn addadminbtn">Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    <% if (messages.error && messages.error.length > 0) { %>
+      var myModal = new bootstrap.Modal(document.getElementById('editAdminModal'));
+      myModal.show();
+    <% } %>
+  });
+</script>

@@ -106,6 +106,55 @@ await Admin.create({fullName,email,password,role})
 
 }
 
+exports.editadmin = async(req,res)=>{
+   try {
+    const adminId = req.params.id
+  const {fullName,email,password,confirmPassword,role}= req.body
+  //checkexisting
+   const admin = await Admin.findById(adminId);
+    if (!admin) {
+      req.flash("error", "Admin not found");
+      return res.redirect("/admin/manage-admin");
+    }
+
+// Check if nothing changed
+    const isPasswordEmpty = !password && !confirmPassword;
+    if (
+      admin.fullName === fullName &&
+      admin.email === email &&
+      admin.role === role &&
+      isPasswordEmpty
+    ) {
+      req.flash("info", "No changes were made.");
+      return res.redirect("/admin/manage-admin");
+    }
+
+
+     // Update fields without password
+    admin.fullName = fullName || admin.fullName;
+    admin.email = email || admin.email;
+    admin.role = role || admin.role;
+    
+//only update password if password entered
+     if (password || confirmPassword) {
+      if (password !== confirmPassword) {
+        req.flash("error", "Passwords do not match");
+        return res.redirect("/admin/manage-admin");
+      }
+      admin.password = password; // schema will validate + hash
+    }
+
+    await admin.validate()
+    await admin.save()
+     req.flash("success", "Admin updated successfully");
+    res.redirect("/admin/manage-admin");
+  } catch (error) {
+     req.flash("error", error.message);
+    res.redirect("/admin/manage-admin");
+  }
+
+}
+
 exports.deleteadmin =async(req,res)=>{
   try {
      const adminId = req.params.id
