@@ -9,6 +9,7 @@ router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
 })
 
 router.get('/signup', restrictUnauthenticatedRoutes, (req, res) => {
+    //addding refferal code to session if exist
     if (req.query.ref) {
         console.log("Referral detected:", req.query.ref)  // DEBUG
 

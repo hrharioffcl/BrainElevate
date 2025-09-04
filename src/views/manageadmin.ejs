@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage-Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="d-flex " style="background-color: black">
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+
+    }
+
+    .modal {
+      color: #000000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .addadminbtn {
+      background-color: #1abc9c;
+    }
+
+
+    .custom-select {
+      background-color: transparent !important;
+      border: 2px solid #1abc9c !important;
+      color: #1abc9c !important;
+    }
+
+    .custom-select:focus {
+      border-color: #1abc9c !important;
+      box-shadow: 0 0 0 0 rgba(26, 188, 156, 0.25) !important;
+      /* green glow instead of blue */
+      outline: none !important;
+    }
+
+    /* Dropdown options */
+    .custom-select option {
+      background-color: transparent !important;
+      color: #1abc9c !important;
+    }
+
+
+    .search-box {
+      background: #1a1a1a;
+      border: none;
+      color: #fff;
+    }
+
+    .search-box::placeholder {
+      color: #888;
+    }
+
+    .table-header {
+      background: #000000;
+    }
+
+    .table td,
+    .table th {
+      vertical-align: middle;
+    }
+
+    .btn-teal {
+      background-color: #1abc9c;
+      color: #fff;
+    }
+
+    .pagination-dark .page-link {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+    }
+
+    .pagination-dark .active .page-link {
+      background: #1abc9c;
+      border-radius: 50%;
+    }
+  </style>
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+
+    <!-- Main Content -->
+    <div class="main-content p-4 w-100">
+      <h4 class="text-white mb-4">Admin Management</h4>
+
+      <!-- Top controls -->
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+        <!-- Search -->
+        <input type="text" class="form-control search-box w-auto" placeholder="Search items...">
+
+        <!-- Filters + Export -->
+        <div class="d-flex gap-2 flex-wrap">
+          <select class="form-select custom-select rounded-pill w-auto">
+            <option selected>Permissions All</option>
+            <option>Admin</option>
+            <option>Contributor</option>
+          </select>
+          <select class="form-select custom-select rounded-pill w-auto">
+            <option selected>Joined Anytime</option>
+            <option>Last 30 days</option>
+            <option>Last Year</option>
+          </select>
+          <button class="btn btn-outline-light rounded-pill">Export</button>
+        </div>
+
+        <!-- Add new -->
+        <button class="btn addadminbtn rounded-pill" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+          + Add Admin
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addAdminModal" tabindex="-1" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ">
+              <form action="/admin/addadmin" method="POST" novalidate>
+                <div class="modal-header">
+                  <h5 class="modal-title">Add Admin</h5>
+                </div>
+                <div class="modal-body">
+                  <% if (messages.error && messages.error.length> 0) { %>
+                    <div class="alert alert-danger">
+                      <%= messages.error[0] %>
+                    </div>
+                    <% } %>
+
+
+                      <!-- Full Name -->
+                      <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="fullName" class="form-control border-0 border-bottom"
+                          placeholder="enter admins full name" required>
+                      </div>
+                      <!-- Email -->
+                      <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control border-0 border-bottom"
+                          placeholder="enter admins mail id" required>
+                      </div>
+
+                      <!-- password -->
+                      <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                          <input type="password" name="password" class="form-control border-0 border-bottom"
+                            id="password" placeholder="Enter your password" required>
+
+                          <span class="input-group-text bg-transparent border-0" style="cursor: pointer;"
+                            onclick="togglePassword('password')">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                          </span>
+                        </div>
+                      </div>
+
+                      <script>
+                        function togglePassword(id) {
+                          const input = document.getElementById(id);
+                          const icon = document.getElementById('toggleIcon');
+                          if (input.type === "password") {
+                            input.type = "text";
+                            icon.classList.remove("bi-eye");
+                            icon.classList.add("bi-eye-slash");
+                          } else {
+                            input.type = "password";
+                            icon.classList.remove("bi-eye-slash");
+                            icon.classList.add("bi-eye");
+                          }
+                        }
+                      </script>
+
+
+                      <!-- confirm password -->
+                      <div class="mb-3">
+                        <label for="password" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                          <input type="password" name="confirmPassword" class="form-control border-0 border-bottom"
+                            id="password" placeholder="Confirm Password" required>
+
+                        </div>
+                      </div>
+                      <!-- Role -->
+                      <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select name="role" class="form-select w-auto">
+                          <option value="admin" style="background-color: #ff0404;">Admin/Manager</option>
+                          <option value="contributor" style="background-color: #00b7ff;">Contributer</option>
+                        </select>
+                      </div>
+
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn  addadminbtn">create Admin</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table table-dark align-middle table-borderless">
+          <thead class="table-header">
+            <tr>
+
+              <th>Full Name</th>
+              <th>Email Address</th>
+              <th>Location</th>
+              <th>Joined</th>
+              <th>Permissions</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% admins.forEach(admin=> { %>
+              <% if (admin.role !=='super_admin' ) { %>
+                <tr>
+
+                  <td class="d-flex align-items-center gap-2">
+                    <img src="<%= admin.profilePic %>"  class="rounded-circle" width="35" height="35">
+                    <span>
+                      <%= admin.fullName %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= admin.email %>
+                  </td>
+                  <td><i class="bi bi-geo-alt-fill text-danger"></i>
+                    <%= admin.location %>
+                  </td>
+                  <td>
+                    <%= admin.joined %>
+                  </td>
+                  <td>
+                    <% if(admin.role==='admin' ){ %>
+                      <span class="badge bg-danger">Admin</span>
+                      <% } else { %>
+                        <span class="badge bg-info">Contributor</span>
+                        <% } %>
+                  </td>
+                  <td>
+                    <a href="/admin/edit/<%= admin.id %>" class="text-info me-2">Edit</a>
+                    <a href="/admin/delete/<%= admin.id %>" class="text-danger">Delete</a>
+                  </td>
+                </tr>
+                <% } %>
+                  <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="d-flex justify-content-center mt-3">
+        <ul class="pagination pagination-dark">
+          <li class="page-item"><a class="page-link" href="#">‹</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">…</a></li>
+          <li class="page-item"><a class="page-link" href="#">10</a></li>
+          <li class="page-item"><a class="page-link" href="#">›</a></li>
+        </ul>
+      </nav>
+    </div>
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    <% if (messages.error && messages.error.length > 0) { %>
+      var myModal = new bootstrap.Modal(document.getElementById('addAdminModal'));
+      myModal.show();
+    <% } %>
+  });
+</script>
+
+
+</html>

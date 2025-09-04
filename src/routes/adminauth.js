@@ -1,6 +1,8 @@
 const express = require("express")
+const{verifyadmintoken}= require('../middlewaares/adminAuthMiddleware')
 const { adminlogin } = require("../controllers/authcontrollers")
 const{getsuperadmindashboard}=require("../controllers/admindashboard.controller")
+const{getmanageadmin,addadmin}=require("../controllers/manageadmincontroller")
 const router = express.Router()
 
 router.get("/login", (req, res) => {
@@ -16,8 +18,14 @@ router.get('/verify-otp', (req,res) => {
 router.get('/reset-password', (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
-router.get('/superadmindashboard',getsuperadmindashboard)
+router.get('/superadmindashboard',verifyadmintoken,getsuperadmindashboard)
+
+
 router.post("/login", adminlogin)
 
+
+
+router.get('/manage-admin',verifyadmintoken,getmanageadmin)
+router.post("/addadmin",addadmin);
 
 module.exports = router;

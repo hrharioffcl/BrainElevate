@@ -16,6 +16,16 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
+const flash = require("connect-flash");
+app.use(flash());
+
+
+// Make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.messages = req.flash();
+  next();
+});
+
 const passport = require("passport");
 require("./config/passport"); // passport config
 
@@ -51,7 +61,6 @@ const googleauthRoutes = require("./routes/googleauth");
 app.use("/", userroutes)
 app.use("/", googleauthRoutes);
 app.use('/admin',adminroutes)
-
 
 
 

@@ -1,23 +1,23 @@
-<div class="sidebar">
-<div class="profile-section text-center p-3 position-relative " >
-  <!-- Logo on top -->
-  <div><img src="/images/logo.png" alt="Logo" class="logo-img mb-2"></div>
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="sidebar text-white">
+  <div class="profile-section text-center p-3 position-relative">
+    <!-- Logo -->
+    <div><img src="/images/logo.png" alt="Logo" class="logo-img mb-2"></div>
 
-  <!-- Profile container to hold picture and edit button -->
-  <div class="profile-pic-wrapper position-relative d-inline-block">
-    <img src="/images/defualt dp.svg" alt="Profile" class="profile-img rounded-circle mb-2">
-    
-    <!-- Edit button -->
-    <button class="btn btn-sm  edit-btn position-absolute">
-      <i class="bi bi-pencil"></i>
-    </button>
+    <!-- Profile -->
+    <div class="profile-pic-wrapper position-relative d-inline-block">
+      <img src="/images/defaultdp.svg" alt="Profile" class="profile-img rounded-circle mb-2">
+      <button class="btn btn-sm edit-btn position-absolute">
+        <i class="bi bi-pencil"></i>
+      </button>
+    </div>
+
+    <h5 class="mt-2">Miakel Corper</h5>
+    <p class="text" style="color: aqua;">Super Admin</p>
   </div>
 
-  <h5 class=" mt-2">Miakel Corper</h5>
-  <p class="text" style="color: aqua;">Super Admin</p>
-</div>
-
-  <ul class="nav flex-column">
+  <!-- Navigation -->
+  <ul class="nav flex-column px-2">
     <li class="nav-item">
       <a href="/admin/superadmindashboard" class="nav-link text-white"> 
         <i class="bi bi-speedometer2"></i> Dashboard
@@ -29,7 +29,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="/manage-admin" class="nav-link text-white"> 
+      <a href="/admin/manage-admin" class="nav-link text-white"> 
         <i class="bi bi-person-badge"></i> Manage Admin
       </a>
     </li>
@@ -50,20 +50,25 @@
     </li>
   </ul>
 
+  <!-- Logout -->
   <div class="logout-section p-3">
-    <a href="/logout" class="btn  btn-outline-danger w-100" style="border-radius: 50px;">Logout</a>
+    <a href="/logout" class="btn btn-outline-danger w-100" style="border-radius: 50px;">Logout</a>
   </div>
-</div>
+
+  <!-- Close button for mobile -->
+  <button class="btn btn-outline-light d-lg-none m-3" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+    Close
+  </button>
+</nav>
+
 <script>
+  // Highlight active link
   const currentPath = window.location.pathname;
   const links = document.querySelectorAll('.sidebar .nav-link');
 
   links.forEach(link => {
-    console.log(currentPath)
     if(link.getAttribute('href') === currentPath) {
       link.classList.add('active');
     }
   });
 </script>
-
-
