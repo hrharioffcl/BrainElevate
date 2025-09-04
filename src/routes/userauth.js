@@ -3,6 +3,7 @@ const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = r
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
+const { createReferralLink } = require("../middlewaares/refferallink");
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('homewithoutlogin')
 })
@@ -29,10 +30,9 @@ router.get('/forgot-password', restrictUnauthenticatedRoutes, (req, res) => {
 router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
-router.get('/home', verifytoken, (req, res) => {
+router.get('/home', verifytoken,createReferralLink, (req, res) => {
     console.log("Token is:", req.cookies.jwt);
-
-    res.render('home', { fullName: req.user.fullName })
+    res.render('home', { fullName: req.user.fullName,referralLink:res.locals.referralLink })
 })
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);

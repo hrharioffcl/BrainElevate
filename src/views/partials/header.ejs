@@ -30,9 +30,17 @@
   <div class="popup-content">
 <h3>Invite Your Friends & Earn Rewards!</h3>
   <p>Share your referral link with friends and earn 🥳🥳🎇<strong >💵💵₹100 cashback</strong> when they make their first purchase.</p>
-    <input type="text" id="referralLink" readonly value="https://yourdomain.com/ref/USER123" />
-    <button class="btn btn-dark"   id="copyReferral">Copy Link</button>
-    <button class="btn btn-danger" id="closePopup">Close</button>
+
+ <% if (referralLink) { %>
+  <input 
+    type="text" 
+    id="referralLink" 
+    readonly 
+    value="<%= referralLink %>" 
+  />
+  <button class="btn btn-dark" id="copyReferral">Copy Link</button>
+  <button class="btn btn-danger" id="closePopup">Close</button>
+<% } %> 
   </div>
 </div>
 

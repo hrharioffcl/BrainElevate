@@ -16,7 +16,6 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
-
 const passport = require("passport");
 require("./config/passport"); // passport config
 
@@ -52,6 +51,7 @@ const googleauthRoutes = require("./routes/googleauth");
 app.use("/", userroutes)
 app.use("/", googleauthRoutes);
 app.use('/admin',adminroutes)
+
 
 
 
