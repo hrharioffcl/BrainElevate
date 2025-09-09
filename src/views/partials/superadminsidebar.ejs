@@ -24,7 +24,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="/courses" class="nav-link text-white"> 
+      <a href="/admin/courses" class="nav-link text-white"> 
         <i class="bi bi-journal-bookmark"></i> Courses
       </a>
     </li>
@@ -78,6 +78,9 @@
       link.classList.add("active");
     }
     if (href === "/admin/manage-admin" && currentPath.startsWith("/admin/edit-admin")) {
+      link.classList.add("active");
+    }
+      if (href === "/admin/courses" && currentPath.startsWith("/admin/addnewcourse")) {
       link.classList.add("active");
     }
   });

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<style>
+.main-content-course {
+  flex: 1;                  /* take up remaining space */
+  padding: 30px;            /* spacing inside */
+  margin-left: 250px;       /* push away from sidebar width */
+  background-color: #fff;   /* content area background */
+  min-height: 100vh;        /* full height */
+  border-radius: 10px;      /* soft rounded look */
+}
+.nav-link{
+  text-decoration: none;
+  color: black;
+}
+
+</style>
+
+</head>
+<body class="d-flex" style="background-color: black;">
+
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+<div class="main-content-course" >
+    <!-- Flash Messages -->
+<% if (messages.error && messages.error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= messages.error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (messages.success && messages.success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= messages.success[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+
+  <div class="page-header">
+    <h2><%= course ? course.name : 'Add New Course' %></h2>
+  </div>
+
+  <div class="course-form">
+    <form action="<%= course ? '/admin/coursesmangement/update/' + course._id : '/admin/addnewcourse' %>" 
+          method="POST" 
+          >
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#details">Details</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#chapters">Chapters</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#promotion">Promotion</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#settings">Settings</a>
+        </li>
+      </ul>
+
+      <div class="tab-content p-3 border border-top-0">
+
+        <!-- Details -->
+        <div class="tab-pane fade show active" id="details">
+          <div class="mb-3">
+            <label class="form-label">Course Name</label>
+            <input type="text" class="form-control" name="name" 
+                   value="<%= course ? course.name : '' %>" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Course Details</label>
+            <input type="text" class="form-control" name="details" 
+                   value="<%= course ? course.details : '' %>">
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Author</label>
+              <input type="text" class="form-control" name="author" 
+                     value="<%= course ? course.author : '' %>">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Level</label>
+              <select class="form-select" name="level">
+                <option value="Beginner" <%= course?.level === 'Beginner' ? 'selected' : '' %>>Beginner</option>
+                <option value="Intermediate" <%= course?.level === 'Intermediate' ? 'selected' : '' %>>Intermediate</option>
+                <option value="Advanced" <%= course?.level === 'Advanced' ? 'selected' : '' %>>Advanced</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Upload Intro Image</label>
+            <input type="file" class="form-control" name="thumbnail" accept="image/*">
+            <% if (course && course.thumbnail) { %>
+              <img src="/uploads/<%= course.thumbnail %>" class="mt-2" style="max-width:200px;">
+            <% } %>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" rows="5" name="description"><%= course ? course.description : '' %></textarea>
+          </div>
+
+<div class="mb-3">
+  <label class="form-label">What You Will Learn (1–4 points)</label>
+  
+  <% for (let i = 0; i < 4; i++) { %>
+    <div class="input-group mb-2">
+      <input type="text" 
+             name="learnPoints[]" 
+             class="form-control" 
+             value="<%= course && course.learnPoints[i] ? course.learnPoints[i] : '' %>" 
+             placeholder="Learning point <%= i+1 %>">
+    </div>
+  <% } %>
+</div>
+
+       
+
+  
+ </div>
+<!-- Chapters -->
+<div class="tab-pane fade" id="chapters">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Chapters</h4>
+  <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addChapterModal">
+    Add New Chapter
+  </button>
+  </div>
+<% if (course) { %>
+
+  <%- include("partials/addchapter", { course: course }) %>
+<% } %>
+
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Chapter #</th>
+        <th scope="col">Title</th>
+        <th scope="col">Date</th>
+        <th scope="col">Status</th>
+        <th scope="col">Price</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (course && course.chapters && course.chapters.length > 0) { %>
+        <% course.chapters.forEach((chapter, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= chapter.number %></td>
+            <td><%= chapter.title %></td>
+            <td><%= chapter.date ? chapter.date.toLocaleString() : "N/A" %></td>
+            <td><%= chapter.status %></td>
+            <td><%= chapter.price === 0 ? "Free" : "$" + chapter.price.toFixed(2) %></td>
+            <td>
+              <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/edit" class="text-success me-2">Edit</a>
+              <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/delete" 
+                 class="text-danger"
+                 onclick="return confirm('Are you sure you want to delete this chapter?')">Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="7" class="text-center">No chapters added yet.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+   
+    
+      </div>
+  </div>
+      <div class="mt-4 d-flex justify-content-end">
+        <button type="submit" name="status" value="draft" class="btn btn-secondary me-2">Draft</button>
+        <button type="submit" name="status" value="published" class="btn btn-dark">Publish</button>
+      </div>
+
+
+</div>
+
+ </form>
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

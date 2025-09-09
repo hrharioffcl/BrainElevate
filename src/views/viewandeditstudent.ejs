@@ -36,6 +36,20 @@
 
  <div class="main-content p-4 w-100">
   <h4 class="text mb-4">Student Details</h4>
+  <!-- Flash Messages -->
+<% if (messages.error && messages.error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= messages.error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (messages.success && messages.success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= messages.success[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
 
   <!-- Basic Details -->
 <div class="card custom-card p-3">

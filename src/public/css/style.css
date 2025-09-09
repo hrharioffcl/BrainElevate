@@ -2,6 +2,31 @@ body {
   background: #000000;
 
 }
+.course-card-custom {
+  background-color: #000;         /* black background */
+  color: #fff;                    /* white text */
+  border-radius: 1rem;            /* rounded corners */
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+  border: 1px solid #333;         /* subtle border */
+}
+
+
+.course-title {
+  font-weight: 600;
+  white-space: nowrap;            /* keeps in one line */
+  overflow: hidden;
+  text-overflow: ellipsis;        /* adds ... if too long */
+}
+
+.custom-divider {
+  border: 0;
+  border-top: 1px solid #666;     /* grey divider line */
+  margin: 0;
+}
 
 /* Sidebar styles */
 .sidebar {
@@ -14,6 +39,20 @@ body {
   overflow-y: auto;
 }
 
+.bg-beginner {
+  background-color: #1e3d59; /* blue tone */
+  color: #fff;
+}
+
+.bg-intermediate {
+  background-color: #3c6e71; /* teal tone */
+  color: #fff;
+}
+
+.bg-advanced {
+  background-color: #8b0000; /* dark red tone */
+  color: #fff;
+}
 
 /* Sidebar fixed on the left
 .sidebar {

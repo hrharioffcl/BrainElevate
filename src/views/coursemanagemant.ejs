@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex" style="background-color: black;">
+
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+<!-- Main Content -->
+    <div class="main-content p-4 w-100">
+      <h4 class="text-white mb-4">courses</h4>
+
+<!-- Top controls -->
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+
+
+        <!-- <form method="GET" action="/admin/manage-admin" class="d-flex gap-2 flex-wrap">
+<!-- 🔍 Search -->
+        <form method="GET" action="/admin/course" class="d-flex gap-2 w-50">
+          <input type="text" name="search" class="form-control search-box" placeholder="Search courses..."
+            value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
+        </form>
+          <!-- Add new -->
+    
+        <a href="/admin/addnewcourse"class="btn edit-btn rounded-pill">+ Add Courses</a>
+      </div>
+<!-- Courses Grid -->
+ 
+<div class="row g-4 justify-content-center coursecard" >
+  <% if (course && course.length > 0) { %>
+    <% course.forEach(course => { %>
+      <div class="col-md-6 col-lg-5 d-flex">
+        <div class="course-card-custom w-100">
+          <!-- Top row: status + actions -->
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="badge bg-dark text-white"><%= course.status || "Approved" %></span>
+            <div class="d-flex gap-3">
+              <a href="/admin/coursesmangement/update/<%= course._id %>" class="text-info">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </a>
+              <a href="/admin/coursesmangement/delete/<%= course._id %>" class="text-danger">
+                <i class="bi bi-trash fs-5"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Course Title -->
+          <h3 class="course-title mt-3 mb-2">
+            <%= course.name %>
+          </h3>
+
+          <!-- Divider -->
+          <hr class="custom-divider">
+        
+              <!-- Top row: status + actions -->
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="badge  text-white"><%= course.author %></span>
+            <div class="d-flex gap-3">
+           <span class="badge text-white  <% if (course.level === 'Beginner') { %> bg-beginner <% } %>
+       <% if (course.level === 'Intermediate') { %> bg-intermediate <% } %>
+       <% if (course.level === 'Advanced') { %> bg-advanced <% } %>"><%= course.level %></span>
+           
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p class="text-center">No courses available.</p>
+  <% } %>
+</div>
+
+<!-- View All -->
+<div class="text-center mt-4">
+  <a href="/admin/courses" class="text-dark fw-semibold">View All</a>
+</div>
+
+
+</body>
+
+
+
+</html>

@@ -118,6 +118,7 @@
     <div class="main-content p-4 w-100">
       <h4 class="text-white mb-4">Student Management</h4>
 
+
       <!-- Top controls -->
       <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
 
@@ -193,7 +194,10 @@
               <% Student.forEach(student=> { %>
                 <tr>
                   <td>
-                    <%= student.fullName %>
+                    <img src="<%= student.profilePic %>" class="rounded-circle" width="35" height="35">
+                    <span>
+                      <%= student.fullName %>
+                    </span>
                   </td>
                   <td>
                     <%= student.email %>
@@ -215,12 +219,12 @@
                   <td>
                     <!-- Example action: view details -->
                     <a href="/admin/edit-student/<%= student._id %>" class="text-info">View</a>
-                       <form action="/admin/deletestudent/<%= student._id %>" method="POST" style="display:inline;">
-                          <button type="submit" class="btn btn-link text-danger p-0 m-0"
-                            onclick="return confirm('Are you sure you want to remove this Student?');">
-                            Delete
-                          </button>
-                        </form>
+                    <form action="/admin/deletestudent/<%= student._id %>" method="POST" style="display:inline;">
+                      <button type="submit" class="btn btn-link text-danger p-0 m-0"
+                        onclick="return confirm('Are you sure you want to remove this Student?');">
+                        Delete
+                      </button>
+                    </form>
                   </td>
                 </tr>
                 <% }) %>

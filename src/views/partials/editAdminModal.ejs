@@ -5,7 +5,7 @@
                 <h5 class="modal-title">Edit Admin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="/admin/update/<%= admin._id %>" method="POST" id="editAdminForm">
+            <form action="admin/coursesmangement/update/<%= admin._id %>" method="POST" id="editAdminForm">
                 <div class="modal-body">
                     <% if (messages.error && messages.error.length > 0) { %>
                         <div class="alert alert-danger">

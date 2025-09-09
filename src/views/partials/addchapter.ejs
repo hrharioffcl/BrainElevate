@@ -1,0 +1,72 @@
+
+
+<!-- Add Chapter Modal -->
+<div class="modal fade" id="addChapterModal" tabindex="-1" aria-labelledby="addChapterModalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChapterModalLabel">Add New Chapter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form action="/admin/courses/<%= course._id %>/chapters/add" method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+
+          <!-- Title -->
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" required>
+          </div>
+
+          <!-- Lecture Video -->
+          <div class="mb-3">
+            <label class="form-label">Upload Lecture Video</label>
+            <input type="file" name="lectureVideo" class="form-control" accept="video/*">
+            <small class="text-muted">Upload Video in MOV, MP4.</small>
+          </div>
+
+          <!-- Lecture Description -->
+          <div class="mb-3">
+            <label class="form-label">Lecture Description</label>
+            <textarea name="lectureDescription" class="form-control" rows="3"></textarea>
+          </div>
+
+          <!-- Lecture Notes -->
+          <div class="mb-3">
+            <label class="form-label">Lecture Notes</label>
+            <textarea name="lectureNotes" class="form-control" rows="3"></textarea>
+          </div>
+
+          <!-- Lecture PDF -->
+          <div class="mb-3">
+            <label class="form-label">Upload PDF</label>
+            <input type="file" name="lecturePdf" class="form-control" accept=".pdf,.doc,.docx,.txt">
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-select" name="status">
+              <option value="draft">Draft</option>
+              <option value="pendingApproval">Pending Approval</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+
+          <!-- Order -->
+          <div class="mb-3">
+            <label class="form-label">Order</label>
+            <input type="number" name="order" class="form-control" min="1" required>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-dark">Save Chapter</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
