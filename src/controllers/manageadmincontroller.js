@@ -87,19 +87,19 @@ exports.addadmin =async(req,res)=>{
     //confirm password check
     if (password !== confirmPassword) {
   req.flash("error", "Passwords do not match");
-  return res.redirect("/admin/manage-admin");
+  return res.redirect("/admin/manage-admin/addadmin");
 }
     //place user without saving anad validate
         const tempuser = new Admin({ fullName, email, password })
         await tempuser.validate()
 
 await Admin.create({fullName,email,password,role})
-
- return res.send("something")
+     req.flash("success", "Admin updated successfully");
+res.redirect("/admin/manage-admin/addadmin")
   } catch (error) {
      console.log(error)
      req.flash('error',error.message)
-     return res.redirect("/admin/manage-admin");
+     return res.redirect("/admin/manage-admin/addadmin");
 
   }
  
@@ -108,13 +108,13 @@ await Admin.create({fullName,email,password,role})
 
 exports.editadmin = async(req,res)=>{
    try {
-    const adminId = req.params.id
+    const adminId = req.params.admin_id
   const {fullName,email,password,confirmPassword,role}= req.body
   //checkexisting
    const admin = await Admin.findById(adminId);
     if (!admin) {
       req.flash("error", "Admin not found");
-      return res.redirect("/admin/manage-admin");
+      return res.redirect(`/admin/manage-admin/editadmin/${adminId }`);
     }
 
 // Check if nothing changed
@@ -125,8 +125,8 @@ exports.editadmin = async(req,res)=>{
       admin.role === role &&
       isPasswordEmpty
     ) {
-      req.flash("info", "No changes were made.");
-      return res.redirect("/admin/manage-admin");
+      req.flash("error", "No changes were made.");
+      return res.redirect(`/admin/manage-admin/editadmin/${adminId }`);
     }
 
 
@@ -139,7 +139,7 @@ exports.editadmin = async(req,res)=>{
      if (password || confirmPassword) {
       if (password !== confirmPassword) {
         req.flash("error", "Passwords do not match");
-        return res.redirect("/admin/manage-admin");
+        return res.redirect(`/admin/manage-admin/editadmin/${adminId }`);
       }
       admin.password = password; // schema will validate + hash
     }
@@ -147,13 +147,23 @@ exports.editadmin = async(req,res)=>{
     await admin.validate()
     await admin.save()
      req.flash("success", "Admin updated successfully");
-    res.redirect("/admin/manage-admin");
+    res.redirect(`/admin/manage-admin/editadmin/${adminId }`);
   } catch (error) {
-     req.flash("error", error.message);
-    res.redirect("/admin/manage-admin");
+   
+        if (error.name === "ValidationError") {
+  req.flash("error", error.message);
+  return res.redirect(`/admin/manage-admin/editadmin/${req.params.admin_id}`);
+}
+
+     
+  console.log(error)
+  req.flash("error", error.message);
+  res.redirect(`/admin/manage-admin/editadmin/${req.params.admin_id}`);
+}
+
   }
 
-}
+
 
 exports.deleteadmin =async(req,res)=>{
   try {

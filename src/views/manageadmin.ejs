@@ -117,7 +117,7 @@
 
 
     <!-- Main Content -->
-    <div class="main-content p-4 w-100">
+    <div class="main-content p-4 w-100" style="background-color: #000000;">
       <h4 class="text-white mb-4">Admin Management</h4>
 
 
@@ -177,110 +177,12 @@
                       <button type="submit" class="btn btn-outline-light rounded-pill">Export</button>
         </form>
 
-
-
-
-
         <!-- Add new -->
-        <button class="btn addadminbtn rounded-pill" data-bs-toggle="modal" data-bs-target="#addAdminModal">
-          + Add Admin
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="addAdminModal" tabindex="-1" data-bs-backdrop="static">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content ">
-              <form action="/admin/addadmin" method="POST" novalidate>
-                <div class="modal-header">
-                  <h5 class="modal-title">Add Admin</h5>
-                </div>
-                <div class="modal-body">
-                  <% if (messages.error && messages.error.length> 0) { %>
-                    <div class="alert alert-danger">
-                      <%= messages.error[0] %>
-                    </div>
-                    <% } %>
-
-
-                      <!-- Full Name -->
-                      <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" name="fullName" class="form-control border-0 border-bottom"
-                          placeholder="enter admins full name" required>
-                      </div>
-                      <!-- Email -->
-                      <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control border-0 border-bottom"
-                          placeholder="enter admins mail id" required>
-                      </div>
-
-                      <!-- password -->
-                      <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <div class="input-group">
-                          <input type="password" name="password" class="form-control border-0 border-bottom"
-                            id="password" placeholder="Enter your password" required>
-
-                          <span class="input-group-text bg-transparent border-0" style="cursor: pointer;"
-                            onclick="togglePassword('password')">
-                            <i class="bi bi-eye" id="toggleIcon"></i>
-                          </span>
-                        </div>
-                      </div>
-
-                      <script>
-                        function togglePassword(id) {
-                          const input = document.getElementById(id);
-                          const icon = document.getElementById('toggleIcon');
-                          if (input.type === "password") {
-                            input.type = "text";
-                            icon.classList.remove("bi-eye");
-                            icon.classList.add("bi-eye-slash");
-                          } else {
-                            input.type = "password";
-                            icon.classList.remove("bi-eye-slash");
-                            icon.classList.add("bi-eye");
-                          }
-                        }
-                      </script>
-
-
-                      <!-- confirm password -->
-                      <div class="mb-3">
-                        <label for="password" class="form-label">Confirm Password</label>
-                        <div class="input-group">
-                          <input type="password" name="confirmPassword" class="form-control border-0 border-bottom"
-                            id="password" placeholder="Confirm Password" required>
-
-                        </div>
-                      </div>
-                      <!-- Role -->
-                      <div class="mb-3">
-                        <label class="form-label">Role</label>
-                        <select name="role" class="form-select w-auto">
-                          <option value="admin" style="background-color: #ff0404;">Admin/Manager</option>
-                          <option value="contributor" style="background-color: #00b7ff;">Contributer</option>
-                        </select>
-                      </div>
-
-
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn  addadminbtn">create Admin</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-
+         <a href="/admin/manage-admin/addadmin" class="btn  rounded-pill" style="background-color:#1abc9c">+ Add Admin</a>
+       
+   </div>
       <!-- Table -->
-      <div class="table-responsive">
+      <div class="table" >
         <table class="table table-dark align-middle table-borderless">
           <thead class="table-header">
             <tr>
@@ -312,7 +214,7 @@
                     </td>
                     <td>
                       <%= admin.createdAt ? new Date(admin.createdAt).toLocaleString("en-GB", { day: "2-digit" ,
-                        month: "short" , year: "numeric" , hour: "2-digit" , minute: "2-digit" , hour12: true }) : "" %>
+                        month: "short" , year: "numeric" }) : "" %>
                     </td>
                     <td>
                       <% if(admin.role==='admin' ){ %>
@@ -323,10 +225,11 @@
                     </td>
 
                     <td>
-                      <!-- <a href="/admin/edit/<%= admin._id %>" class="text-info me-2 ">Edit</a> -->
-                      <a href="#" data-bs-toggle="modal" data-bs-target="#editAdminModal">Edit</a>
-
-                      <%- include("partials/editAdminModal", { admin: admin }) %>
+                      <!-- <a href="/admin/update/<%= admin._id %>" class="text-info me-2 ">Edit</a> -->
+                      <form action="">
+                        <a href="/admin/manage-admin/editadmin/<%= admin._id %>" >Edit</a>
+                      </form>
+                    
 
                         <form action="/admin/delete/<%= admin._id %>" method="POST" style="display:inline;">
                           <button type="submit" class="btn btn-link text-danger p-0 m-0"
@@ -386,15 +289,6 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    <% if (messages.error && messages.error.length > 0) { %>
-      var myModal = new bootstrap.Modal(document.getElementById('addAdminModal'));
-      myModal.show();
-    <% } %>
-  });
-</script>
 
 
 </html>

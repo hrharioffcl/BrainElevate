@@ -108,7 +108,7 @@ exports.editstudent = async (req, res) => {
         await student.validate()
         await student.save()
         req.flash("success", "Student Details updated successfully");
-        res.redirect(`/admin/edit-student/${studentid}`);
+        res.redirect("/admin/manage-students");
     } catch (error) {
         req.flash("error", error.message);
         res.redirect("/admin/manage-students");

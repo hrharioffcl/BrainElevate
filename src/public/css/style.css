@@ -99,6 +99,7 @@ body {
 .main-content {
   background: #000000;
   margin-left: 250px;
+  min-height: 100vh; /* full height of viewport */
 
 }
 

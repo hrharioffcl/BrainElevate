@@ -43,5 +43,7 @@ const chapterSchema = new mongoose.Schema(
     timestamps: true,      // adds createdAt, updatedAt automatically
   }
 );
+chapterSchema.index({ courseId: 1, order: 1 }, { unique: true });
+
 
 module.exports = mongoose.model("Chapter", chapterSchema);

@@ -1,17 +1,14 @@
 <div class="modal fade" id="editAdminModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content p-4">
+  
             <div class="modal-header d-flex justify-content-between align-items-center">
                 <h5 class="modal-title">Edit Admin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="admin/coursesmangement/update/<%= admin._id %>" method="POST" id="editAdminForm">
+            <form action="/admin/update/<%= admin._id %>" method="POST" id="editAdminForm">
                 <div class="modal-body">
-                    <% if (messages.error && messages.error.length > 0) { %>
-                        <div class="alert alert-danger">
-                            <%= messages.error[0] %>
-                        </div>
-                    <% } %>
+                  
 
                     <!-- Full Name -->
                     <div class="mb-3">
@@ -55,12 +52,3 @@
         </div>
     </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    <% if (messages.error && messages.error.length > 0) { %>
-      var myModal = new bootstrap.Modal(document.getElementById('editAdminModal'));
-      myModal.show();
-    <% } %>
-  });
-</script>
