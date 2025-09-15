@@ -72,6 +72,11 @@ res.render("manageadmin", { admins , currentPage: page,
 
   
 }
+
+
+exports.getaddadmin =async(req,res)=>{
+    res.render('addadmin')
+}
 //addadmin modal
 exports.addadmin =async(req,res)=>{
   try {
@@ -105,7 +110,13 @@ res.redirect("/admin/manage-admin/addadmin")
  
 
 }
-
+//
+exports.geteditadmin =async(req,res)=>{
+    const {admin_id}= req.params;
+    const existingadmin = await Admin.findById(admin_id)
+    res.render('editadmin',{admin:existingadmin})
+}
+//
 exports.editadmin = async(req,res)=>{
    try {
     const adminId = req.params.admin_id

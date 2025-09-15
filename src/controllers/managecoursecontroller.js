@@ -3,6 +3,31 @@ const category = require("../models/categorySchema")
 const chapter = require("../models/chapterScheema")
 
 
+exports.getcoursemanagement =async (req, res) => {
+    const existingcourse = await course.find()
+    res.render('coursemanagemant', { search: null, course:existingcourse })
+}
+
+exports.getaddnewcourse =(req, res) => {
+    res.render('course-form', { course: null,existingchapater:null })
+}
+
+exports.getupdatecourse =async (req, res) => {
+    const id = req.params.course_id
+    const existingcourse = await course.findById(id)
+    const existingchapater = await chapter.find({courseId:id})
+    res.render('course-form', { course:existingcourse,existingchapater })
+}
+exports.getaddnewchapter = async (req, res) => {
+    const existingcourse = await course.findById(req.params.course_id);
+
+    if (!existingcourse) {
+        req.flash("error", "Course not found");
+        return res.redirect("/admin/courses");
+    }
+
+    res.render('addnewchapter', { course:existingcourse,existingchapater:null });
+}
 
 exports.adddetails = async (req, res) => {
     console.log(req.body)

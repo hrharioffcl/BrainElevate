@@ -1,67 +1,36 @@
 const express = require("express")
 const { verifyadmintoken } = require('../middlewaares/adminAuthMiddleware')
-const { adminlogin } = require("../controllers/authcontrollers")
+const { adminlogin,getadminlogin,getforgotpassword,getverifyotp ,getresetpassword} = require("../controllers/authcontrollers")
 const { getsuperadmindashboard } = require("../controllers/admindashboard.controller")
-const { getmanageadmin, addadmin, deleteadmin, editadmin } = require("../controllers/manageadmincontroller")
+const { getmanageadmin, addadmin, deleteadmin, editadmin,getaddadmin,geteditadmin } = require("../controllers/manageadmincontroller")
 const { getmanagestudents, deletestudent, geteditstudent, editstudent } = require("../controllers/managestudentcontroller")
-const { adddetails, updatedetails, addchapter,geteditchapter,editchapter,deletecourse} = require("../controllers/managecoursecontroller")
+const { adddetails, updatedetails, addchapter,geteditchapter,editchapter,deletecourse,getcoursemanagement,getaddnewcourse,getupdatecourse,getaddnewchapter} = require("../controllers/managecoursecontroller")
 const User = require('../models/userSchema')
 const admin = require('../models/adminschema')
 const router = express.Router()
 const courses = require("../models/coursesSchema")
 const chapter = require("../models/chapterScheema")
-router.get("/login", (req, res) => {
 
-    res.render("adminlogin", { fieldErrors: {} })
-})
-router.get('/forgot-password', (req, res) => {
-    res.render('forgotpassword', { fieldErrors: {}, formData: {}, type: "admin" })
-})
-router.get('/verify-otp', (req, res) => {
-    res.render('otp', { errorMessage: null })
-})
-router.get('/reset-password', (req, res) => {
-    res.render('resetpassword', { fieldErrors: {} })
-})
+
+//adminauthroutes
+router.get("/login",getadminlogin )
+router.get('/forgot-password',getforgotpassword )
+router.get('/verify-otp',getverifyotp)
+router.get('/reset-password',getresetpassword )
 router.get('/superadmindashboard', verifyadmintoken, getsuperadmindashboard)
 
-
-router.get('/edit-student/:id', geteditstudent)
+//manage-admin
 router.get('/manage-admin', verifyadmintoken, getmanageadmin)
-router.get("/manage-admin/addadmin",async(req,res)=>{
-    res.render('addadmin')
-})
-router.get("/manage-admin/editadmin/:admin_id",async(req,res)=>{
-    const {admin_id}= req.params;
-    const existingadmin = await admin.findById(admin_id)
-    res.render('editadmin',{admin:existingadmin})
-})
+router.get("/manage-admin/addadmin",getaddadmin)
+router.get("/manage-admin/editadmin/:admin_id",geteditadmin)
+
+//manage -course
 router.get('/manage-students', verifyadmintoken, getmanagestudents)
-router.get('/courses', async (req, res) => {
-    const course = await courses.find()
-    res.render('coursemanagemant', { search: null, course })
-})
-router.get('/addnewcourse', (req, res) => {
-    res.render('course-form', { course: null,existingchapater:null })
-})
-router.get('/coursesmangement/update/:course_id', async (req, res) => {
-    const id = req.params.course_id
-    const course = await courses.findById(id)
-    const existingchapater = await chapter.find({courseId:id})
-    res.render('course-form', { course,existingchapater })
-})
-
-router.get('/courses/:course_id/addchapter', async (req, res) => {
-    const course = await courses.findById(req.params.course_id);
-
-    if (!course) {
-        req.flash("error", "Course not found");
-        return res.redirect("/admin/courses");
-    }
-
-    res.render('addnewchapter', { course,existingchapater:null });
-});
-
+router.get('/edit-student/:id', geteditstudent)
+router.get('/courses',getcoursemanagement )
+router.get('/addnewcourse', getaddnewcourse)
+router.get('/coursesmangement/update/:course_id', getupdatecourse)
+router.get('/courses/:course_id/addchapter',getaddnewchapter);
 router.get('/courses/:course_id/chapters/:chapter_id/edit', geteditchapter);
 
 router.post("/login", adminlogin)

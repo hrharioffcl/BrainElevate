@@ -383,3 +383,20 @@ exports.adminlogin = async (req, res) => {
 
 
 }
+
+exports.getadminlogin =(req, res) => {
+
+    res.render("adminlogin", { fieldErrors: {} })
+}
+
+exports.getforgotpassword =(req, res) => {
+    res.render('forgotpassword', { fieldErrors: {}, formData: {}, type: "admin" })
+}
+
+exports.getverifyotp = (req, res) => {
+    res.render('otp', { errorMessage: null })
+}
+
+exports.getresetpassword =(req, res) => {
+    res.render('resetpassword', { fieldErrors: {} })
+}
