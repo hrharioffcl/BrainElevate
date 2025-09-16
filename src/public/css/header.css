@@ -10,9 +10,10 @@
     display: flex; 
     align-items: center; 
     justify-content: center;
+    z-index: 9999;
   }
   .popup-content {
-    background: #40e0d0;
+    background-color: #ccc;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -20,6 +21,7 @@
   height: 50vw;     /* same as width */
   max-width: 500px; /* optional max size */
   max-height: 300px;
+  z-index: 10000;
   }
   .popup-content input {
     width: 80%;
@@ -27,6 +29,7 @@
     margin-bottom: 10px;
     border-radius: 10px;
     border: none;
+
   }
   .popup-content button {
     margin: 5px;
@@ -36,7 +39,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #40e0d0; /* turquoise shade like in screenshot */
+  background: #4BEADA; /* turquoise shade like in screenshot */
   padding: 0.5rem 1rem;
 }
 

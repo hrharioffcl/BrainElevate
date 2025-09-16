@@ -17,6 +17,9 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
+
+const { verifyadmintoken } = require("./middlewaares/adminAuthMiddleware");
+
 const flash = require("connect-flash");
 app.use(flash());
 
@@ -61,7 +64,11 @@ const googleauthRoutes = require("./routes/googleauth");
 
 app.use("/", userroutes)
 app.use("/", googleauthRoutes);
-app.use('/admin',adminroutes)
+app.use('/admin',(req, res, next) => {
+    const openPaths = ["/login", "/logout","/forgot-password","/verify-otp","/reset-password"];
+    if (openPaths.includes(req.path)) return next();
+    verifyadmintoken(req, res, next);
+  },adminroutes)
 
 
 

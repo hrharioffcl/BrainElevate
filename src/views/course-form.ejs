@@ -38,21 +38,7 @@
   <%- include("partials/superadminsidebar") %>
 
     <div class="main-content-course" style="background-color:#F8FAFC">
-      <!-- Flash Messages -->
-      <% if (messages.error && messages.error.length> 0) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= messages.error[0] %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        <% } %>
-
-          <% if (messages.success && messages.success.length> 0) { %>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-              <%= messages.success[0] %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            <% } %>
-
+  
               <div class="container">
                 <div class="row justify-content-center">
                   <div class="col-md-10"> <!-- change 6 to 4 or 5 for narrower -->
@@ -230,6 +216,8 @@
        </div>
                                 </div>
                             </div>
+                            <%- include("partials/flashalerts") %>
+
 </body>
 
 

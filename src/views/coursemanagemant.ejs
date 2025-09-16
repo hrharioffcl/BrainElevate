@@ -6,6 +6,8 @@
   <title>Super Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body class="d-flex" style="background-color: black;">
@@ -44,9 +46,14 @@
               <a href="/admin/coursesmangement/update/<%= course._id %>" class="text-info">
                 <i class="bi bi-pencil-square fs-5"></i>
               </a>
-              <a href="/admin/coursesmangement/delete/<%= course._id %>" class="text-danger">
-                <i class="bi bi-trash fs-5"></i>
-              </a>
+            <form action="/admin/coursesmangement/delete/<%= course._id %>" method="POST" style="display:inline;">
+<button type="button" class="btn btn-link text-danger p-0 border-0 bg-transparent" 
+        onclick="confirmDelete('<%= course._id %>')">
+  <i class="bi bi-trash fs-5"></i>
+</button>
+
+</form>
+
             </div>
           </div>
 
@@ -83,8 +90,34 @@
   <a href="/admin/courses" class="text-dark fw-semibold">View All</a>
 </div>
 
+<%- include("partials/flashalerts") %>
 
 </body>
+<script>
+  function confirmDelete(courseId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This will delete the course and all related chapters!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Create and submit hidden form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/coursesmangement/delete/${courseId}`;
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
 

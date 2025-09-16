@@ -103,7 +103,7 @@ exports.verifyOtp = async (req, res) => {
                 req.session.referral = null; // clear after use
             }
             ///create user if otp verified
-            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(),referredBy})
+            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(), referredBy })
             await Otp.deleteOne({ _id: otpRecord._id })
             req.session.signupData = null
 
@@ -173,7 +173,7 @@ exports.login = async (req, res) => {
             fieldErrors.email = "User not registered";
             return res.render('login', { fieldErrors, formData })
         }
-        if(existinguser.isDeleted===true){
+        if (existinguser.isDeleted === true) {
             fieldErrors.email = "Unauthorized Access";
             return res.render('login', { fieldErrors, formData })
         }
@@ -223,10 +223,10 @@ exports.forgotpassword = async (req, res) => {
                 fieldErrors.email = "User not registered";
                 return res.render('forgotpassword', { fieldErrors, formData, type: "user" })
             }
-             if(existinguser.isDeleted===true){
-            fieldErrors.email = "Unauthorized Access";
-            return res.render('login', { fieldErrors, formData,type: "user" })
-        }
+            if (existinguser.isDeleted === true) {
+                fieldErrors.email = "Unauthorized Access";
+                return res.render('login', { fieldErrors, formData, type: "user" })
+            }
 
             //delete otp records
             await Otp.deleteMany({ email, purpose: "forgotpassword" })
@@ -247,10 +247,10 @@ exports.forgotpassword = async (req, res) => {
                 fieldErrors.email = "Not allowed";
                 return res.render('forgotpassword', { fieldErrors, formData, type: "admin" })
             }
-             if(isadmin.isActive===false){
-            fieldErrors.email = "Unauthorized Access";
-            return res.render('login', { fieldErrors, formData,type: "admin" })
-        }
+            if (isadmin.isActive === false) {
+                fieldErrors.email = "Unauthorized Access";
+                return res.render('login', { fieldErrors, formData, type: "admin" })
+            }
             //delete otp records
             await Otp.deleteMany({ email, purpose: "adminforgotpassword" })
             //otp generate
@@ -278,7 +278,12 @@ exports.forgotpassword = async (req, res) => {
 //reset password
 exports.resetpassword = async (req, res) => {
     const fieldErrors = {};
+        if (!req.session.forgotPassword) {
+        return res.redirect('/login'); 
+        // or res.redirect('/admin/login') if you're separating flows
+    }
     const { email, purpose } = req.session.forgotPassword
+    console.log(purpose)
     const { password, confirmPassword } = req.body;
     if (password !== confirmPassword) {
         fieldErrors.confirmPassword = "*Passwords do not match";
@@ -311,13 +316,12 @@ exports.resetpassword = async (req, res) => {
             }
             isadmin.password = password;
             await isadmin.save()
+            
+            req.session.forgotPassword = null;
             res.redirect('/admin/login')
 
 
         }
-
-
-
 
     } catch (error) {
         if (error.name === "ValidationError") {
@@ -346,10 +350,11 @@ exports.adminlogin = async (req, res) => {
             fieldErrors.email = "Not allowed";
             return res.render('adminlogin', { fieldErrors })
         }
-        if(isadmin.isActive===false){
+        if (isadmin.isActive === false) {
             fieldErrors.email = "Unauthorized Access";
-            return res.render('login', { fieldErrors, formData,type: "admin" })}
-            
+            return res.render('login', { fieldErrors, formData, type: "admin" })
+        }
+
         const isMatch = await bcrypt.compare(password, isadmin.password)
         if (!isMatch) {
             fieldErrors.password = "Invalid credentials";
@@ -381,15 +386,34 @@ exports.adminlogin = async (req, res) => {
     }
 
 
-
 }
 
-exports.getadminlogin =(req, res) => {
+exports.adminlogout = async (req, res) => {
+    //clearing jwt
+    res.clearCookie("jwt", {
+
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // only secure in prod
+        sameSite: "strict",
+    })
+
+    if (req.session) {
+        req.session.destroy(() => {
+            res.redirect("/admin/login"); // redirect after logout
+        });
+    } else {
+        res.redirect("/admin/login");
+    }
+}
+
+
+
+exports.getadminlogin = (req, res) => {
 
     res.render("adminlogin", { fieldErrors: {} })
 }
 
-exports.getforgotpassword =(req, res) => {
+exports.getforgotpassword = (req, res) => {
     res.render('forgotpassword', { fieldErrors: {}, formData: {}, type: "admin" })
 }
 
@@ -397,6 +421,12 @@ exports.getverifyotp = (req, res) => {
     res.render('otp', { errorMessage: null })
 }
 
-exports.getresetpassword =(req, res) => {
-    res.render('resetpassword', { fieldErrors: {} })
+exports.getresetpassword = (req, res) => {
+// Only allow if OTP step was done
+    if (!req.session.forgotPassword || req.session.forgotPassword.purpose !== "adminforgotpassword") {
+        return res.redirect('/admin/forgot-password');
+    }
+
+    // Otherwise render page
+    res.render('resetpassword', {fieldErrors: {}});
 }
