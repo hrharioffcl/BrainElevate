@@ -1,22 +1,33 @@
-<header class="navbar">
-  <div class="nav-left">
-    <!-- Logo -->
-    <a href="/home" class="logo">
+<link href="https://fonts.googleapis.com/css2?family=K2D:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/source-sans-pro" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+
+<header class="navbar"> 
+   <a href="/home" class="logo">
       <img src="/images/logo.png" alt="BrainElevate Logo" />
 
     </a>
+ 
+  <div class="nav-left">
+    
+    <!-- Logo -->
+  
+  
 
     <!-- Search bar -->
     <form action="/search" method="get" class="search-form">
-      <input type="text" name="q" placeholder="Search..." />
+
+      <input type="text" name="search" placeholder="Search..." />
     </form>
   </div>
-
-  <div class="nav-right">
-    
-    <!-- Refer Now -->
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="nav-right me-4">
     <a href="#" id="referNow">Refer Now</a>
-    <a href="/career">Career</a>
+    <a href="/career">Teach on BrainElevate</a>
     <a href="/courses">Courses</a>
     <a href="/mylearning">My Learning</a>
 
@@ -24,6 +35,8 @@
     <a href="/wishlist"><i class="fa fa-heart"></i></a>
     <a href="/cart"><i class="fa fa-shopping-cart"></i></a>
     <a href="/profile"><i class="fa fa-user"></i></a>
+   
+
   </div>
   <!-- Hidden Popup for Referral -->
 <div id="referPopup" class="popup" style="display:none;">
@@ -69,6 +82,12 @@
     copyBtn.textContent = "Copied!";
     setTimeout(() => (copyBtn.textContent = "Copy Link"), 2000);
   });
+
+  
+</script>
+<script>document.getElementById("menuToggle").addEventListener("click", () => {
+  document.querySelector(".nav-right").classList.toggle("show");
+});
 </script>
 
 </header>

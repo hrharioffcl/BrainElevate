@@ -364,11 +364,11 @@ exports.adminlogin = async (req, res) => {
         // generate JWT
         const token = generateadmintoken(isadmin.id, isadmin.role);
         // If remember me is checked/notchecked 
-        res.cookie('jwt', token, {
+        res.cookie('admin_jwt', token, {
             httpOnly: true,
             maxAge: 1 * 24 * 60 * 60 * 1000
         });
-        console.log("Token:", req.cookies.jwt);
+        console.log("Token:", req.cookies.admin_jwt);
 
         if (isadmin.role === "super_admin") {
             res.redirect('/admin/superadmindashboard')
@@ -390,7 +390,7 @@ exports.adminlogin = async (req, res) => {
 
 exports.adminlogout = async (req, res) => {
     //clearing jwt
-    res.clearCookie("jwt", {
+    res.clearCookie("admin_jwt", {
 
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // only secure in prod

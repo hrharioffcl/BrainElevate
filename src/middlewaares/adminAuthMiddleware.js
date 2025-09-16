@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/adminschema");
 const verifyadmintoken = async(req,res,next)=>{
-const token =req.cookies.jwt
+const token =req.cookies.admin_jwt
 if(!token){
 return res.redirect('/admin/login')
 }

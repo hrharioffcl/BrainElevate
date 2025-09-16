@@ -3,7 +3,7 @@ const Admin = require('../models/adminschema')
 
 
 const restrictauthadminaccess = async (req, res, next) => {
-    const token = req.cookies.jwt;
+    const token = req.cookies.admin_jwt;
 
     if (!token) {
         // No token → allow access to login/signup

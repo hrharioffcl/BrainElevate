@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/header.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=K2D:wght@400;700&display=swap" rel="stylesheet">
+
 
 <style>
     body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+        margin: 0; /* prevent overflow */
+
 }
 
 main {
@@ -43,40 +46,82 @@ footer {
 
     .hero-content {
       max-width: 600px;
- 
+ width: 100%;
     }
 
     .hero h1 {
       font-size: 3rem;
       font-weight: bold;
+      
+    }
+       .hero h2 {
+    font-family: "Poppins", sans-serif;
+
+      
     }
 
     .hero p {
       font-size: 1.2rem;
       margin-top: 15px;
     }
+    @media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    justify-content: center;
+    height: auto;  /* allow hero to shrink */
+    padding: 20px;
+    background: #4BEADA; /* fallback for mobile */
+  }
+}
   
 </style>
 </head>
 
+    <body>
 
   <main>
-    <body>
   <%- include('partials/header') %>
 
    <section class="hero">
       <div class="hero-content">
-        <h2 style="font-weight: bolder">Welcome, <%= fullName %> 👋</h2>
-        <h1 style="color: #F44211;font-family: 'K2D', sans-serif; font-weight: lighter;">CLICK. LEARN. GROW.</h1>
+        <h2 >Welcome, <%= fullName %> 👋</h2><br>
+        <h1 class="typewriter"  style="color: #F44211;font-family: 'K2D', sans-serif; font-weight: lighter;">CLICK. LEARN. GROW.</h1>
       <p style="font-size: 22px; font-weight: 500; line-height: 1.5; color: #000;">
   Learn from real-world experts from around the globe.<br>
-  Get courses from <span style="font-size:28px; font-weight:700;">₹299</span>.
+  Get courses from <span style="font-size:28px; font-weight:700;">₹299</span>
+      <a  class="btn btn-danger rounded-pill "  href="/courses">Get Started</a>
+
 </p>
 
       </div>
     </section>
  
+   <section>
+    <h1>top rated design courses</h1>
+   </section>
    
+   <section>
+    <h1>top rated frontend courses</h1>
+   </section>
+
+   <section>
+    <h1>top rated frontend courses</h1>
+   </section>
+
+   <section>
+    <h1>short courses</h1>
+   </section>
+
+   
+   <section>
+    <h1>latest courses</h1>
+   </section>
+   <section>
+
+   </section>
+   <section>
+    <h1>continue learning</h1>
+   </section>
   </main>
  <%- include('partials/footer') %>
 </body>

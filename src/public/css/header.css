@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+
 }
 .popup {
     position: fixed;
@@ -13,12 +15,12 @@
     z-index: 9999;
   }
   .popup-content {
-    background-color: #ccc;
+    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-      width: 50vw;      /* 50% of viewport width */
-  height: 50vw;     /* same as width */
+      width: 90%;      /* 50% of viewport width */
+  height: auto;     /* same as width */
   max-width: 500px; /* optional max size */
   max-height: 300px;
   z-index: 10000;
@@ -76,11 +78,89 @@
 }
 
 .nav-right a {
-  text-decoration: none;
+  text-decoration:none;
   color: black;
-  font-size: 0.9rem;
-}
+  font-size: 1rem;
+  font-weight: lighter;
+font-family: "Montserrat", sans-serif;
 
+
+
+   
+}
+   .nav-right a:hover {
+      color:  #D2042D;
+      /* Bootstrap primary */
+    }
 .nav-right i {
   font-size: 1.2rem;
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #333;
+  width: 100%;          /* take full width of parent */
+  max-width: 90%;      /* do not exceed container */
+  font-size: 3rem;      /* desktop font size */
+  animation: typing 4s steps(16) infinite, blink 0.7s step-end infinite;
+}
+
+@keyframes typing {
+  0%   { width: 0; }
+  40%  { width: 100%; }  /* fully typed */
+  60%  { width: 100%; }  /* hold */
+  100% { width: 0; }     /* erase */
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* Responsive font size */
+@media (max-width: 768px) {
+  .typewriter {
+    font-size: 1.5rem !important;
+     width: 100%;          
+    max-width:100%;     /* fit smaller screens */
+  }
+}
+
+
+
+/* Menu toggle (burger) */
+.menu-toggle {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+  color: black;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+  .nav-right {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+
+    background: #4BEADA;
+    width: 100%;
+    padding: 1rem;
+    z-index: 9999;
+  }
+
+  .nav-right.show {
+    display: flex;
+    justify-content: end;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
 }
