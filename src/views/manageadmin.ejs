@@ -228,17 +228,18 @@
                     </td>
 
                     <td>
+                              <!-- Example action: view details -->
+                    
     
-                      <!-- <a href="/admin/update/<%= admin._id %>" class="text-info me-2 ">Edit</a> -->
-                      <form action="">
-                        <a href="/admin/manage-admin/editadmin/<%= admin._id %>">Edit</a>
-                      </form>
-
+                   
+  <a href="/admin/manage-admin/editadmin/<%= admin._id %>" class="btn btn-sm btn-outline-success me-2">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
 
                       <form action="/admin/delete/<%= admin._id %>" method="POST" class="delete-form"
                         style="display:inline;">
-                        <button type="button" class="btn btn-link text-danger p-0 m-0 delete-btn ">
-                          Delete
+                        <button type="button" class="btn btn-sm btn-outline-danger">
+                         <i class="bi bi-trash"></i> Delete
                         </button>
                       </form>
 

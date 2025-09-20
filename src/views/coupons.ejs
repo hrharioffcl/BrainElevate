@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coupon Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="d-flex" style="background-color: black;">
+
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+    <!-- Main Content -->
+
+    <div class="main-content p-4 w-100">
+      <h4 class="text-white mb-4">Coupon Mnagement</h4>
+
+
+
+      <!-- Top controls -->
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+
+        <!-- Search -->
+        <form method="GET" action="/admin/courses/coupons" class="d-flex gap-2">
+          <input type="text" name="search" class="form-control search-box w-auto" placeholder="Search coupons..."
+            value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
+
+          <!-- Preserve other filters -->
+          <% if (sortStatus && sortStatus !=='all' ) { %>
+            <input type="hidden" name="Status" value="<%= sortStatus %>">
+            <% } %>
+              <% if (scopeFilter && scopeFilter !=='all' ) { %>
+                <input type="hidden" name="scope" value="<%= scopeFilter %>">
+                <% } %>
+        </form>
+
+        <!-- Status filter -->
+        <form method="GET" action="/admin/courses/coupons" class="d-inline-block">
+          <select name="Status" class="form-select custom-select w-auto rounded-pill" onchange="this.form.submit()">
+            <option value="all" <%=sortStatus==='all' ? 'selected' : '' %>>All Status</option>
+            <option value="Active" <%=sortStatus==='Active' ? 'selected' : '' %>>Active</option>
+            <option value="Inactive" <%=sortStatus==='Inactive' ? 'selected' : '' %>>Inactive</option>
+            <option value="Expired" <%=sortStatus==='Expired' ? 'selected' : '' %>>Expired</option>
+          </select>
+
+          <!-- Preserve other filters -->
+          <% if (search) { %>
+            <input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (scopeFilter && scopeFilter !=='all' ) { %>
+                <input type="hidden" name="scope" value="<%= scopeFilter %>">
+                <% } %>
+        </form>
+
+
+        <!-- Scope filter -->
+        <form method="GET" action="/admin/courses/coupons" class="d-inline-block">
+          <select name="scope" class="form-select custom-select  w-auto rounded-pill" onchange="this.form.submit()">
+            <option value="all" <%=scopeFilter==='all' ? 'selected' : '' %>>All Scope</option>
+            <option value="global" <%=scopeFilter==='global' ? 'selected' : '' %>>Global</option>
+            <option value="coursespecific" <%=scopeFilter==='coursespecific' ? 'selected' : '' %>>Course Specific
+            </option>
+          </select>
+          <% if (search) { %>
+            <input type="hidden" name="search" value="<%= search %>">
+            <% } %>
+              <% if (sortStatus && sortStatus!=='all' ) { %>
+                <input type="hidden" name="Status" value="<%= sortStatus %>">
+                <% } %>
+        </form>
+
+        <a href="/admin/courses/coupons/new" class="btn rounded-pill" style="background-color:#1abc9c ;">
+          <i class="bi bi-plus-circle"></i> New Coupon
+        </a>
+      </div>
+
+      <!-- Coupons Table -->
+
+      <h5 class="mb-3">All Coupons</h5>
+      <div class="table">
+        <table class="table table-dark align-middle table-borderless">
+          <thead>
+            <tr>
+              <th scope="col">Offer Name</th>
+              <th scope="col">Code</th>
+              <th scope="col">Discount</th>
+              <th scope="col">Status</th>
+              <th scope="col">Coupon Left</th>
+              <th scope="col">applied to</th>
+              <th scope="col">Expires In</th>
+
+
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (coupons && coupons.length> 0) { %>
+              <% coupons.forEach(coupon=> { %>
+                <tr>
+                     <td>
+                    
+                      <span title="<%= coupon.description %>" data-bs-toggle="tooltip"> <%= coupon.couponName %></span>
+                    
+                  </td>
+                
+                  <td class="fw-bold">
+                    <%= coupon.couponCode %>
+                  </td>
+                  <td>
+                    <% if (coupon.discountType==='Percentage' ) { %>
+                      <%= coupon.discountValue %>%
+                        <% } else { %>
+                          $<%= coupon.discountValue %>
+                            <% } %>
+                  </td>
+                  <td>
+                    <% if (coupon.status==='Active' ) { %>
+                      <span class="text-success fw-bold">Active</span>
+                      <% } else if (coupon.status==='Expired' ) { %>
+                        <span class="text-danger fw-bold">Expired</span>
+                        <% } else if (coupon.status==='Inactive' ) { %>
+                          <span class="text-warning fw-bold">Inactive</span>
+                          <% } else { %>
+                            <span class="text-primary fw-bold">
+                              <%= coupon.status %>
+                            </span>
+                            <% } %>
+                  </td>
+                  <td class="fw-bold">
+                    <%= coupon.couponQuantity %>
+                  </td>
+                  <td>
+                    <% if(coupon.scope==='global' ){ %>
+                      <span title="Applies to all courses" data-bs-toggle="tooltip">Global</span>
+                      <% } else { %>
+                        <span data-bs-toggle="tooltip" title="<%= coupon.courseNames.join(', ') %>">
+                          Course Specific
+                        </span>
+                        <% } %>
+                  </td>
+  <td class="text-danger">
+                    <%= coupon.timeToExpire %>
+                  </td>
+
+                  <td>
+                    <a href="/admin/courses/coupons/<%= coupon._id %>/edit" class="btn btn-sm btn-outline-success me-2">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+
+
+
+<form action="/admin/courses/coupons/<%= coupon._id %>/delete" method="POST" class="delete-form" style="display:inline;">
+  <button type="submit" class="btn btn-sm btn-outline-danger">
+    <i class="bi bi-trash"></i> Delete
+  </button>
+
+</form>
+          
+                    
+                  </td>
+                </tr>
+                <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="12" class="text-center">No results found</td>
+                    </tr>
+                    <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="d-flex justify-content-center mt-3">
+        <ul class="pagination pagination-dark pagination-sm flex-wrap">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link rounded-circle"
+              href="/admin/courses/coupons?page=<%= currentPage-1 %>&Status=<%= sortStatus %>&scope=<%= scopeFilter %>&search=<%= search %>">‹</a>
+          </li>
+
+          <% for(let i=1; i<=totalPages; i++){ %>
+            <li class="page-item <%= currentPage===i ? 'active' : '' %>">
+              <a class="page-link rounded-circle"
+                href="/admin/courses/coupons?page=<%= i %>&Status=<%= sortStatus %>&scope=<%= scopeFilter %>&search=<%= search %>">
+                <%= i %>
+              </a>
+            </li>
+            <% } %>
+
+              <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle"
+                  href="/admin/courses/coupons?page=<%= currentPage+1 %>&Status=<%= sortStatus %>&scope=<%= scopeFilter %>&search=<%= search %>">›</a>
+              </li>
+        </ul>
+      </nav>
+      
+          <%- include("partials/flashalerts") %>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+</script>
+
+
+<script>
+  document.querySelectorAll(".delete-form").forEach(form => {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // stop immediate form submission
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This Coupon will be permanently removed!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit(); // submit only if confirmed
+        }
+      });
+    });
+  });
+</script>
+
+</html>

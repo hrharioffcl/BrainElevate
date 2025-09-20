@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Admin Dashboard</title>
+  <title>Courses</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -15,23 +15,29 @@
   <!-- Sidebar -->
   <%- include("partials/superadminsidebar") %>
 <!-- Main Content -->
-    <div class="main-content p-4 w-100"  style="background-color:#F8FAFC;">
-      <h4 class="text-white mb-4">courses</h4>
+    <div class="main-content p-4 w-100"  style="background-color:#000000;">
+      <h4 class="text-white mb-4">Courses</h4>
 
 <!-- Top controls -->
-      <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+<div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
 
+  <!-- 🔍 Search -->
+  <form method="GET" action="/admin/course" class="flex-grow-1" style="max-width: 300px;">
+    <input type="text" name="search" class="form-control search-box rounded-pill" placeholder="Search courses..."
+      value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
+  </form>
 
-        <!-- <form method="GET" action="/admin/manage-admin" class="d-flex gap-2 flex-wrap">
-<!-- 🔍 Search -->
-        <form method="GET" action="/admin/course" class="d-flex gap-2 w-50">
-          <input type="text" name="search" class="form-control search-box" placeholder="Search courses..."
-            value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
-        </form>
-          <!-- Add new -->
-    
-        <a href="/admin/addnewcourse"class="btn edit-btn rounded-pill">+ Add Courses</a>
-      </div>
+  <!-- Action buttons -->
+  <div class="d-flex gap-4 me-2">
+
+    <a href="/admin/courses/coupons" class="btn cousre-btn  rounded-pill">Coupons</a>
+      <a href="/admin/courses/categories" class="btn cousre-btn  rounded-pill">Categories</a>
+          <a href="/admin/addnewcourse" class="btn  cousre-btn rounded-pill">    <i class="bi bi-plus-circle"></i> Add Course</a>
+
+  </div>
+
+</div>
+
 <!-- Courses Grid -->
  
 <div class="row g-4 justify-content-center coursecard" >

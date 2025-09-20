@@ -60,7 +60,6 @@
     Close
   </button>
 </nav>
-
 <script>
   const currentPath = window.location.pathname;
   const links = document.querySelectorAll('.sidebar .nav-link');
@@ -72,16 +71,19 @@
     if (currentPath === href || currentPath.startsWith(href)) {
       link.classList.add('active');
     }
-
-    // Special mapping: edit-student/edit-admin should highlight manage-students/manage-admin
-    if (href === "/admin/manage-students" && currentPath.startsWith("/admin/edit-student")) {
-      link.classList.add("active");
-    }
-    if (href === "/admin/manage-admin" && currentPath.startsWith("/admin/edit-admin")) {
-      link.classList.add("active");
-    }
-      if (href === "/admin/courses" && currentPath.startsWith("/admin/addnewcourse")) {
-      link.classList.add("active");
-    }
   });
+
+  // Special mapping: edit-student/edit-admin should highlight manage-students/manage-admin
+  if (currentPath.startsWith("/admin/edit-student")) {
+    document.querySelector('a[href="/admin/manage-students"]').classList.add("active");
+  }
+
+  if (currentPath.startsWith("/admin/edit-admin")) {
+    document.querySelector('a[href="/admin/manage-admin"]').classList.add("active");
+  }
+
+  // Special mapping: add new course should highlight courses
+  if (currentPath.startsWith("/admin/addnewcourse")) {
+    document.querySelector('a[href="/admin/courses"]').classList.add("active");
+  }
 </script>

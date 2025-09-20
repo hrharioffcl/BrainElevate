@@ -158,7 +158,7 @@ exports.editadmin = async(req,res)=>{
     await admin.validate()
     await admin.save()
      req.flash("success", "Admin updated successfully");
-    res.redirect(`/admin/manage-admin/editadmin/${adminId }`);
+    res.redirect(`/admin/manage-admin`);
   } catch (error) {
    
         if (error.name === "ValidationError") {

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Coupon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- Select2 CSS library -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+
+<body class="d-flex" style="background-color: black;">
+
+  <!-- Sidebar -->
+  <%- include("partials/superadminsidebar") %>
+
+  <!-- Main Content -->
+  <div class="main-content flex-grow-1 p-4 text-dark" style="background-color:#F8FAFC;">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+
+          <div class="page-header d-flex justify-content-between align-items-center">
+            <h2>Create Coupon</h2>
+            <a href="/admin/courses/coupons" class="btn btn-danger">Cancel</a>
+          </div>
+
+          <form action="/admin/courses/coupons/new" method="POST" class="mt-4">
+
+            <!-- Coupon Status -->
+            <div class="mb-3">
+              <label class="form-label">Coupon Status</label>
+              <select name="status" class="form-select">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <!-- Coupon Name -->
+            <div class="mb-3">
+              <label class="form-label">Coupon Name</label>
+              <input type="text" class="form-control" name="couponName" placeholder="20% Flat off for first 100 Students" required>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" name="description" rows="3" placeholder="Enter coupon description"></textarea>
+            </div>
+
+            <!-- Coupon Code -->
+            <div class="mb-3">
+              <label class="form-label">Coupon Code</label>
+              <input type="text" class="form-control" name="couponCode" placeholder="NCEFLAT20" required>
+            </div>
+
+            <!-- Coupon Quantity & Uses -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Coupon Quantity</label>
+                <input type="number" class="form-control" name="couponQuantity" placeholder="100" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Uses per Customer</label>
+                <input type="number" class="form-control" name="usesPerCustomer" placeholder="1" required>
+              </div>
+            </div>
+
+            <!-- Discount & Min Purchase -->
+            <div class="row">
+              <!-- Discount Type -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Select Discount Type</label>
+                <select name="discountType" id="discountType" class="form-select" required>
+                  <option value="">-- Select --</option>
+                  <option value="Amount">Amount</option>
+                  <option value="Percentage">Percentage</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Amount Discount -->
+            <div class="row" id="amountField" style="display:none;">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Discount Amount</label>
+                <input type="number" class="form-control" name="amountdiscountValue" placeholder="Enter amount">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Minimum Purchase Amount</label>
+                <input type="number" class="form-control" name="amountminPurchase" placeholder="100">
+              </div>
+            </div>
+
+            <!-- Percentage Discount -->
+            <div class="row" id="percentageFields" style="display:none;">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Discount Percentage</label>
+                <input type="number" class="form-control" name="discountValue" placeholder="Enter %" min="1" max="100">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Maximum Discount Amount</label>
+                <input type="number" class="form-control" name="maxDiscountAmount" placeholder="Enter max amount">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Minimum Purchase Amount</label>
+                <input type="number" class="form-control" name="percentageminPurchase" placeholder="100">
+              </div>
+            </div>
+
+            <!-- Date & Time -->
+     <div class="row">
+  <div class="col-md-6 mb-3">
+    <label class="form-label">Starting Date & Time</label>
+    <input type="text" class="form-control datetimepicker" name="startDateTime" placeholder="Select start date & time">
+  </div>
+  <div class="col-md-6 mb-3">
+    <label class="form-label">Ending Date & Time</label>
+    <input type="text" class="form-control datetimepicker" name="endDateTime" placeholder="Select end date & time">
+  </div>
+</div>
+
+
+            <!-- Applied To -->
+            <div class="mb-3">
+              <label class="form-label">Applied To</label>
+              <select class="form-select" id="appliedTo" name="scope" required>
+                <option value="global">Global</option>
+                <option value="coursespecific">For Courses</option>
+              </select>
+            </div>
+
+            <!-- Course Selection -->
+            <div class="mb-3" id="courseSelection" style="display:none;">
+              <label class="form-label">Select Courses</label>
+              <select class="form-select" id="coursesDropdown" name="courseId" multiple="multiple" style="width:100%">
+                <% courses.forEach(course => { %>
+                  <option value="<%= course._id %>"><%= course.name %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <!-- Save Button -->
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-dark">Save Coupon</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("partials/flashalerts") %>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      // Initialize Select2
+      $('#coursesDropdown').select2({
+        placeholder: "Search and select courses",
+        allowClear: true
+      });
+
+      // Show/hide course selection
+      $('#appliedTo').on('change', function () {
+        if ($(this).val() === 'coursespecific') {
+          $('#courseSelection').show();
+        } else {
+          $('#courseSelection').hide();
+          $('#coursesDropdown').val(null).trigger('change'); // clear selection
+        }
+      });
+
+      // Show/hide discount fields
+      $('#discountType').on('change', function () {
+        if ($(this).val() === 'Amount') {
+          $('#amountField').show();
+          $('#percentageFields').hide();
+        } else if ($(this).val() === 'Percentage') {
+          $('#percentageFields').show();
+          $('#amountField').hide();
+        } else {
+          $('#amountField, #percentageFields').hide();
+        }
+      });
+    });
+  </script>
+  <script>
+  flatpickr(".datetimepicker", {
+    enableTime: true,
+    dateFormat: "Y-m-d h:i K", // YYYY-MM-DD + 12hr with AM/PM
+    time_24hr: false // false → AM/PM, true → 24hr
+  });
+</script>
+
+          <%- include("partials/flashalerts") %>
+
+</body>
+</html>

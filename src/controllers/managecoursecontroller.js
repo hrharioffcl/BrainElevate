@@ -1,22 +1,22 @@
 const course = require("../models/coursesSchema")
 const category = require("../models/categorySchema")
 const chapter = require("../models/chapterScheema")
+const coupons = require("../models/couponSchema")
 
-
-exports.getcoursemanagement =async (req, res) => {
+exports.getcoursemanagement = async (req, res) => {
     const existingcourse = await course.find()
-    res.render('coursemanagemant', { search: null, course:existingcourse })
+    res.render('coursemanagemant', { search: null, course: existingcourse })
 }
 
-exports.getaddnewcourse =(req, res) => {
-    res.render('course-form', { course: null,existingchapater:null })
+exports.getaddnewcourse = (req, res) => {
+    res.render('course-form', { course: null, existingchapater: null })
 }
 
-exports.getupdatecourse =async (req, res) => {
+exports.getupdatecourse = async (req, res) => {
     const id = req.params.course_id
     const existingcourse = await course.findById(id)
-    const existingchapater = await chapter.find({courseId:id})
-    res.render('course-form', { course:existingcourse,existingchapater })
+    const existingchapater = await chapter.find({ courseId: id })
+    res.render('course-form', { course: existingcourse, existingchapater })
 }
 exports.getaddnewchapter = async (req, res) => {
     const existingcourse = await course.findById(req.params.course_id);
@@ -26,7 +26,7 @@ exports.getaddnewchapter = async (req, res) => {
         return res.redirect("/admin/courses");
     }
 
-    res.render('addnewchapter', { course:existingcourse,existingchapater:null });
+    res.render('addnewchapter', { course: existingcourse, existingchapater: null });
 }
 
 exports.adddetails = async (req, res) => {
@@ -242,4 +242,268 @@ exports.deletecourse = async (req, res) => {
         req.flash("error", "Something went wrong while deleting the course");
         res.redirect("/admin/courses");
     }
+}
+//coupon
+//get coupon page
+exports.getcoupons = async (req, res) => {
+    try {
+        let page = parseInt(req.query.page) || 1;
+        let limit = 5;
+        let skip = (page - 1) * limit;
+
+        const search = req.query.search ? req.query.search.trim() : "";
+        const statusFilter = req.query.Status;
+        const scopeFilter = req.query.scope;
+
+        let filter = { isDeleted: false };
+
+
+        if (search) {
+            filter.$or = [
+                { couponName: { $regex: search, $options: "i" } },
+                { couponCode: { $regex: search, $options: "i" } }
+            ];
+        }
+
+
+        if (statusFilter && statusFilter !== "all") {
+            filter.status = statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1);
+
+        }
+
+        // ====== Scope Filter ======
+        if (scopeFilter && scopeFilter !== "all") {
+            filter.scope = scopeFilter.toLowerCase();
+
+        }
+
+        const totalCoupons = await coupons.countDocuments(filter);
+
+
+        const existingCoupons = await coupons
+            .find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit).populate('courseId', 'name').lean();
+        existingCoupons.forEach(coupon => {
+            if (coupon.scope === "coursespecific") {
+                coupon.courseNames = coupon.courseId.map((c) => {
+                    return c.name
+                })
+            } else {
+                coupon.courseNames = []
+            }
+        })
+
+
+        const now = new Date();
+
+        for (let coupon of existingCoupons) {
+            const end = new Date(coupon.endDateTime);
+
+            // Check if coupon has expired
+            if (end <= now && coupon.status !== "Expired") {
+
+                await coupons.updateOne({ _id: coupon._id }, { status: "Expired" });
+                coupon.status = "Expired";
+                coupon.timeToExpire = "Expired";
+            } else if (end > now) {
+                const diffMs = end - now;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                coupon.timeToExpire = `${diffDays} days ${diffHours} hrs`;
+            } else {
+                coupon.timeToExpire = "Expired";
+            }
+        }
+
+        res.render("coupons", {
+            coupons: existingCoupons,
+            currentPage: page,
+            totalPages: Math.ceil(totalCoupons / limit),
+            sortStatus: statusFilter || "all",
+            scopeFilter: scopeFilter || "all",
+            search
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.send(error);
+    }
+};
+
+
+
+
+
+
+//addcouponpage
+exports.getaddcoupon = async (req, res) => {
+    courses = await course.find()
+    res.render('createcoupons', courses)
+}
+
+
+
+
+//post add coupon
+
+exports.addcoupon = async (req, res) => {
+
+    try {
+        const { status, couponName, description, couponCode, couponQuantity,
+            usesPerCustomer, discountType, discountValue, amountdiscountValue, amountminPurchase, percentageminPurchase,
+            maxDiscountAmount, startDateTime, endDateTime, scope, courseId } = req.body
+        const existingcoupon = await coupons.findOne({ couponCode })
+        if (existingcoupon) {
+            req.flash("error", "Coupon code  already exist")
+            return res.redirect('/admin/courses/coupons')
+        }
+        let finalMinPurchaseAmount = Number(amountminPurchase || percentageminPurchase || 0);
+
+        let courseArray = [];
+        if (scope === "coursespecific") {
+            if (Array.isArray(courseId)) {
+                courseArray = courseId
+            } else if (courseId) {
+                courseArray = [courseId]
+            }
+        }
+        let finalDiscountValue = 0;
+        if (discountType === "Amount") {
+            finalDiscountValue = amountdiscountValue
+        }
+
+        else if (discountType === "Percentage") {
+            if (discountValue < 1 || discountValue > 100) {
+                req.flash("error", "Percentage discount must be between 1 and 100");
+                return res.redirect('/admin/courses/coupons');
+            }
+            finalDiscountValue = parseInt(discountValue, 10);
+
+        }
+        // Create coupon
+        const newCoupon = new coupons({
+            status,
+            couponName,
+            description,
+            couponCode,
+            couponQuantity,
+            usesPerCustomer,
+            discountType,
+            discountValue: finalDiscountValue,
+            minPurchaseAmount: finalMinPurchaseAmount,
+            maxDiscountAmount,
+            startDateTime,
+            endDateTime,
+            scope,
+            courseId: courseArray
+        });
+
+        await newCoupon.save();
+
+        req.flash("success", "Coupon created successfully");
+        res.redirect('/admin/courses/coupons');
+
+
+    } catch (error) {
+        console.log(error)
+        req.flash("error", "some error occured")
+        res.redirect('/admin/courses/coupons')
+    }
+}
+
+
+
+//get edit coupon
+exports.geteditcoupon = async (req, res) => {
+    const couponId = req.params.coupon_id
+    const coupon = await coupons.findById(couponId)
+    if (!coupon) {
+        req.flash("error", "cannot find coupon")
+        res.redirect('/admin/courses/coupons')
+    }
+    courses = await course.find()
+    res.render('editcoupon', { coupon, courses })
+}
+
+
+
+//post edit coupon
+exports.editcoupon = async (req, res) => {
+    try {
+        const { status, couponName, description, couponCode, couponQuantity,
+            usesPerCustomer, discountType, discountValue, amountdiscountValue, amountminPurchase, percentageminPurchase,
+            maxDiscountAmount, startDateTime, endDateTime, scope, courseId } = req.body
+        const couponId = req.params.coupon_id
+
+        const existingcoupon = await coupons.findById(couponId)
+        if (!existingcoupon) {
+            req.flash("error", "cannot find coupon")
+            res.redirect('/admin/courses/coupons')
+        }
+        let finalMinPurchaseAmount = Number(amountminPurchase || percentageminPurchase || 0);
+
+        let courseArray = [];
+        if (scope === "coursespecific") {
+            if (Array.isArray(courseId)) {
+                courseArray = courseId
+            } else if (courseId) {
+                courseArray = [courseId]
+            }
+        }
+
+
+        let finalDiscountValue = 0;
+        if (discountType === "Amount") {
+            finalDiscountValue = amountdiscountValue
+        }
+
+        else if (discountType === "Percentage") {
+            if (discountValue < 1 || discountValue > 100) {
+                req.flash("error", "Percentage discount must be between 1 and 100");
+                return res.redirect('/admin/courses/coupons');
+            }
+            finalDiscountValue = parseInt(discountValue, 10);
+        }
+        await coupons.findByIdAndUpdate(couponId, {
+            status,
+            couponName,
+            description,
+            couponCode,
+            couponQuantity,
+            usesPerCustomer,
+            discountType,
+            discountValue: finalDiscountValue,
+            minPurchaseAmount: finalMinPurchaseAmount,
+            maxDiscountAmount,
+            startDateTime,
+            endDateTime,
+            scope,
+            courseId: courseArray
+        }, { new: true })
+
+        req.flash("success", "Coupon updated successfully");
+        res.redirect("/admin/courses/coupons");
+
+    } catch (error) {
+        console.log(error);
+        req.flash("error", "Some error occurred while updating the coupon");
+        res.redirect("/admin/courses/coupons");
+    }
+}
+exports.deletecoupon  = async (req, res) => {
+    try {
+        const couponId = req.params.coupon_id
+        await coupons.findByIdAndUpdate(couponId, { isDeleted: true })
+
+        req.flash("success", "Coupon deleted successfully");
+        res.redirect("/admin/courses/coupons");
+
+    } catch (error) {
+         console.log(error)
+             req.flash("error", "some error occured");
+ res.redirect("/admin/courses/coupons");
+     } 
+
 }

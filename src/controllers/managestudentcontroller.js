@@ -84,8 +84,10 @@ exports.deletestudent = async (req, res) => {
         res.redirect("/admin/manage-students");
 
     } catch (error) {
-        console.log(error)
-    }
+         console.log(error)
+             req.flash("error", "some error occured");
+ res.redirect("/admin/manage-students");
+     } 
 
 }
 

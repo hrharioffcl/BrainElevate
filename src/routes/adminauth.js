@@ -6,7 +6,7 @@ const { getsuperadmindashboard } = require("../controllers/admindashboard.contro
 const { getmanageadmin, addadmin, deleteadmin, editadmin,getaddadmin,geteditadmin } = require("../controllers/manageadmincontroller")
 const { getmanagestudents, deletestudent, geteditstudent, editstudent } = require("../controllers/managestudentcontroller")
 const { adddetails, updatedetails, addchapter,geteditchapter,editchapter,deletecourse,getcoursemanagement
-    ,getaddnewcourse,getupdatecourse,getaddnewchapter} = require("../controllers/managecoursecontroller")
+    ,getaddnewcourse,getupdatecourse,getaddnewchapter,getcoupons,getaddcoupon,addcoupon,geteditcoupon,editcoupon,deletecoupon} = require("../controllers/managecoursecontroller")
 
 const router = express.Router()
 
@@ -40,6 +40,10 @@ router.get('/coursesmangement/update/:course_id', getupdatecourse)
 router.get('/courses/:course_id/chapters/:chapter_id/edit', geteditchapter);
 router.get('/courses/:course_id/addchapter',getaddnewchapter)
 
+//coupons
+router.get('/courses/coupons',getcoupons)
+router.get('/courses/coupons/new',getaddcoupon)
+router.get('/courses/coupons/:coupon_id/edit',geteditcoupon)
 
 router.post("/login", adminlogin)
 router.post("/manage-admin/addadmin", addadmin);
@@ -53,3 +57,7 @@ router.post('/courses/:course_id/chapters/add',addchapter)
 router.post('/courses/:course_id/chapters/:chapter_id/edit',editchapter)
 router.post('/coursesmangement/delete/:course_id',deletecourse)
 module.exports = router;
+
+router.post('/courses/coupons/new',addcoupon)
+router.post('/courses/coupons/:coupon_id/edit',editcoupon)
+router.post('/courses/coupons/:coupon_id/delete',deletecoupon)
