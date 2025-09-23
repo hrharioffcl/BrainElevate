@@ -9,11 +9,11 @@ const categorySchema = new mongoose.Schema({
     minlength: [3, "Category name must be at least 3 characters"],
     maxlength: [30, "Category name can be max 30 characters"],
   },
-  description: {
-    type: String,
-    trim: true,
-    maxlength: [200, "Description too long"],
-  },
+  status: {
+      type: String,
+      enum: ["active","inActive","archived"],
+      default: "draft",
+    },
   isDeleted: {
     type: Boolean,
     default: false,  // soft delete

@@ -206,8 +206,51 @@
                       </tbody>
                     </table>
                   </div>
+<!-- Settings -->
+<div class="tab-pane fade" id="settings">
+ 
+    <h4 class="mb-4 fw-bold">Settings</h4>
 
-                
+ <div class="mb-3">
+  <label class="form-label">Course Price</label>
+  <div class="input-group">
+    <span class="input-group-text">₹</span>
+    <input type="number" step="99" class="form-control" name="price"
+           value="<%= course ? course.price : '' %>" placeholder="199.00" required>
+  </div>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">Category</label>
+  <select class="form-select" name="category" required>
+    <option value="">-- Select Category --</option>
+    <% categories.forEach(cat => { %>
+      <option value="<%= cat._id %>" <%= course?.category?.toString() === cat._id.toString() ? 'selected' : '' %>>
+        <%= cat.name %>
+      </option>
+    <% }) %>
+  </select>
+</div>
+
+    <div class="mb-3">
+      <label class="form-label">Course Duration</label>
+      <select class="form-select" name="duration" required>
+        <option value="">-- Select Duration --</option>
+        <option value="1-3 months" <%= course?.duration==='1-3 months' ? 'selected' : '' %>>1-3 months</option>
+        <option value="3-6 months" <%= course?.duration==='3-6 months' ? 'selected' : '' %>>3-6 months</option>
+        <option value="6-12 months" <%= course?.duration==='6-12 months' ? 'selected' : '' %>>6-12 months</option>
+      </select>
+    </div>
+
+
+
+ <div class="mt-4 d-flex justify-content-end">
+      <button type="submit" class="btn rounded-pill 
+cousre-btn px-4">Save</button>
+   
+  </div>
+</div>
+
 
 
 

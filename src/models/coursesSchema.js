@@ -51,6 +51,14 @@ const courseSchema = new mongoose.Schema(
   isDeleted: {
     type: Boolean,
     default: false,
+  },price:{
+    type:Number,
+
+  },
+  duration:{
+    type:String,
+     enum: ["1months", "3months", "6months"],
+
   }
 }, 
 { timestamps: true });

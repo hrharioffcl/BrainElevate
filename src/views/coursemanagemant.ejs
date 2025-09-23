@@ -19,26 +19,40 @@
       <h4 class="text-white mb-4">Courses</h4>
 
 <!-- Top controls -->
-<div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+<!-- <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap"> -->
 
-  <!-- 🔍 Search -->
-  <form method="GET" action="/admin/course" class="flex-grow-1" style="max-width: 300px;">
-    <input type="text" name="search" class="form-control search-box rounded-pill" placeholder="Search courses..."
-      value="<%= search || '' %>" onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
-  </form>
+  <!-- Filters -->
+<form method="GET" action="/admin/courses" class="d-flex flex-wrap gap-2 mb-3 justify-content-between">
+  <!-- Search -->
+  <input type="text" name="search" value="<%= search %>" 
+         placeholder="Search courses..." 
+         class="form-control search-box rounded-pill" style="max-width: 250px;"
+         oninput="this.form.submit()"> <!-- auto-submit when typing -->
 
-  <!-- Action buttons -->
-  <div class="d-flex gap-4 me-2">
+  <!-- Status Filter -->
+  <select name="status" class="form-select custom-select rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+    <option value="all" <%= statusFilter==="all" ? "selected" : "" %>>All Status</option>
+    <option value="draft" <%= statusFilter==="draft" ? "selected" : "" %>>Draft</option>
+    <option value="published" <%= statusFilter==="published" ? "selected" : "" %>>Published</option>
+    <option value="pending approval" <%= statusFilter==="pending approval" ? "selected" : "" %>>Pending Approval</option>
+  </select>
 
-    <a href="/admin/courses/coupons" class="btn cousre-btn  rounded-pill">Coupons</a>
-      <a href="/admin/courses/categories" class="btn cousre-btn  rounded-pill">Categories</a>
-          <a href="/admin/addnewcourse" class="btn  cousre-btn rounded-pill">    <i class="bi bi-plus-circle"></i> Add Course</a>
+  <!-- Level Filter -->
+  <select name="level" class="form-select  custom-select  rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+    <option value="all" <%= levelFilter==="all" ? "selected" : "" %>>All Levels</option>
+    <option value="Beginner" <%= levelFilter==="Beginner" ? "selected" : "" %>>Beginner</option>
+    <option value="Intermediate" <%= levelFilter==="Intermediate" ? "selected" : "" %>>Intermediate</option>
+    <option value="Advanced" <%= levelFilter==="Advanced" ? "selected" : "" %>>Advanced</option>
+  </select>
 
-  </div>
+  <a href="/admin/courses/coupons" class="btn cousre-btn rounded-pill">Coupons</a>
+  <a href="/admin/courses/categories" class="btn cousre-btn rounded-pill">Categories</a>
+  <a href="/admin/addnewcourse" class="btn cousre-btn rounded-pill">
+    <i class="bi bi-plus-circle"></i> Add Course
+  </a>
+</form>
 
-</div>
 
-<!-- Courses Grid -->
  
 <div class="row g-4 justify-content-center coursecard" >
   <% if (course && course.length > 0) { %>
@@ -91,10 +105,39 @@
   <% } %>
 </div>
 
-<!-- View All -->
-<div class="text-center mt-4">
-  <a href="/admin/courses" class="text-dark fw-semibold">View All</a>
-</div>
+<!-- Pagination -->
+<nav class="d-flex justify-content-center mt-3">
+  <ul class="pagination pagination-dark pagination-sm flex-wrap">
+
+    <!-- Previous -->
+    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+      <a class="page-link rounded-circle"
+         href="/admin/courses?page=<%= currentPage-1 %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
+         ‹
+      </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <% for(let i = 1; i <= totalPages; i++) { %>
+      <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+        <a class="page-link rounded-circle"
+           href="/admin/courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
+           <%= i %>
+        </a>
+      </li>
+    <% } %>
+
+    <!-- Next -->
+    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+      <a class="page-link rounded-circle"
+         href="/admin/courses?page=<%= currentPage+1 %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
+         ›
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
 
 <%- include("partials/flashalerts") %>
 

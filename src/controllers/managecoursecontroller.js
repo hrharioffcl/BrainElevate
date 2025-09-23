@@ -4,19 +4,69 @@ const chapter = require("../models/chapterScheema")
 const coupons = require("../models/couponSchema")
 
 exports.getcoursemanagement = async (req, res) => {
-    const existingcourse = await course.find()
-    res.render('coursemanagemant', { search: null, course: existingcourse })
-}
+  try {
+    // Pagination setup
+    let page = parseInt(req.query.page) || 1;
+    let limit = 6; // courses per page
+    let skip = (page - 1) * limit;
 
-exports.getaddnewcourse = (req, res) => {
-    res.render('course-form', { course: null, existingchapater: null })
+    // Filters
+    const { search, status, level } = req.query;
+    let filter = {};
+
+    // 🔍 Search by course name
+    if (search && search.trim() !== "") {
+      filter.name = { $regex: search.trim(), $options: "i" };
+    }
+
+    // 🎯 Filter by status (draft, published, pending approval, etc.)
+    if (status && status !== "all") {
+      filter.status = status;
+    }
+
+    // 🎯 Filter by level (Beginner, Intermediate, Advanced)
+    if (level && level !== "all") {
+      filter.level = level;
+    }
+
+    // Count total courses for pagination
+    const totalCourses = await course.countDocuments(filter);
+
+    // Fetch paginated + filtered courses
+    const existingcourse = await course
+      .find(filter)
+      .sort({ createdAt: -1 }) // newest first
+      .skip(skip)
+      .limit(limit);
+
+    res.render("coursemanagemant", {
+      course: existingcourse,
+      currentPage: page,
+      totalPages: Math.ceil(totalCourses / limit),
+      search: search || "",
+      statusFilter: status || "all",
+      levelFilter: level || "all",
+    });
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Failed to load courses");
+    res.redirect("/admin");
+  }
+};
+
+
+exports.getaddnewcourse = async (req, res) => {
+    const categories = await category.find({status:{$ne:"archived"}})
+    res.render('course-form', { course: null, existingchapater: null,categories })
 }
 
 exports.getupdatecourse = async (req, res) => {
     const id = req.params.course_id
     const existingcourse = await course.findById(id)
     const existingchapater = await chapter.find({ courseId: id })
-    res.render('course-form', { course: existingcourse, existingchapater })
+        const categories = await category.find({status:{$ne:"archived"}})
+
+    res.render('course-form', { course: existingcourse, existingchapater,categories })
 }
 exports.getaddnewchapter = async (req, res) => {
     const existingcourse = await course.findById(req.params.course_id);
@@ -423,7 +473,7 @@ exports.geteditcoupon = async (req, res) => {
         req.flash("error", "cannot find coupon")
         res.redirect('/admin/courses/coupons')
     }
-    courses = await course.find()
+    const courses = await course.find()
     res.render('editcoupon', { coupon, courses })
 }
 
@@ -492,7 +542,7 @@ exports.editcoupon = async (req, res) => {
         res.redirect("/admin/courses/coupons");
     }
 }
-exports.deletecoupon  = async (req, res) => {
+exports.deletecoupon = async (req, res) => {
     try {
         const couponId = req.params.coupon_id
         await coupons.findByIdAndUpdate(couponId, { isDeleted: true })
@@ -501,9 +551,120 @@ exports.deletecoupon  = async (req, res) => {
         res.redirect("/admin/courses/coupons");
 
     } catch (error) {
-         console.log(error)
-             req.flash("error", "some error occured");
- res.redirect("/admin/courses/coupons");
-     } 
+        console.log(error)
+        req.flash("error", "some error occured");
+        res.redirect("/admin/courses/coupons");
+    }
 
+}
+
+
+exports.getcategory = async (req, res) => {
+    let page = parseInt(req.query.page) || 1;
+    let limit = 8;
+    let skip = (page - 1) * limit;
+    const { search, status, sortBy } = req.query
+    let filter = {status:{$ne:"archived"}}
+
+    // Search
+    if (search) {
+        filter.name = { $regex: search, $options: "i" };
+    }
+
+    // Status filter
+    if (status && status !== "all") {
+        filter.status = status;
+    }
+    // Sorting
+    let sortOption = {};
+    if (sortBy === "courses_desc") {
+        sortOption = { courses: -1 };
+    }
+    else if (sortBy === "courses_asc") {
+        sortOption = { courses: 1 };
+    }
+
+
+    else if (sortBy === "authors_desc") {
+        sortOption = { authors: -1 };
+    }
+    else if (sortBy === "authors_asc") {
+        sortOption = { authors: 1 };
+    }
+
+
+    else if (sortBy === "students_desc") {
+        sortOption = { students: -1 };
+    }
+
+    else if (sortBy === "students_asc") {
+        sortOption = { students: 1 };
+    }
+
+
+    else {
+        sortOption = { createdAt: -1 }; // default newest
+    }
+    const totalCategories = await category.countDocuments(filter)
+
+
+    const categories = await category.find(filter).sort(sortOption).skip(skip).limit(limit)
+    res.render('categories', { categories: categories, currentPage: page, totalPages: Math.ceil(totalCategories / limit), statusFilter: status, search, sortBy: sortOption })
+
+}
+
+
+exports.getaddcategory = async (req, res) => {
+    res.render('addcategory')
+}
+
+exports.addcategory = async (req, res) => {
+    try {
+        const { name, status } = req.body;
+        await category.create({ name, status })
+        req.flash("success", "Category added successfully");
+        res.redirect('/admin/courses/categories')
+    } catch (error) {
+        req.flash("error", "some error occured");
+
+        res.redirect('/admin/courses/categories')
+    }
+
+}
+exports.geteditcategory = async (req, res) => {
+    const categoryId = req.params.categories_id;
+    if (!categoryId) {
+        req.flash("error", "Category not found");
+        return res.redirect('/admin/courses/categories');
+    }
+    const categories = await category.findById(categoryId);
+    res.render('editcategory', { categories: categories })
+}
+
+
+exports.editcategory = async (req, res) => {
+
+    try {
+        const categoryId = req.params.categories_id;
+        const { name, status } = req.body;
+        await category.findByIdAndUpdate(categoryId, { name: name, status: status })
+        req.flash("success", "Category updated successfully");
+        res.redirect('/admin/courses/categories');
+    } catch (error) {
+        req.flash("error", "some error occured");
+        res.redirect('/admin/courses/categories')
+    }
+}
+
+exports.deletecategory = async (req, res) => {
+    try {
+        const categoryId = req.params.categories_id;
+        await category.findByIdAndUpdate(categoryId, { status: "archived" })
+        req.flash("success", "Category removed successfully");
+        res.redirect('/admin/courses/categories');
+
+    } catch (error) {
+        req.flash("error", "some error occured");
+        res.redirect('/admin/courses/categories')
+    }
 }
