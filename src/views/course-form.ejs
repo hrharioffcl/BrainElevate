@@ -11,262 +11,198 @@
   <style>
     .main-content-course {
       flex: 1;
-      /* take up remaining space */
       padding: 30px;
-      /* spacing inside */
       margin-left: 250px;
-      /* push away from sidebar width */
       background-color: #fff;
-      /* content area background */
       min-height: 100vh;
-      /* full height */
       border-radius: 10px;
-      /* soft rounded look */
     }
-
     .nav-link {
       text-decoration: none;
       color: black;
     }
   </style>
-
 </head>
 
 <body class="d-flex" style="background-color: black;">
-
   <!-- Sidebar -->
   <%- include("partials/superadminsidebar") %>
 
-    <div class="main-content-course" style="background-color:#F8FAFC">
-
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-md-10"> <!-- change 6 to 4 or 5 for narrower -->
-            <div class="page-header">
-              <h2>
-                <%= course ? course.name : 'Add New Course' %>
-              </h2>
-            </div>
-
-            <div class="course-form">
-              <form action="<%= course ? '/admin/coursesmangement/update/' + course._id : '/admin/addnewcourse' %>"
-                method="POST">
-
-                <!-- Tabs -->
-                <ul class="nav nav-tabs">
-                  <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#details">Details</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#chapters">Chapters</a>
-                  </li>
-                  
-                    <% if (course && course._id) { %>
-  <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews</a>
-  </li>
-  <% } %>
-                  <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#settings">Settings</a>
-                  </li>
-                </ul>
-
-                <div class="tab-content p-3 border border-top-0">
-
-                  <!-- Details -->
-                  <div class="tab-pane fade show active" id="details">
-                    <div class="mb-3">
-                      <label class="form-label">Course Name</label>
-                      <input type="text" class="form-control" name="name" value="<%= course ? course.name : '' %>"
-                        required>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Course Details</label>
-                      <input type="text" class="form-control" name="details"
-                        value="<%= course ? course.details : '' %>">
-                    </div>
-
-                    <div class="row">
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label">Author</label>
-                        <input type="text" class="form-control" name="author"
-                          value="<%= course ? course.author : '' %>">
-                      </div>
-
-                      <div class="col-md-6 mb-3">
-                        <label class="form-label">Level</label>
-                        <select class="form-select" name="level">
-                          <option value="Beginner" <%=course?.level==='Beginner' ? 'selected' : '' %>>Beginner
-                          </option>
-                          <option value="Intermediate" <%=course?.level==='Intermediate' ? 'selected' : '' %>
-                            >Intermediate</option>
-                          <option value="Advanced" <%=course?.level==='Advanced' ? 'selected' : '' %>>Advanced
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Upload Intro Image</label>
-                      <input type="file" class="form-control" name="thumbnail" accept="image/*">
-                      <% if (course && course.thumbnail) { %>
-                        <img src="/uploads/<%= course.thumbnail %>" class="mt-2" style="max-width:200px;">
-                        <% } %>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Description</label>
-                      <textarea class="form-control" rows="5"
-                        name="description"><%= course ? course.description : '' %></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">What You Will Learn (1–4 points)</label>
-
-                      <% for (let i=0; i < 4; i++) { %>
-                        <div class="input-group mb-2">
-                          <input type="text" name="learnPoints[]" class="form-control"
-                            value="<%= course && course.learnPoints[i] ? course.learnPoints[i] : '' %>"
-                            placeholder="Learning point <%= i+1 %>">
-                        </div>
-                        <% } %>
-
-                    </div>
-                    <div class="mt-4 d-flex justify-content-end">
-                      <button type="submit" name="status" value="draft" class="btn btn-secondary me-2">Draft</button>
-                      <button type="submit" name="status" value="published" class="btn btn-dark">Publish</button>
-                    </div>
-
-
-
-
-                  </div>
-
-                  <!-- Chapters -->
-                  <div class="tab-pane fade" id="chapters">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <h4>Chapters</h4>
-
-                      <% if (course && course._id) { %>
-                        <a href="/admin/courses/<%= course._id %>/addchapter" class="btn btn-dark">New
-                          Chapter</a>
-                        <% } else { %>
-                          <span class="text-muted">Save the course first to add chapters</span>
-                          <% } %>
-                    </div>
-
-                    <table class="table table-hover align-middle">
-                      <thead>
-                        <tr>
-                          <th scope="col">ID</th>
-                          <th scope="col">Chapter #</th>
-                          <th scope="col">Title</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% if (existingchapater && existingchapater.length> 0) { %>
-                          <% existingchapater.forEach((chapter, index)=> { %>
-                            <tr>
-                              <td>
-                                <%= index + 1 %>
-                              </td>
-                              <td>
-                                <b>Chapter <%= chapter.order %></b>
-                              </td>
-                              <td>
-                                <%= chapter.title %>
-                              </td>
-                              <td>
-                                <%= chapter.createdAt ? new Date(chapter.createdAt).toLocaleString("en-GB", {
-                                  day: "2-digit" , month: "short" , year: "numeric" , hour: "2-digit" ,
-                                  minute: "2-digit" , hour12: true }) : "" %>
-                              </td>
-                              <td>
-                                <%= chapter.status %>
-                              </td>
-
-                              <td>
-                                <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/edit"
-                                  class="text-success me-2">Edit</a>
-                                <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/delete"
-                                  class="text-danger"
-                                  onclick="return confirm('Are you sure you want to delete this chapter?')">Delete</a>
-                              </td>
-                            </tr>
-                            <% }) %>
-                              <% } else { %>
-                                <tr>
-                                  <td colspan="7" class="text-center">No chapters added yet.</td>
-                                </tr>
-                                <% } %>
-                      </tbody>
-                    </table>
-                  </div>
-<!-- Settings -->
-<div class="tab-pane fade" id="settings">
- 
-    <h4 class="mb-4 fw-bold">Settings</h4>
-
- <div class="mb-3">
-  <label class="form-label">Course Price</label>
-  <div class="input-group">
-    <span class="input-group-text">₹</span>
-    <input type="number" step="99" class="form-control" name="price"
-           value="<%= course ? course.price : '' %>" placeholder="199.00" required>
-  </div>
-</div>
-
-<div class="mb-3">
-  <label class="form-label">Category</label>
-  <select class="form-select" name="category" required>
-    <option value="">-- Select Category --</option>
-    <% categories.forEach(cat => { %>
-      <option value="<%= cat._id %>" <%= course?.category?.toString() === cat._id.toString() ? 'selected' : '' %>>
-        <%= cat.name %>
-      </option>
-    <% }) %>
-  </select>
-</div>
-
-    <div class="mb-3">
-      <label class="form-label">Course Duration</label>
-      <select class="form-select" name="duration" required>
-        <option value="">-- Select Duration --</option>
-        <option value="1-3 months" <%= course?.duration==='1-3 months' ? 'selected' : '' %>>1-3 months</option>
-        <option value="3-6 months" <%= course?.duration==='3-6 months' ? 'selected' : '' %>>3-6 months</option>
-        <option value="6-12 months" <%= course?.duration==='6-12 months' ? 'selected' : '' %>>6-12 months</option>
-      </select>
-    </div>
-
-
-
- <div class="mt-4 d-flex justify-content-end">
-      <button type="submit" class="btn rounded-pill 
-cousre-btn px-4">Save</button>
-   
-  </div>
-</div>
-
-
-
-
-
-                </div>
-              </form>
-
-            </div>
+  <div class="main-content-course" style="background-color:#F8FAFC">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <div class="page-header">
+            <h2><%= course ? course.name : 'Add New Course' %></h2>
           </div>
-        </div>
-        <%- include("partials/flashalerts") %>
 
+          <div class="course-form">
+            <!-- Details + Settings Form -->
+            <form action="<%= course ? '/admin/coursesmangement/update/' + course._id : '/admin/addnewcourse' %>"
+              method="POST">
+
+              <!-- Tabs -->
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" data-bs-toggle="tab" href="#details">Details</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#chapters">Chapters</a>
+                </li>
+                <% if (course && course._id) { %>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#reviews">Reviews</a>
+                </li>
+                <% } %>
+              </ul>
+
+              <div class="tab-content p-3 border border-top-0">
+
+                <!-- Details Tab -->
+                <div class="tab-pane fade show active" id="details">
+
+                  <!-- Course Info -->
+                  <div class="mb-3">
+                    <label class="form-label">Course Name</label>
+                    <input type="text" class="form-control" name="name" value="<%= course ? course.name : '' %>" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Course Details</label>
+                    <input type="text" class="form-control" name="details" value="<%= course ? course.details : '' %>">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Author</label>
+                      <input type="text" class="form-control" name="author" value="<%= course ? course.author : '' %>">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Level</label>
+                      <select class="form-select" name="level">
+                        <option value="Beginner" <%=course?.level==='Beginner' ? 'selected' : '' %>>Beginner</option>
+                        <option value="Intermediate" <%=course?.level==='Intermediate' ? 'selected' : '' %>>Intermediate</option>
+                        <option value="Advanced" <%=course?.level==='Advanced' ? 'selected' : '' %>>Advanced</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Upload Intro Image</label>
+                    <input type="file" class="form-control" name="thumbnail" accept="image/*">
+                    <% if (course && course.thumbnail) { %>
+                      <img src="/uploads/<%= course.thumbnail %>" class="mt-2" style="max-width:200px;">
+                    <% } %>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" rows="5" name="description"><%= course ? course.description : '' %></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">What You Will Learn (1–4 points)</label>
+                    <% for (let i=0; i < 4; i++) { %>
+                      <div class="input-group mb-2">
+                        <input type="text" name="learnPoints[]" class="form-control" value="<%= course && course.learnPoints[i] ? course.learnPoints[i] : '' %>" placeholder="Learning point <%= i+1 %>">
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <!-- Settings Fields -->
+                  <h4 class="mt-4">Settings</h4>
+
+                  <div class="mb-3">
+                    <label class="form-label">Course Price</label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input type="number"  class="form-control" name="price"
+                        value="<%= course ? course.price : '' %>" placeholder="199.00" required>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category" required>
+                      <option value="">-- Select Category --</option>
+                      <% categories.forEach(cat => { %>
+                        <option value="<%= cat._id %>" <%= course?.category?.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Course Duration</label>
+                    <select class="form-select" name="duration" required>
+                      <option value="">-- Select Duration --</option>
+                      <option value="1-3 months" <%= course?.duration==='1-3 months' ? 'selected' : '' %>>1-3 months</option>
+                      <option value="3-6 months" <%= course?.duration==='3-6 months' ? 'selected' : '' %>>3-6 months</option>
+                      <option value="6-12 months" <%= course?.duration==='6-12 months' ? 'selected' : '' %>>6-12 months</option>
+                    </select>
+                  </div>
+
+                  <!-- Submit Buttons -->
+                  <div class="mt-4 d-flex justify-content-end">
+                    <button type="submit" name="status" value="draft" class="btn btn-secondary me-2">Draft</button>
+                    <button type="submit" name="status" value="published" class="btn btn-dark">Publish</button>
+                  </div>
+
+                </div> <!-- tab-pane details -->
+            </form>
+
+                <!-- Chapters Tab -->
+                <div class="tab-pane fade" id="chapters">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Chapters</h4>
+                    <% if (course && course._id) { %>
+                      <a href="/admin/courses/<%= course._id %>/addchapter" class="btn btn-dark">New Chapter</a>
+                    <% } else { %>
+                      <span class="text-muted">Save the course first to add chapters</span>
+                    <% } %>
+                  </div>
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Chapter #</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (existingchapater && existingchapater.length> 0) { %>
+                        <% existingchapater.forEach((chapter, index)=> { %>
+                          <tr>
+                            <td><%= index + 1 %></td>
+                            <td><b>Chapter <%= chapter.order %></b></td>
+                            <td><%= chapter.title %></td>
+                            <td><%= chapter.createdAt ? new Date(chapter.createdAt).toLocaleString("en-GB",{ day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", hour12:true}) : "" %></td>
+                            <td><%= chapter.status %></td>
+                            <td>
+                              <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/edit" class="text-success me-2">Edit</a>
+                              <a href="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/delete" class="text-danger" onclick="return confirm('Are you sure you want to delete this chapter?')">Delete</a>
+                            </td>
+                          </tr>
+                        <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="7" class="text-center">No chapters added yet.</td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div> <!-- tab-pane chapters -->
+
+              </div> <!-- tab-content -->
+          </div> <!-- course-form -->
+        </div>
+      </div>
+    </div>
+    <%- include("partials/flashalerts") %>
 </body>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
 </html>

@@ -4,69 +4,69 @@ const chapter = require("../models/chapterScheema")
 const coupons = require("../models/couponSchema")
 
 exports.getcoursemanagement = async (req, res) => {
-  try {
-    // Pagination setup
-    let page = parseInt(req.query.page) || 1;
-    let limit = 6; // courses per page
-    let skip = (page - 1) * limit;
+    try {
+        // Pagination setup
+        let page = parseInt(req.query.page) || 1;
+        let limit = 6; // courses per page
+        let skip = (page - 1) * limit;
 
-    // Filters
-    const { search, status, level } = req.query;
-    let filter = {};
+        // Filters
+        const { search, status, level } = req.query;
+        let filter = {};
 
-    // 🔍 Search by course name
-    if (search && search.trim() !== "") {
-      filter.name = { $regex: search.trim(), $options: "i" };
+        // 🔍 Search by course name
+        if (search && search.trim() !== "") {
+            filter.name = { $regex: search.trim(), $options: "i" };
+        }
+
+        // 🎯 Filter by status (draft, published, pending approval, etc.)
+        if (status && status !== "all") {
+            filter.status = status;
+        }
+
+        // 🎯 Filter by level (Beginner, Intermediate, Advanced)
+        if (level && level !== "all") {
+            filter.level = level;
+        }
+
+        // Count total courses for pagination
+        const totalCourses = await course.countDocuments(filter);
+
+        // Fetch paginated + filtered courses
+        const existingcourse = await course
+            .find(filter)
+            .sort({ createdAt: -1 }) // newest first
+            .skip(skip)
+            .limit(limit);
+
+        res.render("coursemanagemant", {
+            course: existingcourse,
+            currentPage: page,
+            totalPages: Math.ceil(totalCourses / limit),
+            search: search || "",
+            statusFilter: status || "all",
+            levelFilter: level || "all",
+        });
+    } catch (error) {
+        console.error(error);
+        req.flash("error", "Failed to load courses");
+        res.redirect("/admin");
     }
-
-    // 🎯 Filter by status (draft, published, pending approval, etc.)
-    if (status && status !== "all") {
-      filter.status = status;
-    }
-
-    // 🎯 Filter by level (Beginner, Intermediate, Advanced)
-    if (level && level !== "all") {
-      filter.level = level;
-    }
-
-    // Count total courses for pagination
-    const totalCourses = await course.countDocuments(filter);
-
-    // Fetch paginated + filtered courses
-    const existingcourse = await course
-      .find(filter)
-      .sort({ createdAt: -1 }) // newest first
-      .skip(skip)
-      .limit(limit);
-
-    res.render("coursemanagemant", {
-      course: existingcourse,
-      currentPage: page,
-      totalPages: Math.ceil(totalCourses / limit),
-      search: search || "",
-      statusFilter: status || "all",
-      levelFilter: level || "all",
-    });
-  } catch (error) {
-    console.error(error);
-    req.flash("error", "Failed to load courses");
-    res.redirect("/admin");
-  }
 };
 
 
 exports.getaddnewcourse = async (req, res) => {
-    const categories = await category.find({status:{$ne:"archived"}})
-    res.render('course-form', { course: null, existingchapater: null,categories })
+    const categories = await category.find({ status: "active" })
+    res.render('course-form', { course: null, existingchapater: null, categories })
 }
 
 exports.getupdatecourse = async (req, res) => {
     const id = req.params.course_id
     const existingcourse = await course.findById(id)
     const existingchapater = await chapter.find({ courseId: id })
-        const categories = await category.find({status:{$ne:"archived"}})
+    const categories = await category.find({ status: "active" })
 
-    res.render('course-form', { course: existingcourse, existingchapater,categories })
+    res.render('course-form', { course: existingcourse, existingchapater, categories })
 }
 exports.getaddnewchapter = async (req, res) => {
     const existingcourse = await course.findById(req.params.course_id);
@@ -82,7 +82,7 @@ exports.getaddnewchapter = async (req, res) => {
 exports.adddetails = async (req, res) => {
     console.log(req.body)
     try {
-        const { name, details, author, status, description, level, learnPoints } = req.body
+        const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
 
         // Trim spaces
         const cleanName = name.trim();
@@ -106,7 +106,7 @@ exports.adddetails = async (req, res) => {
         }
         const newcourse = await course.create({
             name, details, author, status, description, level,
-            learnPoints: points
+            learnPoints: points, price, category, duration
         });
         if (newcourse.status === "saved") {
             req.flash("success", "Course saved succesfully");
@@ -139,7 +139,7 @@ exports.updatedetails = async (req, res) => {
         const id = req.params.course_id
         console.log(id)
 
-        const { name, details, author, status, description, level, learnPoints } = req.body
+        const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
 
         const existing = await course.findById(id)
 
@@ -163,6 +163,9 @@ exports.updatedetails = async (req, res) => {
         existing.description = description;
         existing.level = level;
         existing.learnPoints = points;
+        existing.price = price;
+        existing.duration = duration;
+        existing.category = category
         await existing.save();
         console.log(existing)
         if (existing.status === "saved") {
@@ -564,7 +567,7 @@ exports.getcategory = async (req, res) => {
     let limit = 8;
     let skip = (page - 1) * limit;
     const { search, status, sortBy } = req.query
-    let filter = {status:{$ne:"archived"}}
+    let filter = { status: { $ne: "archived" } }
 
     // Search
     if (search) {
@@ -608,7 +611,46 @@ exports.getcategory = async (req, res) => {
     const totalCategories = await category.countDocuments(filter)
 
 
-    const categories = await category.find(filter).sort(sortOption).skip(skip).limit(limit)
+    const categories = await category.aggregate([
+        { $match: filter },
+      
+       
+        {
+            $lookup: {
+                from: "courses",
+                let: { categoryId: "$_id" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$category", "$$categoryId"] },
+                                    { $eq: ["$status", "published"] },
+                                    { $eq: ["$isDeleted", false] }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                as: "courses"
+
+
+            }
+        },
+        {
+            $addFields: {
+
+                courseCount: { $size: "$courses" },
+                authors: { $size: { $setUnion: "$courses.author" } }
+            }
+
+        },
+         { $skip: skip },
+        { $limit: limit },
+        {$sort:sortOption}
+
+    ])
+
     res.render('categories', { categories: categories, currentPage: page, totalPages: Math.ceil(totalCategories / limit), statusFilter: status, search, sortBy: sortOption })
 
 }
@@ -668,3 +710,4 @@ exports.deletecategory = async (req, res) => {
         res.redirect('/admin/courses/categories')
     }
 }
+

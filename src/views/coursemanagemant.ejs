@@ -27,7 +27,7 @@
   <input type="text" name="search" value="<%= search %>" 
          placeholder="Search courses..." 
          class="form-control search-box rounded-pill" style="max-width: 250px;"
-         oninput="this.form.submit()"> <!-- auto-submit when typing -->
+       onkeypress="if(event.key === 'Enter'){ this.form.submit(); }"> <!-- auto-submit when typing -->
 
   <!-- Status Filter -->
   <select name="status" class="form-select custom-select rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
@@ -79,16 +79,18 @@
 
           <!-- Course Title -->
           <h3 class="course-title mt-3 mb-2">
-            <%= course.name %>
+            <%= course.name %> <br>
+        <br>
+            ₹ <%= course.price %>
           </h3>
 
           <!-- Divider -->
-          <hr class="custom-divider">
+          <hr class="custom-divider mt">
         
               <!-- Top row: status + actions -->
           <div class="d-flex justify-content-between align-items-start">
             <span class="badge  text-white"><%= course.author %></span>
-            <div class="d-flex gap-3">
+            <div class="d-flex gap-3 mt-2">
            <span class="badge text-white  <% if (course.level === 'Beginner') { %> bg-beginner <% } %>
        <% if (course.level === 'Intermediate') { %> bg-intermediate <% } %>
        <% if (course.level === 'Advanced') { %> bg-advanced <% } %>"><%= course.level %></span>

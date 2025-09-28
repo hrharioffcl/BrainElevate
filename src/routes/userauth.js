@@ -1,11 +1,21 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = require("../controllers/authcontrollers")
+const{gethome} = require("../controllers/userHomeController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
+const{softCheckUser}=require("../middlewaares/softcheckuser")
+
+
+
+
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
-    res.render('homewithoutlogin')
+    res.render('homewithoutlogin',{referralLink:res.locals.referralLink||null})
+})
+router.get('/career',(req,res)=>{
+    res.render("career", );
+
 })
 
 router.get('/signup', restrictUnauthenticatedRoutes, (req, res) => {
@@ -31,11 +41,14 @@ router.get('/forgot-password', restrictUnauthenticatedRoutes, (req, res) => {
 router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
-router.get('/home', verifytoken,createReferralLink, (req, res) => {
-   
-    console.log("Token is:", req.cookies.jwt);
-    res.render('home', { fullName: req.user.fullName,referralLink:res.locals.referralLink })
-})
+router.get('/home', verifytoken,createReferralLink,gethome )
+
+
+
+
+
+
+
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);
 router.post("/resend-otp", resendotp)

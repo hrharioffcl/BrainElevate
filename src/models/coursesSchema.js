@@ -36,7 +36,7 @@ const courseSchema = new mongoose.Schema(
   },
   thumbnail: {
     type: String,
-    default: null,
+  default: "/images/defaultcourse.svg",
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -57,7 +57,7 @@ const courseSchema = new mongoose.Schema(
   },
   duration:{
     type:String,
-     enum: ["1months", "3months", "6months"],
+     enum: ["1-3 months", "3-6 months", "6-12 months"],
 
   }
 }, 

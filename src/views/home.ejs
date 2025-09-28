@@ -7,6 +7,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chilanka&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
 
 <style>
     body {
@@ -34,7 +38,7 @@ footer {
       width: 100%;
       height: 100vh;
       /* full screen */
-      background: url('/images/home.png') no-repeat center center;
+      background: url('/images/homwologinbanner.png') no-repeat center center;
       background-size: cover;
       display: flex;
       align-items: center;
@@ -73,7 +77,77 @@ footer {
     background: #4BEADA; /* fallback for mobile */
   }
 }
+
+
+  .card {
+  color: #f8f9fa;
+  transition: all 0.45s ease;
+
+}
+.card:hover {
+  color: #000;
+  transform: scale(1.03);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+
+.card-img-top {
+  width: 100%;
+  height: 150px;   /* adjust this height as you prefer */
+  object-fit: contain;
+background: #f8f9fa; 
+
+  border-top-left-radius: 0.5rem; /* optional rounded edges */
+  border-top-right-radius: 0.5rem;
+}
+
+  .category-card {
+  color: #0c0c0c;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1); /* transparent white */   
+   backdrop-filter: blur(15px);  
+}
+.category-card:hover {
+  color: #ffffff;
+  transform: translateY(-5px);
+  background-color: #000000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.category-section {
+  background-image: linear-gradient(to bottom ,#4BEADA,white 80%);
+  background-size: cover;
   
+
+  position: relative;
+   width: 100%;
+     padding-top: 5%;
+        padding-bottom: 5%;
+     
+}
+
+Optional overlay for readability
+.category-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+    background: #ffffff;
+  z-index: 1;
+}
+
+.category-section .container {
+  position: relative;
+  z-index: 2; /* ensures content is above overlay */
+}
+
+
+.banner-section img {
+  max-height: 300px; /* control banner height */
+  object-fit: cover;
+  display: block;
+}
 </style>
 </head>
 
@@ -85,25 +159,157 @@ footer {
    <section class="hero">
       <div class="hero-content">
         <h2 >Welcome, <%= fullName %> 👋</h2><br>
-        <h1 class="typewriter"  style="color: #F44211;font-family: 'K2D', sans-serif; font-weight: lighter;">CLICK. LEARN. GROW.</h1>
+        <h1 class="typewriter"  style="color: #f1f0f0;font-family: 'K2D', sans-serif; font-weight: lighter;">CLICK. LEARN. GROW.</h1>
       <p style="font-size: 22px; font-weight: 500; line-height: 1.5; color: #000;">
   Learn from real-world experts from around the globe.<br>
-  Get courses from <span style="font-size:28px; font-weight:700;">₹299</span>
-      <a  class="btn btn-danger rounded-pill "  href="/courses">Get Started</a>
+  Get courses from <span style="font-size:28px; font-weight:700;">₹299</span><br>
+  <br><div class="d-flex justify-content-center">      <a  class="btn btn-danger rounded-pill p-6 w-50 "  href="/courses">Get Started</a>
+</div>
 
 </p>
 
       </div>
     </section>
- 
-   <section>
-    <h1>top rated design courses</h1>
-   </section>
-   
-   <section>
-    <h1>top rated frontend courses</h1>
-   </section>
 
+
+<section class="category-section">
+<div class="container my-2  ">
+  <h2 class="fw-bold ">Browse in Brain Elevate</h2>
+  <p class="text-muted">Browse learning content designed to help your business or career.</p>
+
+  <div class="row g-3 ">
+    <% categories.forEach(cat => { %>
+      <div class="col-md-3 col-sm-6">
+        <a href="/courses?category=<%= cat._id %>" class="text-decoration-none">
+          <div class="card shadow-sm  rounded-3  text-center p-3 h-100 category-card">
+            <div class="mb-2">
+              <i class="bi bi-journal-bookmark" style="font-size: 2rem;"></i> <!-- category icon -->
+            </div>
+            <h6 class="fw-bold "><%= cat.name %></h6>
+                        <h6 class=""><%= cat.coursecount %> Courses <br> <i class="bi bi-arrow-right"></i>      <!-- simple right arrow -->
+</i>   <!-- circle arrow -->
+</h6>
+
+
+          </div>
+        </a>
+      </div>
+    <% }) %>
+  </div>
+</div>
+</section>
+<!-- Banner Image Section
+<section class="banner-section bg-dark">
+  <img src="/images/homebanner.png" >
+</section> -->
+
+<section>
+ <div class="container my-5">
+  <h2 class="fw-bold">Our Latest Courses</h2>
+  <p class="text-muted">Recommended for you</p>
+ <hr>
+
+  <div class="row g-4">
+    <% courses.forEach(course => { %>
+      <div class="col-md-4 col-lg-3">
+         <a href="#" class="text-decoration-none" >
+        <div class="card h-100 shadow-sm border-0">
+          <!-- Course Image -->
+          <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
+
+          <!-- Card Body -->
+          <div class="card-body">
+            <h6 class="fw-bold text-dark"><%= course.name%></h6>
+            <p class="mb-1 text-muted small"><%= course.author %></p>
+
+            <!-- Rating -->
+            <div class="d-flex align-items-center mb-2">
+              <span class="fw-bold me-2"><%= course.rating %></span>
+              <span class="text-warning">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= Math.floor(course.rating)) { %>
+                    <i class="bi bi-star-fill"></i>
+                  <% } else if (i - course.rating < 1) { %>
+                    <i class="bi bi-star-half"></i>
+                  <% } else { %>
+                    <i class="bi bi-star"></i>
+                  <% } %>
+                <% } %>
+              </span>
+              <small class="text-muted ms-2">(<%= course.reviews %>)</small>
+            </div>
+
+            <!-- Price -->
+            <p class="fw-bold mb-0 text-dark">₹<%= course.price %> 
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="card-footer bg-white border-0 d-flex justify-content-between">
+             <span class="badge text-white   p-2<% if (course.level === 'Beginner') { %> bg-beginner <% } %>
+       <% if (course.level === 'Intermediate') { %> bg-intermediate <% } %>
+       <% if (course.level === 'Advanced') { %> bg-advanced <% } %>"><%= course.level %></span>
+            <span class="text-danger"><%= course.duration %></span>
+          </div></a>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+</section>
+
+ <div class="container my-5">
+  <h2 class="fw-bold">Courses Under 500</h2>
+  <p class="text-muted">Recommended for you</p>
+  <hr>
+
+  <div class="row g-4">
+    <% lowpricecourse.forEach(course => { %>
+      <div class="col-md-4 col-lg-3">
+          <a href="#" class="text-decoration-none" >
+        <div class="card h-100 shadow-sm border-0">
+          <!-- Course Image -->
+          <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
+
+          <!-- Card Body -->
+          <div class="card-body">
+            <h6 class="fw-bold text-dark"><%= course.name%></h6>
+            <p class="mb-1 text-muted small"><%= course.author %></p>
+
+            <!-- Rating -->
+            <div class="d-flex align-items-center mb-2">
+              <span class="fw-bold me-2"><%= course.rating %></span>
+              <span class="text-warning">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= Math.floor(course.rating)) { %>
+                    <i class="bi bi-star-fill"></i>
+                  <% } else if (i - course.rating < 1) { %>
+                    <i class="bi bi-star-half"></i>
+                  <% } else { %>
+                    <i class="bi bi-star"></i>
+                  <% } %>
+                <% } %>
+              </span>
+              <small class="text-muted ms-2">(<%= course.reviews %>)</small>
+            </div>
+
+            <!-- Price -->
+            <p class="fw-bold mb-0 text-dark">₹<%= course.price %> 
+            </p>
+          </div>
+
+          <!-- Footer -->
+          <div class="card-footer bg-white border-0 d-flex justify-content-between">
+             <span class="badge text-white p-2 <% if (course.level === 'Beginner') { %> bg-beginner <% } %>
+       <% if (course.level === 'Intermediate') { %> bg-intermediate <% } %>
+       <% if (course.level === 'Advanced') { %> bg-advanced <% } %>"><%= course.level %></span>
+            <span class="text-danger"><%= course.duration %></span>
+          </div>
+        </div>
+      </div></a>
+    <% }) %>
+  </div>
+</div>
    <section>
     <h1>top rated frontend courses</h1>
    </section>

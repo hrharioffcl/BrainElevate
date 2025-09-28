@@ -19,7 +19,8 @@ app.use(session({
 }));
 
 const { verifyadmintoken } = require("./middlewaares/adminAuthMiddleware");
-
+const {createReferralLink}= require("./middlewaares/refferallink")
+const {softCheckUser}=require("./middlewaares/softcheckuser")
 const flash = require("connect-flash");
 app.use(flash());
 
@@ -60,10 +61,10 @@ const userroutes= require("./routes/userauth")
 const adminroutes = require("./routes/adminauth")
 const googleauthRoutes = require("./routes/googleauth");
 
-//usee routes
 
-app.use("/", userroutes)
-app.use("/", googleauthRoutes);
+
+app.use("/",softCheckUser,createReferralLink,userroutes)
+app.use("/", softCheckUser,createReferralLink,googleauthRoutes);
 app.use('/admin',(req, res, next) => {
     const openPaths = ["/login", "/logout","/forgot-password","/verify-otp","/reset-password"];
     if (openPaths.includes(req.path)) return next();

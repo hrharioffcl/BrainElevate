@@ -22,7 +22,7 @@ const {
 const { 
   adddetails, updatedetails, addchapter, 
   geteditchapter, editchapter, deletecourse, getcoursemanagement,
-  getaddnewcourse, getupdatecourse, getaddnewchapter, 
+  getaddnewcourse, getupdatecourse,coursesettings, getaddnewchapter, 
   getcoupons, getaddcoupon, addcoupon, geteditcoupon, 
   editcoupon, deletecoupon, getcategory, getaddcategory ,addcategory,geteditcategory,editcategory,deletecategory
 } = require("../controllers/managecoursecontroller")

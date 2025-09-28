@@ -1,3 +1,12 @@
+@font-face{
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/playfair-display-400.woff2") format("woff2"),
+       url("/fonts/playfair-display-400.woff") format("woff");
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -165,3 +174,26 @@ font-family: "Montserrat", sans-serif;
     display: block;
   }
 }
+
+
+.bg-beginner {
+  background-color: #267f2f; /* blue tone */
+  color: #fff;
+}
+
+.bg-intermediate {
+  background-color: #22c4cc; /* teal tone */
+  color: #fff;
+}
+
+.bg-advanced {
+  background-color: #8b0000; /* dark red tone */
+  color: #fff;
+}
+.join-btn {
+      background: white;
+      color: #4BEADA;
+      font-weight: bold;
+      border-radius: 6px;
+      padding: 6px 12px;
+    }
