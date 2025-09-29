@@ -175,21 +175,12 @@ font-family: "Montserrat", sans-serif;
   }
 }
 
-
-.bg-beginner {
-  background-color: #267f2f; /* blue tone */
+.bg-category {
+  background-color: #4beada84; /* teal tone */
   color: #fff;
 }
 
-.bg-intermediate {
-  background-color: #22c4cc; /* teal tone */
-  color: #fff;
-}
 
-.bg-advanced {
-  background-color: #8b0000; /* dark red tone */
-  color: #fff;
-}
 .join-btn {
       background: white;
       color: #4BEADA;

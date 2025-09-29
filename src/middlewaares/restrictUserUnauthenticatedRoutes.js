@@ -16,6 +16,7 @@ const restrictUnauthenticatedRoutes = async (req, res, next) => {
         const user = await User.findById(decoded.id).select("_id");
 
         if (!user) {
+
             // Token valid but user not found in DB → allow access
             return next();
         }

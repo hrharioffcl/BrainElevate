@@ -1,6 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = require("../controllers/authcontrollers")
 const{gethome} = require("../controllers/userHomeController")
+const{getcourse}= require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -43,6 +44,7 @@ router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
 })
 router.get('/home', verifytoken,createReferralLink,gethome )
 
+router.get('/courses',getcourse)
 
 
 

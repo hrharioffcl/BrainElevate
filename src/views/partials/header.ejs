@@ -20,11 +20,39 @@
 
     <!-- Search bar -->
      
-  <% if (referralLink) { %>
-    <form action="/search" method="get" class="search-form">
+  <% if (referralLink  ) { %>
+    
+<form method="GET" action="/courses" class="d-flex search-form">
+  <input type="text" name="search" class="form-control" 
+         placeholder="Search courses..." 
+         value="<%= (typeof selectedFilters !== 'undefined' && selectedFilters.search) ? selectedFilters.search : '' %>"
+         onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
 
-      <input type="text" name="search" placeholder="Search..." />
-    </form>
+  <!-- Preserve other filters if selectedFilters exists -->
+  <% if (typeof selectedFilters !== 'undefined' && selectedFilters) { %>
+    <% if (selectedFilters.categories) { selectedFilters.categories.forEach(cat => { %>
+      <input type="hidden" name="categories" value="<%= cat %>">
+    <% }) } %>
+
+    <% if (selectedFilters.rating) { selectedFilters.rating.forEach(r => { %>
+      <input type="hidden" name="rating" value="<%= r %>">
+    <% }) } %>
+
+    <% if (selectedFilters.level) { selectedFilters.level.forEach(l => { %>
+      <input type="hidden" name="level" value="<%= l %>">
+    <% }) } %>
+
+    <% if (selectedFilters.price) { selectedFilters.price.forEach(p => { %>
+      <input type="hidden" name="price" value="<%= p %>">
+    <% }) } %>
+
+    <% if (selectedFilters.duration) { selectedFilters.duration.forEach(d => { %>
+      <input type="hidden" name="duration" value="<%= d %>">
+    <% }) } %>
+  <% } %>
+</form>
+
+
       <% } %>
   </div>
     <button class="menu-toggle" id="menuToggle">☰</button>

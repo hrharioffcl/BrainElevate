@@ -79,6 +79,7 @@ exports.deletestudent = async (req, res) => {
     try {
         const studentId = req.params.id
         await User.findByIdAndUpdate(studentId, { isDeleted: true })
+        
 
         req.flash("success", "Student deleted successfully");
         res.redirect("/admin/manage-students");
