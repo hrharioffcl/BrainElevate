@@ -11,23 +11,31 @@ exports.getcoursemanagement = async (req, res) => {
         let skip = (page - 1) * limit;
 
         // Filters
-        const { search, status, level } = req.query;
+        const { search, status, level,price } = req.query;
         let filter = {};
 
-        // 🔍 Search by course name
+        // search filter
         if (search && search.trim() !== "") {
             filter.name = { $regex: search.trim(), $options: "i" };
         }
 
-        // 🎯 Filter by status (draft, published, pending approval, etc.)
+        // status filter
         if (status && status !== "all") {
             filter.status = status;
         }
 
-        // 🎯 Filter by level (Beginner, Intermediate, Advanced)
+        //level filter
         if (level && level !== "all") {
             filter.level = level;
         }
+// Price filter
+if (price && price !== "all") {
+  if (price === "free") {
+   filter.price = 0;
+  } else if (price === "paid") {
+   filter.price = { $gt: 0 };
+  }
+}
 
         // Count total courses for pagination
         const totalCourses = await course.countDocuments(filter);
@@ -46,11 +54,12 @@ exports.getcoursemanagement = async (req, res) => {
             search: search || "",
             statusFilter: status || "all",
             levelFilter: level || "all",
+             priceFilter: price || "all",
         });
     } catch (error) {
         console.error(error);
         req.flash("error", "Failed to load courses");
-        res.redirect("/admin");
+        res.redirect("/admin/courses");
     }
 };
 
@@ -581,10 +590,10 @@ exports.getcategory = async (req, res) => {
     // Sorting
     let sortOption = {};
     if (sortBy === "courses_desc") {
-        sortOption = { courses: -1 };
+        sortOption = { courseCount: -1 };
     }
     else if (sortBy === "courses_asc") {
-        sortOption = { courses: 1 };
+        sortOption = { courseCount: 1 };
     }
 
 
@@ -651,7 +660,7 @@ exports.getcategory = async (req, res) => {
 
     ])
 
-    res.render('categories', { categories: categories, currentPage: page, totalPages: Math.ceil(totalCategories / limit), statusFilter: status, search, sortBy: sortOption })
+    res.render('categories', { categories: categories, currentPage: page, totalPages: Math.ceil(totalCategories / limit), statusFilter: status, search, sortBy: sortBy })
 
 }
 

@@ -188,3 +188,36 @@ font-family: "Montserrat", sans-serif;
       border-radius: 6px;
       padding: 6px 12px;
     }
+
+
+    
+ /* Dark theme pagination */
+    .pagination-dark .page-link {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      margin: 0 5px;
+      /* tighter spacing */
+      width: 32px;
+      /* equal width/height */
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      /* smaller font */
+      padding: 0;
+      /* remove Bootstrap default padding */
+    }
+
+    /* Active page circle */
+    .pagination-dark .active .page-link {
+      background: #1abc9c;
+      border-radius: 50%;
+    }
+
+    /* Round prev/next as well */
+    .page-link.rounded-circle {
+      border-radius: 50% !important;
+    }
+

@@ -56,13 +56,14 @@
 <form method="GET" action="/admin/courses/categories" class="d-inline-block">
   <select name="sortBy" class="form-select custom-select w-auto rounded-pill" onchange="this.form.submit()">
     <option value="default" <%= sortBy==='default' ? 'selected' : '' %>>Sort By</option>
-    <option value="courses_asc" <%= sortBy==='courses_asc' ? 'selected' : '' %>>Courses: Low → High</option>
-    <option value="courses_desc" <%= sortBy==='courses_desc' ? 'selected' : '' %>>Courses: High → Low</option>
-    <option value="authors_asc" <%= sortBy==='authors_asc' ? 'selected' : '' %>>Contributors: Low → High</option>
-    <option value="authors_desc" <%= sortBy==='authors_desc' ? 'selected' : '' %>>Contributors: High → Low</option>
-    <option value="students_asc" <%= sortBy==='students_asc' ? 'selected' : '' %>>Enrollment: Low → High</option>
-    <option value="students_desc" <%= sortBy==='students_desc' ? 'selected' : '' %>>Enrollment: High → Low</option>
+    <option value="courses_asc" <%= sortBy==='courses_asc' ? 'selected' : '' %>> Sort By : Courses ↑</option>
+    <option value="courses_desc" <%= sortBy==='courses_desc' ? 'selected' : '' %>> Sort By : Courses ↓</option>
+    <option value="authors_asc" <%= sortBy==='authors_asc' ? 'selected' : '' %>> Sort By : Contributors ↑</option>
+    <option value="authors_desc" <%= sortBy==='authors_desc' ? 'selected' : '' %>> Sort By : Contributors ↓</option>
+    <option value="students_asc" <%= sortBy==='students_asc' ? 'selected' : '' %>> Sort By : Enrollment ↑</option>
+    <option value="students_desc" <%= sortBy==='students_desc' ? 'selected' : '' %>> Sort By : Enrollment ↓</option>
   </select>
+
 
   <% if (search) { %>
     <input type="hidden" name="search" value="<%= search %>">

@@ -19,7 +19,7 @@
       <h4 class="text-white mb-4">Courses</h4>
 
 <!-- Top controls -->
-<!-- <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap"> -->
+
 
   <!-- Filters -->
 <form method="GET" action="/admin/courses" class="d-flex flex-wrap gap-2 mb-3 justify-content-between">
@@ -44,6 +44,15 @@
     <option value="Intermediate" <%= levelFilter==="Intermediate" ? "selected" : "" %>>Intermediate</option>
     <option value="Advanced" <%= levelFilter==="Advanced" ? "selected" : "" %>>Advanced</option>
   </select>
+
+
+  <!-- Paid/Free Filter -->
+<select name="price" class="form-select custom-select rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+  <option value="all" <%= priceFilter === "all" ? "selected" : "" %>>All Courses</option>
+  <option value="free" <%= priceFilter === "free" ? "selected" : "" %>>Free</option>
+  <option value="paid" <%= priceFilter === "paid" ? "selected" : "" %>>Paid</option>
+</select>
+
 
   <a href="/admin/courses/coupons" class="btn cousre-btn rounded-pill">Coupons</a>
   <a href="/admin/courses/categories" class="btn cousre-btn rounded-pill">Categories</a>
@@ -114,27 +123,28 @@
     <!-- Previous -->
     <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
       <a class="page-link rounded-circle"
-         href="/admin/courses?page=<%= currentPage-1 %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
-         ‹
-      </a>
+     href="/admin/courses?page=<%= currentPage-1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     ‹
+  </a>
     </li>
 
     <!-- Page Numbers -->
     <% for(let i = 1; i <= totalPages; i++) { %>
       <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-        <a class="page-link rounded-circle"
-           href="/admin/courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
-           <%= i %>
-        </a>
+      <a class="page-link rounded-circle"
+   href="/admin/courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>&search=<%= search %>">
+   <%= i %>
+</a>
+
       </li>
     <% } %>
 
     <!-- Next -->
     <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
       <a class="page-link rounded-circle"
-         href="/admin/courses?page=<%= currentPage+1 %>&status=<%= statusFilter %>&level=<%= levelFilter %>&search=<%= search %>">
-         ›
-      </a>
+     href="/admin/courses?page=<%= currentPage+1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     ›
+  </a>
     </li>
 
   </ul>

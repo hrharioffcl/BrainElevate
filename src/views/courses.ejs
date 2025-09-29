@@ -1,326 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Courses</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="/css/header.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-  <style>
-    body {
-      background: #f8f9fa;
-    }
-.filters {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  position: sticky;   /* stick inside its column */
-  top: 20px;          /* adjust to header/navbar height */
-}
+    <style>
+        body {
+            background: #f8f9fa;
+        }
 
-
-    .card {
-
-      color: #f8f9fa;
-      transition: all 0.45s ease;
-      height: 100%;
-      
-
-    }
-
-    .card:hover {
-      color: #000;
-      transform: scale(1.03);
-
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
+        .filters {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            /* stick inside its column */
+            top: 20px;
+            /* adjust to header/navbar height */
+        }
 
 
-    .card-img-top {
-      width: 100%;
-      height: 150px;
-      /* adjust this height as you prefer */
-      object-fit: contain;
-      background: #f8f9fa;
+        .card {
 
-    }
-    .course-name {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;   /* show max 3 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-height: 4.5em;       /* reserve space for 3 lines (3 x ~1.5em) */
-  line-height: 1.5em;      /* line height for consistent spacing */
-}
-
- .card,
-    .card-img-top,
-    .card-footer {
-      border-radius: 0 !important;
-    }
-    .rating i {
-      color: #f4c150;
-    }
+            color: #f8f9fa;
+            transition: all 0.45s ease;
+            height: 100%;
 
 
-    .wishlist-btn i {
-  cursor: pointer;
-  transition: color 0.3s;
-}
+        }
 
-.wishlist-btn i.red {
-  color: red !important;
-}
+        .card:hover {
+            color: #000;
+            transform: scale(1.03);
 
-.dropdown-menu {
-  position: static !important; /* stays in normal flow */
-  float: none;
-  width: 100vh;                 /* optional to fit container */
-  margin-top: 1rem;          /* some spacing below button */
-  box-shadow: none;             /* optional, remove default shadow */
-}
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
 
 
+        .card-img-top {
+            width: 100%;
+            height: 150px;
+            /* adjust this height as you prefer */
+            object-fit: cover;
+            background: #f8f9fa;
 
-.range-slider {
-  height: 50px;
-  position: relative;
-}
-.range-slider input[type="range"] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 5px;
-  background: #ddd;
-  border-radius: 5px;
-  position: absolute;
-  top: 20px;
-  pointer-events: all;
-}
-.range-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  background: #0d6efd;
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-}
+        }
 
-  </style>
+        .course-name {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            /* show max 3 lines */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 4.5em;
+            /* reserve space for 3 lines (3 x ~1.5em) */
+            line-height: 1.5em;
+            /* line height for consistent spacing */
+        }
+
+        .card,
+        .card-img-top,
+        .card-footer {
+            border-radius: 0 !important;
+        }
+
+        .rating i {
+            color: #f4c150;
+        }
+
+
+        .wishlist-btn i {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .wishlist-btn i.red {
+            color: red !important;
+        }
+
+        .dropdown-menu {
+            position: static !important;
+            /* stays in normal flow */
+            float: none;
+            width: 100vh;
+            /* optional to fit container */
+            margin-top: 1rem;
+            /* some spacing below button */
+            box-shadow: none;
+            /* optional, remove default shadow */
+        }
+
+
+
+
+
+        .custom-select {
+            background-color: transparent !important;
+            border: 1px solid #4BEADA !important;
+            color: #000000 !important;
+        }
+
+        .custom-select:focus {
+            border-color: #4BEADA !important;
+            box-shadow: 0 0 0 0 rgba(26, 188, 156, 0.25) !important;
+            /* green glow instead of blue */
+            outline: none !important;
+
+        }
+
+        /* Dropdown options */
+        .custom-select option {
+            background-color: transparent !important;
+            color: #000000 !important;
+        }
+    </style>
 </head>
+
 <body>
 
-  <%- include('partials/header') %>
+    <%- include('partials/header') %>
 
-  <div class="container-fluid mt-4">
-    <div class="row">
+        <div class="container-fluid mt-4">
+            <div class="row">
+
+                <!-- Sidebar Filters -->
+                <div class="col-lg-3 mb-4">
+                    <div class="filters">
+                        <form id="filtersForm" action="/courses" method="GET">
+
+                            <h3>Filters</h3>
+                            <hr>
+
+                            <!-- Category -->
+                            <div class="dropdown show w-100 ">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100 custom-select"
+                                    type="button" data-bs-toggle="dropdown" data-bs-display="static"
+                                    aria-expanded="false">
+                                    Select Category
+                                </button>
+                                <ul class="dropdown-menu  show p-3 w-100 category-dropdown">
+                                    <% categories.forEach(cat=> { %>
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="cat-<%= cat._id %>"
+                                                    name="categories" value="<%= cat._id %>" <% if
+                                                    (selectedFilters.categories &&
+                                                    selectedFilters.categories.includes(cat._id.toString())) { %>
+                                                checked <% } %>>
+                                                    <label class="form-check-label" for="cat-<%= cat._id %>">
+                                                        <%= cat.name %>
+                                                    </label>
+                                            </div>
+                                        </li>
+                                        <% }) %>
+                                </ul>
+                            </div>
+
+                            <hr>
+                            <!-- Rating -->
+                            <h5 class="mb-3">Rating</h5>
+                            <% [4,3].forEach(r=> { %>
+                                <div class="form-check ">
+                                    <input type="checkbox" class="form-check-input" id="<%= r %>rating" name="rating"
+                                        value="<%= r %>" <% if (selectedFilters.rating &&
+                                        selectedFilters.rating.includes(r.toString())) { %> checked <% } %>>
+                                        <label for="<%= r %>rating" class="form-check-label bi bi-star-fill ">
+                                            <%= r %> & above
+                                        </label>
+                                </div>
+                                <% }) %>
+
+                                    <hr>
+                                    <!-- Course Level -->
+                                    <h5 class="mb-3">Course Level</h5>
+                                    <% ['Beginner','Intermediate','Advanced'].forEach(lvl=> { %>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="<%= lvl %>" name="level"
+                                                value="<%= lvl %>" <% if (selectedFilters.level &&
+                                                selectedFilters.level.includes(lvl)) { %> checked <% } %>>
+                                                <label for="<%= lvl %>" class="form-check-label">
+                                                    <%= lvl.charAt(0).toUpperCase()+lvl.slice(1) %>
+                                                </label>
+                                        </div>
+                                        <% }) %>
+
+                                            <hr>
+                                            <!-- Price -->
+                                            <h5 class="mb-3">Price</h5>
+                                            <% ['paid','free'].forEach(p=> { %>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input " id="<%= p %>"
+                                                        name="price" value="<%= p %>" <% if (selectedFilters.price &&
+                                                        selectedFilters.price.includes(p)) { %> checked <% } %>>
+                                                        <label for="<%= p %>" class="form-check-label">
+                                                            <%= p.charAt(0).toUpperCase() + p.slice(1) %>
+                                                        </label>
+                                                </div>
+                                                <% }) %>
+
+                                                    <hr>
+                                                    <!-- Duration -->
+                                                    <h5 class="mb-3">Duration</h5>
+                                                    <% ['1-3 months','3-6 months','6-12 months'].forEach(dur=> { %>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                name="duration" value="<%= dur %>" <% if
+                                                                (selectedFilters.duration &&
+                                                                selectedFilters.duration.includes(dur)) { %> checked <%
+                                                                } %> >
+                                                                <%= dur %>
+                                                        </div>
+                                                        <% }) %>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Courses Grid -->
+                <div class="col-lg-9">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold">Results</h4>
+
+                        <!-- Sorting filter -->
+                        <form id="sortForm" action="/courses" method="GET" class="d-inline-block">
+                            <select name="sortBy" class="form-select custom-select w-auto rounded-pill"
+                                onchange="this.form.submit()">
+                                <option value="latest" <%=selectedFilters.sortBy==='latest' ? 'selected' : '' %>>Latest
+                                </option>
+                                <option value="rating" <%=selectedFilters.sortBy==='rating' ? 'selected' : '' %>>Highest
+                                    Rated</option>
+                                <option value="priceLow" <%=selectedFilters.sortBy==='priceLow' ? 'selected' : '' %>
+                                    >Price: Low to High</option>
+                                <option value="priceHigh" <%=selectedFilters.sortBy==='priceHigh' ? 'selected' : '' %>
+                                    >Price: High to Low</option>
+                            </select>
+
+                            <!-- Preserve filters when sorting -->
+                            <% if (selectedFilters.search) { %>
+                                <input type="hidden" name="search" value="<%= selectedFilters.search %>">
+                                <% } %>
+                                    <% if (selectedFilters.categories.length) { selectedFilters.categories.forEach(c=> {
+                                        %>
+                                        <input type="hidden" name="categories" value="<%= c %>">
+                                        <% }) } %>
+                                            <% if (selectedFilters.rating.length) { selectedFilters.rating.forEach(r=> {
+                                                %>
+                                                <input type="hidden" name="rating" value="<%= r %>">
+                                                <% }) } %>
+                                                    <% if (selectedFilters.level.length) {
+                                                        selectedFilters.level.forEach(l=> { %>
+                                                        <input type="hidden" name="level" value="<%= l %>">
+                                                        <% }) } %>
+                                                            <% if (selectedFilters.price.length) {
+                                                                selectedFilters.price.forEach(p=> { %>
+                                                                <input type="hidden" name="price" value="<%= p %>">
+                                                                <% }) } %>
+                                                                    <% if (selectedFilters.duration.length) {
+                                                                        selectedFilters.duration.forEach(d=> { %>
+                                                                        <input type="hidden" name="duration"
+                                                                            value="<%= d %>">
+                                                                        <% }) } %>
+                        </form>
+
+
+
+
+                    </div>
+
+                    <div class="row g-4 mt-2">
+                        <% courses.forEach(course=> { %>
+                            <div class="col-md-4 col-lg-3 d-flex">
+                                <a href="#" class="text-decoration-none w-100 d-flex">
+                                    <div class="card shadow-sm border-0 d-flex flex-column w-100">
+ <div class="card-header bg-white d-flex justify-content-between align-items-start">
+
+                                        <!-- Heart icon wrapped in a form -->
+                  <div>        
+                                                            
+  <% if (course.price===0 ) { %>
+    <span >
+          <i class="badge  bi-lightning-charge-fill  fs-6  start-0 m-2 text-warning "> Free</i>
+    
+    </span>
+                
+                      <% }%></div> 
+                      <div>
+ <i class="bi bi-heart fs-4 end-0 m-2 text-danger "></i>
+                         </div>   </div>
+
+                                            <!-- Course Image -->
+                                            <img src="<%= course.thumbnail %>" class="card-img-top"
+                                                alt="<%= course.title %>">
+
+               
+
+
+                                        
+                                        <!-- Card Body -->
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="bg-category text-dark p-1" style="font-size: small;">
+                                                    <%= course.category.name %>
+                                                </span>
+
+                                                <!-- Price -->
+                                                <span>
+                                                    <p class="fw-bold mb-0 text-dark">₹<%= course.price %>
+                                                    </p>
+                                                </span>
+                                            </div>
+
+                                            <hr>
+
+                                            <!-- Dedicated Name Space -->
+                                            <h6 class="fw-bold text-dark course-name mb-3">
+                                                <%= course.name %>
+                                            </h6>
+                                            <!-- Footer -->
+                                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="fw-bold me-2">
+                                                        <%= course.rating %>
+                                                    </span>
+                                                    <span class="text-warning">
+                                                        <% for (let i=1; i <=5; i++) { %>
+                                                            <% if (i <=Math.floor(course.rating)) { %>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <% } else if (i - course.rating < 1) { %>
+                                                                    <i class="bi bi-star-half"></i>
+                                                                    <% } else { %>
+                                                                        <i class="bi bi-star"></i>
+                                                                        <% } %>
+                                                                            <% } %>
+                                                    </span>
+                                                </div>
+                                                <span class="text-danger">
+                                                    <%= course.duration %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <% }) %>
+                    </div>
+
+<nav class="d-flex justify-content-center mt-3">
+    <ul class="pagination pagination-dark pagination-sm flex-wrap">
       
-      <!-- Sidebar Filters -->
-      <div class="col-lg-3 mb-4">
-       <div class="filters">
-  <form id="filtersForm" action="/courses" method="GET">
+            <li class="page-item <%= selectedFilters.page===1? 'disabled' : '' %>">
+                <a class="page-link rounded-circle"
+                   href="?page=<%= selectedFilters.page - 1 %>&limit=<%= selectedFilters.limit %>&sortBy=<%= selectedFilters.sortBy %><%= selectedFilters.search ? '&search=' + encodeURIComponent(selectedFilters.search) : '' %>">
+                    &laquo;
+                </a>
+            </li>
+     
 
-    <h3>Filters</h3>
-    <hr>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= selectedFilters.page === i ? 'active' : '' %>">
+   <a class="page-link rounded-circle"
+                   href="?page=<%= i %>&limit=<%= selectedFilters.limit %>&sortBy=<%= selectedFilters.sortBy %><%= selectedFilters.search ? '&search=' + encodeURIComponent(selectedFilters.search) : '' %>">
+                    <%= i %>
+                </a>
+            </li>
+        <% } %>
 
-    <!-- Category -->
-    <div class="dropdown show w-100">
-      <button class="btn btn-outline-secondary dropdown-toggle w-100" 
-              type="button" 
-              data-bs-toggle="dropdown" 
-              data-bs-display="static" 
-              aria-expanded="false">
-        Select Category
-      </button>
-      <ul class="dropdown-menu  show p-3 w-100 category-dropdown">
-        <% categories.forEach(cat => { %>
-          <li>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" 
-                     id="cat-<%= cat._id %>" 
-                     name="categories" 
-                     value="<%= cat._id %>" 
-                     <% if (selectedFilters.categories && selectedFilters.categories.includes(cat._id.toString())) { %> checked <% } %>>
-              <label class="form-check-label" for="cat-<%= cat._id %>">
-                <%= cat.name %>
-              </label>
-            </div>
-          </li>
-        <% }) %>
-      </ul>
-    </div>
+      
+            <li class="page-item <%= selectedFilters.page === totalPages ? 'disabled' : '' %>">
+                <a class="page-link rounded-circle"
+                   href="?page=<%= selectedFilters.page + 1 %>&limit=<%= selectedFilters.limit %>&sortBy=<%= selectedFilters.sortBy %><%= selectedFilters.search ? '&search=' + encodeURIComponent(selectedFilters.search) : '' %>">
+                    &raquo;
+                </a>
+            </li>
 
-    <hr>
-    <!-- Rating -->
-    <h5 class="mb-3">Rating</h5>
-    <% [4,3].forEach(r => { %>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" 
-               id="<%= r %>rating" 
-               name="rating" 
-               value="<%= r %>" 
-               <% if (selectedFilters.rating && selectedFilters.rating.includes(r.toString())) { %> checked <% } %>>
-        <label for="<%= r %>rating" class="form-check-label bi bi-star-fill "><%= r %> & above</label>
-      </div>
-    <% }) %>
+    </ul>
+</nav>
 
-    <hr>
-    <!-- Course Level -->
-    <h5 class="mb-3">Course Level</h5>
-    <% ['Beginner','Intermediate','Advanced'].forEach(lvl => { %>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" 
-               id="<%= lvl %>" 
-               name="level" 
-               value="<%= lvl %>" 
-               <% if (selectedFilters.level && selectedFilters.level.includes(lvl)) { %> checked <% } %>>
-        <label for="<%= lvl %>" class="form-check-label"><%= lvl.charAt(0).toUpperCase()+lvl.slice(1) %></label>
-      </div>
-    <% }) %>
+                </div>
 
-    <hr>
-    <!-- Price -->
-    <h5 class="mb-3">Price</h5>
-    <% ['paid','free'].forEach(p => { %>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" 
-               id="<%= p %>" 
-               name="price" 
-               value="<%= p %>" 
-               <% if (selectedFilters.price && selectedFilters.price.includes(p)) { %> checked <% } %>>
-        <label for="<%= p %>" class="form-check-label"><%= p.charAt(0).toUpperCase() + p.slice(1) %></label>
-      </div>
-    <% }) %>
-
-    <hr>
-    <!-- Duration -->
-    <h5 class="mb-3">Duration</h5>
-    <% ['1-3 months','3-6 months','6-12 months'].forEach(dur => { %>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" name="duration" value="<%= dur %>" 
-               <% if (selectedFilters.duration && selectedFilters.duration.includes(dur)) { %> checked <% } %> >
-        <%= dur %>
-      </div>
-    <% }) %>
-
-  </form>
-</div>
-      </div>
-
-      <!-- Courses Grid -->
-      <div class="col-lg-9">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="fw-bold">Results</h4>
-          <div>
-            <select class="form-select">
-              <option>Sort by</option>
-              <option value="latest">Latest</option>
-              <option value="rating">Highest Rated</option>
-              <option value="priceLow">Price: Low to High</option>
-              <option value="priceHigh">Price: High to Low</option>
-            </select>
-          </div>
-        </div>
-
-      <div class="row g-4">
-  <% courses.forEach(course=> { %>
-             <div class="col-md-4 col-lg-3 d-flex">
-  <a href="#" class="text-decoration-none w-100 d-flex">
-    <div class="card shadow-sm border-0 d-flex flex-column w-100">
-
-
-        <!-- Heart icon wrapped in a form -->
-<div class="position-relative">
-
-      <!-- Course Image -->
-      <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
-  
-      <i class="bi bi-heart fs-4 position-absolute top-0 end-0 m-2 text-danger "></i>
-   
-
-  
-</div>
-      <!-- Card Body -->
-      <div class="card-body d-flex flex-column">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="bg-category text-dark p-1" style="font-size: small;">
-            <%= course.category.name %>
-          </span>
-
-          <!-- Price -->
-          <span>
-            <p class="fw-bold mb-0 text-dark">₹<%= course.price %></p>
-          </span>
-        </div>
-
-        <hr>
-
-        <!-- Dedicated Name Space -->
-        <h6 class="fw-bold text-dark course-name mb-3">
-          <%= course.name %>
-        </h6>
-        <!-- Footer -->
-        <div class="mt-auto d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <span class="fw-bold me-2"><%= course.rating %></span>
-            <span class="text-warning">
-              <% for (let i = 1; i <= 5; i++) { %>
-                <% if (i <= Math.floor(course.rating)) { %>
-                  <i class="bi bi-star-fill"></i>
-                <% } else if (i - course.rating < 1) { %>
-                  <i class="bi bi-star-half"></i>
-                <% } else { %>
-                  <i class="bi bi-star"></i>
-                <% } %>
-              <% } %>
-            </span>
-          </div>
-          <span class="text-danger"><%= course.duration %></span>
-        </div>
-      </div>
-    </div>
-  </a>
-</div>
-
-          <% }) %>
-</div>
-
-
-        <!-- Pagination -->
-        <nav aria-label="Page navigation example" class="mt-4">
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link">Previous</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
-
-      </div>
-    </div>
-  </div>
-
-  <%- include('partials/footer') %>
+                    <%- include('partials/footer') %>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('filtersForm');
-    form.addEventListener('change', () => {
-      form.submit();
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('filtersForm');
+        form.addEventListener('change', () => {
+            form.submit();
+        });
     });
-  });
 </script>
 
 

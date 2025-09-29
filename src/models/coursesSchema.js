@@ -36,7 +36,7 @@ const courseSchema = new mongoose.Schema(
   },
   thumbnail: {
     type: String,
-  default: "/images/defaultcourse.svg",
+  default: "/images/pexels-yankrukov-8837809.jpg",
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
