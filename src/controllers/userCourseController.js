@@ -18,10 +18,22 @@ exports.getcourse = async(req,res)=>{
     limit: Number(limit)
   };
 
-  // Build MongoDB query
+  const activecategories = await category.find({status:"active"}).select('_id');
+const activeCategoryids =activecategories.map((c)=>{
+  return c._id. toString()
+})
+
+
+  // get the filter
   let query = {isDeleted:false,status:"published"};
-  if (search) query.name = { $regex: search, $options: 'i' }; // search in course name
-  if (selectedFilters.categories.length) query.category = { $in: selectedFilters.categories };
+  if (search) query.name = { $regex: search, $options: 'i' };
+
+  //category if query 
+  if (selectedFilters.categories.length) {query.category = { $in: selectedFilters.categories.filter(c=>activeCategoryids.includes(c)) }}
+  else{
+    query.category={$in:activeCategoryids}
+  };
+
   if (selectedFilters.rating.length) query.rating = { $gte: Math.min(...selectedFilters.rating) };
   if (selectedFilters.level.length) query.level = { $in: selectedFilters.level };
   if (selectedFilters.price.length){
@@ -49,6 +61,8 @@ exports.getcourse = async(req,res)=>{
    
   }
 
+
+
   // Pagination logic
   const skip = (selectedFilters.page - 1) * selectedFilters.limit;
 
@@ -62,13 +76,20 @@ exports.getcourse = async(req,res)=>{
     .limit(selectedFilters.limit);
 
 
-  const categoriesList = await category.find();
+  const categoriesList = await category.find({status: "active"});
 
   res.render('courses', {
     courses,
     categories: categoriesList,
     selectedFilters,
     totalPages,
-    totalCourses
+    totalCourses,
   });
 };
+
+exports.getcoursedetails = async(req,res)=>{
+  const courseId = req.params._id
+  const courses = await course.findById(courseId)
+res.render('singlecourse',{course:courses})
+
+}

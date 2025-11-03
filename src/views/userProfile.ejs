@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= user.fullName %> | Dashboard</title>
+      <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <%- include('partials/header') %>
+
+  <!-- Profile Section -->
+  <section class="profile">
+    <div class="profile-card">
+      <div style="margin-left:10%;">  
+         <div class="profile-avatar">
+        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
+      </div>
+      <div class="profile-info">
+        <h2><%= user.fullName %></h2>
+        <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
+      </div></div>
+   <div style="margin-right:10%;"> <button class="logout-btn">Logout</button></div>
+     
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <a href="#dashboard" class="tab active">Dashboard</a>
+      <a href="#learning" class="tab">My Learning</a>
+      <a href="#wishlist" class="tab">Wishlist</a>
+      <a href="#history" class="tab">Purchase History</a>
+      <a href="#cart" class="tab">Cart</a>
+    </div>
+  </section>
+
+  <!-- Wallet Section -->
+  <section class="wallet">
+    <div class="wallet-box">
+      <h3>My Wallet</h3>
+      <p>Balance: $<%= user.walletBalance %></p>
+      <form action="/wallet/add" method="POST">
+        <input type="number" name="amount" placeholder="Enter amount" min="1" required>
+        <button type="submit">Add Money</button>
+      </form>
+      <a href="/wallet/transactions">Show transaction history</a>
+    </div>
+  </section>
+
+  <!-- Learning Section -->
+  <section class="learning">
+    <h3>Let's start learning, <%= user.fullName.split(' ')[0] %>!</h3>
+    <div class="courses">
+      <% courses.forEach(course => { %>
+        <div class="course-card">
+          <img src="<%= course.image %>" alt="<%= course.name %>">
+          <div class="course-info">
+            <h4><%= course.name %></h4>
+            <p>Progress: <%= course.progress %>%</p>
+            <progress value="<%= course.progress %>" max="100"></progress>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- Footer -->
+          <%- include('partials/footer') %>
+
+
+</body>
+</html>

@@ -1,18 +1,19 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = require("../controllers/authcontrollers")
 const{gethome} = require("../controllers/userHomeController")
-const{getcourse}= require("../controllers/userCourseController")
+const{getcourse,getcoursedetails}= require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
-
+const{getprofile}= require("../controllers/userProfileController")
 
 
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
-    res.render('homewithoutlogin',{referralLink:res.locals.referralLink||null})
+    const token = req.cookies.jwt
+    res.render('homewithoutlogin',{referralLink:res.locals.referralLink||null,token})
 })
 router.get('/career',(req,res)=>{
     res.render("career", );
@@ -33,7 +34,11 @@ router.get('/verify-otp', restrictUnauthenticatedRoutes, (req, res) => {
 })
 
 router.get('/login', restrictUnauthenticatedRoutes, (req, res) => {
-    res.render('login', { fieldErrors: {}, formData: {} })
+    fieldErrors={}
+    if (req.query.error === "blocked") {
+        fieldErrors.email ="Account blocked please contact Helpline"
+    }
+    res.render('login', { fieldErrors, formData: {} })
 })
 router.get('/forgot-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('forgotpassword', { fieldErrors: {}, formData: {}, type: "user" })
@@ -46,6 +51,8 @@ router.get('/home', verifytoken,createReferralLink,gethome )
 
 router.get('/courses',getcourse)
 
+router.get('/courses/:_id',getcoursedetails)
+router.get('/profile/:_id',verifytoken,getprofile)
 
 
 

@@ -12,14 +12,13 @@ console.log("one")
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findById(decoded.id).select("-password");
-        if (!user || user.isDeleted) {
+        if (!user || user.isDeleted||user.isBlocked) {
             res.clearCookie("jwt", {
 
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production", // only secure in prod
                 sameSite: "strict",
             })
-
             
             return next()
         }

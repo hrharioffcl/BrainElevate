@@ -18,18 +18,24 @@ app.use(session({
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
 
+
+
 const { verifyadmintoken } = require("./middlewaares/adminAuthMiddleware");
 const {createReferralLink}= require("./middlewaares/refferallink")
 const {softCheckUser}=require("./middlewaares/softcheckuser")
 const flash = require("connect-flash");
 app.use(flash());
 
-
 // Make flash messages available in all views
 app.use((req, res, next) => {
   res.locals.messages = req.flash();
   next();
 });
+app.use((req,res,next)=>{
+   res.locals.token = req.cookies?.jwt||null
+    next()
+})
+
 
 const passport = require("passport");
 require("./config/passport"); // passport config
@@ -65,6 +71,7 @@ const googleauthRoutes = require("./routes/googleauth");
 
 app.use("/",softCheckUser,createReferralLink,userroutes)
 app.use("/", softCheckUser,createReferralLink,googleauthRoutes);
+
 app.use('/admin',(req, res, next) => {
     const openPaths = ["/login", "/logout","/forgot-password","/verify-otp","/reset-password"];
     if (openPaths.includes(req.path)) return next();

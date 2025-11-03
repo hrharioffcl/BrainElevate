@@ -167,12 +167,12 @@ exports.login = async (req, res) => {
 
 
     try {
-
         const existinguser = await User.findOne({ email });
         if (!existinguser) {
             fieldErrors.email = "User not registered";
             return res.render('login', { fieldErrors, formData })
         }
+
         if (existinguser.isDeleted === true) {
             fieldErrors.email = "Unauthorized Access";
             return res.render('login', { fieldErrors, formData })
@@ -236,7 +236,7 @@ exports.forgotpassword = async (req, res) => {
 
             await Otp.create({ email, otpcode, purpose: "forgotpassword", expiresAt })
             //send dOTP via email
-            await sendOtp(email, otpcode)
+            await sendOtp(email, otpcode)  
             req.session.forgotPassword = { email, purpose: "forgotpassword" }
             console.log("redirecting to verify otp")
             res.redirect('/verify-otp')
@@ -278,9 +278,9 @@ exports.forgotpassword = async (req, res) => {
 //reset password
 exports.resetpassword = async (req, res) => {
     const fieldErrors = {};
-        if (!req.session.forgotPassword) {
-        return res.redirect('/login'); 
-        // or res.redirect('/admin/login') if you're separating flows
+    if (!req.session.forgotPassword) {
+        return res.redirect('/login');
+       
     }
     const { email, purpose } = req.session.forgotPassword
     console.log(purpose)
@@ -316,7 +316,7 @@ exports.resetpassword = async (req, res) => {
             }
             isadmin.password = password;
             await isadmin.save()
-            
+
             req.session.forgotPassword = null;
             res.redirect('/admin/login')
 
@@ -368,16 +368,19 @@ exports.adminlogin = async (req, res) => {
             httpOnly: true,
             maxAge: 1 * 24 * 60 * 60 * 1000
         });
-        console.log("Token:", req.cookies.admin_jwt);
+        console.log("Token is :", token);
 
         if (isadmin.role === "super_admin") {
             res.redirect('/admin/superadmindashboard')
         }
-        else if (isadmin.role === "manager") {
-            res.redirect('/managerdashboard')
+        else if (isadmin.role === "admin") {
+            console.log("manager daashboard coming soon")
+            res.redirect('/admin/managerdashboard')
         }
         else if (isadmin.role === "contributer") {
-            res.redirect('/contributerdashboard')
+                        console.log("coontributer daashboard coming soon")
+
+         res.redirect('/admin/contributerdashboard')
         }
 
     } catch (error) {
@@ -393,13 +396,13 @@ exports.adminlogout = async (req, res) => {
     res.clearCookie("admin_jwt", {
 
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // only secure in prod
+        secure: process.env.NODE_ENV === "production", 
         sameSite: "strict",
     })
 
     if (req.session) {
         req.session.destroy(() => {
-            res.redirect("/admin/login"); // redirect after logout
+            res.redirect("/admin/login"); 
         });
     } else {
         res.redirect("/admin/login");
@@ -422,11 +425,11 @@ exports.getverifyotp = (req, res) => {
 }
 
 exports.getresetpassword = (req, res) => {
-// Only allow if OTP step was done
+    // Only allow if OTP step was done
     if (!req.session.forgotPassword || req.session.forgotPassword.purpose !== "adminforgotpassword") {
         return res.redirect('/admin/forgot-password');
     }
 
     // Otherwise render page
-    res.render('resetpassword', {fieldErrors: {}});
+    res.render('resetpassword', { fieldErrors: {} });
 }

@@ -21,15 +21,23 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback",
-        passReqToCallback: true,   // ✅ important!
+    passReqToCallback: true,   // ✅ important!
 
-}, async (req,accessToken, refreshToken, profile, done) => {
+}, async (req, accessToken, refreshToken, profile, done) => {
     try {
         const randompassword = generateRandomPassword()
         const email = profile.emails[0].value;
         let user = await User.findOne({ email });
-        if (user) {
-            
+
+        if (user && user.isBlocked) {
+            return done(null, false, { message: "Account blocked" });
+        }
+        else if (user && user.isDeleted) {
+            return done(null, false, { message: "Account not Found" });
+        }
+
+
+        else if (user) {
             // Update user info if necessary
             user.fullName = profile.displayName || user.fullName;
             user.profilepic = profile.photos[0]?.value || user.profilepic;
@@ -53,7 +61,7 @@ passport.use(new GoogleStrategy({
                 isVerified: true,
                 lastLogin: new Date(),
                 referralCode: await createrefferalcode(),
-                 referredBy: referredBy,
+                referredBy: referredBy,
             });
         }
 

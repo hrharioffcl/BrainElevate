@@ -107,7 +107,7 @@ exports.editstudent = async (req, res) => {
         student.fullName = fullName || student.fullName;
         student.email = email || student.email;
         student.isBlocked = req.body.isBlocked === "true";
-        student.Contact = Contact || student.Contact
+        student.contactNumber = Contact || student.contactNumber
         await student.validate()
         await student.save()
         req.flash("success", "Student Details updated successfully");

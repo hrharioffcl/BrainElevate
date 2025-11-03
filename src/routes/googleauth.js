@@ -11,7 +11,7 @@ router.get("/auth/google",
 console.log("previous step done")
 // Google callback URL
 router.get("/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "/login" }),
+    passport.authenticate("google", { failureRedirect: "/login?error=blocked" }),
     (req, res) => {
         // Generate JWT after successful login
         const token = generateusertoken(req.user._id);

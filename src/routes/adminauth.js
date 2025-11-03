@@ -43,6 +43,12 @@ router.get('/logout', adminlogout)
 // Dashbooard
 router.get('/superadmindashboard', verifyadmintoken, getsuperadmindashboard)
 
+router.get("/managerdashboard", (req, res) => {
+  res.send("Manager Dashboard — coming soon!");
+});
+router.get("/contributerdashboard", (req, res) => {
+  res.send("Manager Dashboard — coming soon!");
+});
 
 // Admin Management
 router.get('/manage-admin', verifyadmintoken, getmanageadmin)

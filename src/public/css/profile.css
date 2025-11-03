@@ -1,0 +1,104 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background: #f8ffff;
+  color: #222;
+}
+
+
+
+.profile {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.profile-card {
+  display: flex;
+  justify-content: space-between;
+    align-items: center;            /* ✅ Vertically centers everything */
+  background: white;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.profile-avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.tabs {
+  margin-top: 20px;
+}
+
+.tab {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding-bottom: 4px;
+}
+
+.tab.active {
+  border-bottom: 2px solid #1abc9c;
+}
+
+.wallet {
+  margin: 40px auto;
+  width: 80%;
+}
+
+.wallet-box {
+  background: #c7fff4;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.wallet-box input {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.wallet-box button {
+  padding: 10px 20px;
+  background: #1abc9c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+
+.learning {
+  width: 85%;
+  margin: 40px auto;
+}
+
+.courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.course-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.course-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.course-info {
+  padding: 10px;
+}
+

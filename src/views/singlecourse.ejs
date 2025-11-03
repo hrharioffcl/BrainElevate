@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= course.name %>
+    </title>
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+      <link rel="stylesheet" href="/css/coursepage.css" />    
+</head>
+
+<body>
+    <!-- Navbar Partial -->
+    <%- include('partials/header') %>
+
+        <!-- Full-Width Header Section -->
+        <section class="course-header-section">
+            <div class="course-header container">
+                <div class="course-header-left">
+                    <h1>
+                        <%= course.name %>
+                    </h1>
+                    <p class="subtitle">
+                        <%= course.details %>
+                    </p>
+                    <p class="creator">Created by <strong>
+                            <%= course.author %>
+                        </strong></p>
+                    <h3 class="course-info">
+                       Duration: <%= course.duration %> <br>
+                       Level:<%= course.level %>
+
+                    </h3>
+                </div>
+
+                <!-- Sidebar Card on Top Right -->
+                <div class="card course-sidebar">
+                    <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.name %>">
+                    <div class="card-body">
+                        <div class="course-price mb-3">
+                            <h2>₹<%= course.price %>
+                            </h2>
+                            <button>Buy Course Now</button>
+                            <button>Add to Cart</button>
+                        </div>
+                        <div class="course-description">
+                            <h6>Course Description</h6>
+                            <p>
+                                <%= course.details %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Below Header -->
+        <section class="course-main-section">
+            <div class="course-main container">
+                <h2>What You'll Learn</h2>
+                <ul>
+                    
+                    <% course.learnPoints.forEach(point=> { %>
+                        <li>   <i class="bi bi-arrow-up-right text-primary me-2"></i>
+ <%= point %>
+                        </li>
+                        <% }) %>
+                </ul>
+
+
+
+                <h2>Course Description</h2>
+                <p>
+                    <%= course.description %>
+                </p>
+                <!-- Reviews go here -->
+                <h2>Reviews</h2>
+            </div>
+        </section>
+
+        <!-- Footer Partial -->
+        <%- include('partials/footer') %>
+</body>
+
+</html>

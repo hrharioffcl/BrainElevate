@@ -138,7 +138,7 @@
                     <% if(coupon.scope==='global' ){ %>
                       <span title="Applies to all courses" data-bs-toggle="tooltip">Global</span>
                       <% } else { %>
-                        <span data-bs-toggle="tooltip" title="<%= coupon.courseNames.join(', ') %>">
+                        <span data-bs-toggle="tooltip" title="<%= coupon.courseNames.join(',') %>">
                           Course Specific
                         </span>
                         <% } %>
