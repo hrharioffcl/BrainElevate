@@ -13,8 +13,26 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
+    .carousel-item img {
+ max-height: 600px;   /* change this value to what looks best */
+  object-fit: cover;  /* crops image neatly instead of stretching */
+}
+    .aboutus{
+      background-color: #A5D6D3;
+       color:#ffffff;
+       padding-top: 0.5rem;
+    }
+    .aboutus p{
+      color: #000000;
+    }
+     .aboutus h6{
+      color: #ff0000d3;
+    }
+      .aboutus small{
+      color: #ff0000d3;
+    }
     .cta-section {
-  background: #40e0d0; /* same teal background */
+  background: #000000 ;/* same teal background */
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   margin-top: 0; /* sits flush above footer */
@@ -64,59 +82,27 @@
     }
 
     footer {
-      color: #fff;
+      color: #4beada;
       padding: 10px 0;
       text-align: left;
     }
 
-    /* Navbar (you can move this into header.css if you prefer) */
-    .navbar-custom {
-      background-color: #4BEADA;
-      /* mint green */
-      padding: 10px 20px;
-    }
-
-    .navbar-custom .navbar-brand {
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar-custom .navbar-brand img {
-      height: 40px;
-      margin-right: 8px;
-    }
-
-    .navbar-custom .nav-link {
-      color: black;
-      margin-right: 15px;
-      font-size: 0.9rem;
-  
-    
-      font-family: "Montserrat", sans-serif;
-
-    }
-
-    .navbar-custom .nav-link:hover {
-      color:  #D2042D;
-      /* Bootstrap primary */
-    }
 
     /* Hero Section */
     .hero {
       position: relative;
       width: 100%;
-      height: 100vh;
+      height: 89vh;
       /* full screen */
-      background: url('/images/home.png') no-repeat center center;
+      background: url('/images/front-view-young-beautiful-lady-red-t-shirt-black-jeans-holding-different-copybooks-files-smiling-with-bag-white.jpg') no-repeat center center;
       background-size: cover;
+      background-position: bottom;
       display: flex;
       align-items: center;
       padding-left: 5%;
-      padding-top: 5%;
-      color: black;
+         color: black;
       text-align: left;
-    }
+      margin  :0;    }
 
     .hero-content {
       max-width: 600px;
@@ -169,30 +155,15 @@
       </div>
     </section>
 
-    <!-- Courses Section -->
-    <section class="section">
-      <div class="container">
-        <div class="row mb-5 mt-5">
-          <div class="col-lg-6">
-            <h1>More Than 3.2K <br>Courses Will Guide You</h1>
+   
 
-          </div>
-          <div class="col-lg-6">
-            <p>We provide a range of categories to help you choose <br> courses that fit your expertise. More than 3.2K
-              courses will guide you from <br> basic.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section bg-light">
-
+    <section class="section aboutus ">
 
       <div class="container">
         <div class="row mb-3">
           <!-- Left column -->
           <div class="col-lg-6">
-            <p class="section-title">
+            <p class="section-title text-danger">
               <span class="line"></span> About Us
             </p>
             <h1 style="font-size:3rem">We Help Grow <br>Student Careers.</h1>
@@ -201,19 +172,19 @@
           </div>
 
           <!-- Right column -->
-          <div class="col-lg-6">
+          <div class="col-lg-6 text-dark">
             <div class="row align-items-center">
               <!-- Image column -->
               <div class="col-md-9 g-0 p-0 m-0">
-                <img src="/images/section2 homewithoutlogin.png" alt="Logo" class="img-fluid rounded" style="max-width:370px;">
+                <img src="/images/pexels-charlotte-may-5966011.jpg" alt="Logo" class="img-fluid" style="max-width:370px;">
               </div>
               <!-- Text column -->
               <div class="col-md-3 g-0 p-0 m-0">
-                <h2>3M</h2>
+                <h2 class="text-danger">3M</h2>
                 <h6>students already enrolled</h6>
-                <h2>1.2K+</h2>
+                <h2  class="text-danger">1.2K+</h2>
                 <h6>courses are available with various categories</h6>
-                <h2>600 </h2>
+                <h2  class="text-danger">600 </h2>
                 <h6>Experienced authors who will teach you</h6>
               </div>
             </div>
@@ -222,14 +193,14 @@
       </div>
     </section>
     <!-- !-- Features Section -->
-    <section class="section bg-light">
+    <section class="section">
       <div class="container">
         <div class="row mb-4">
           <div class="col-lg-6">
             <div class="col-md-6">
               <div class="feature-card ">
-                <i class="bi bi-chat-dots"></i>
-                <h6>Discussion 24/7</h6>
+                <i class="bi bi-chat-dots text-danger"></i>
+                <h6 class="text-danger">Discussion 24/7</h6>
                 <p>The community always there for you if you have difficulty learning the course, join through telegram.
                 </p>
                 <hr>
@@ -237,16 +208,16 @@
             </div>
             <div class="col-md-6">
               <div class="feature-card ">
-                <i class="bi bi-journal-text"></i>
-                <h6>Lecture Notes</h6>
+                <i class="bi bi-journal-text text-danger"></i>
+                <h6 class="text-danger">Lecture Notes</h6>
                 <p>Lecture notes available, you don’t have to take notes manually.</p>
                 <hr>
               </div>
             </div>
             <div class="col-md-6">
               <div class="feature-card">
-                <i class="bi bi-check2-circle"></i>
-                <h6>Practice for Free</h6>
+                <i class="bi bi-check2-circle text-danger"></i>
+                <h6 class="text-danger">Practice for Free</h6>
                 <p>Test your skills with practice tests that have been provided on our platform.</p>
                 <hr>
               </div>
@@ -256,10 +227,10 @@
             <div class="col-md-12">
               <div class="feature-card ">
              
-            <p class="section-title">
-              <span class="line"></span> Why us
+            <p class="section-title text-danger">
+              <span class="line" ></span> Why us
             </p>
-                <h2>Our Special Features <br>We Build For You</h2>
+                <h2 style="color: #A5D6D3;">Our Special Features <br>We Build For You</h2>
                 <p>BrainElevate is a platform that helps students in advancing their career by providing solutions for
                   simple and flexible online learning, allowing you to study anywhere and anytime at affordable prices.
                 </p>
@@ -267,7 +238,7 @@
               </div>
               <div class="col-md-6">
                 <div >
-                  <img src="/images/withoutlogin banner2.jpg" alt="Logo" 
+                  <img src="/images/pexels-george-pak-7972525.jpg" alt="Logo" 
                      class="img-fluid rounded" style="max-width:580px; height:280px;",>
                   <hr>
                 </div>
@@ -279,32 +250,33 @@
     </section>
 
   <!-- Testimonials Section -->
-  <section class="section bg-light">
+  <section class="section aboutus">
     <div class="container">
-      <p class="section-title ">
+      <p class="section-title text-danger ">
               <span class="line"></span> Testimonials
             </p>
       <h2 class="text-center mb-5">What Our Students Say About Us</h2>
        
       <div class="row">
         <div class="col-md-4">
-          <div class="testimonial-card border  p-3 mb-3 rounded">
-            <p>"BrainElevate helped me understand my studies. I can always count on them to get me through difficult subjects."</p>
-            <h6>Sukran Memis</h6>
+          <div class="testimonial-card border  p-3 mb-3 rounded fw-boldn ">
+            <p >“Thanks to Brain Elevate Learning I finally understood complex topics in hours — not weeks. The interactive modules, real-world examples and clear explanations made all the differen ce.”
+</p>
+            <h6 >Sukran Memis</h6>
             <small>Software Engineer</small>
           </div>
         </div>
         <div class="col-md-4">
           <div class="testimonial-card  border  p-3 mb-3 rounded">
-            <p>"BrainElevate helped me understand my studies. I can always count on them to get me through difficult subjects."</p>
-            <h6>Alika Yuksel</h6>
+            <p>“As someone returning to learning after a long break, I was worried I’d fall behind. But Brain Elevate’s friendly pace and great support helped me feel confident again. I got better results than I expec ted.”</p>
+            <h6 >Alika Yuksel</h6>
             <small>Software Engineer</small>
           </div>
         </div>
         <div class="col-md-4">
           <div class="testimonial-card  border  p-3 mb-3 rounded">
-            <p>"BrainElevate helped me understand my studies. I can always count on them to get me through difficult subjects."</p>
-            <h6>Misel Corp</h6>
+            <p>“The courses on Brain Elevate aren’t just theory — they pushed me to apply what I learned. My productivity at work went up, and I now lead a team thanks to the skills I gai ned.”</p>
+            <h6 >Misel Corp</h6>
             <small>Software Engineer</small>
           </div>
         </div>
@@ -312,8 +284,10 @@
     </div>
   </section>
 
-  <section class="cta-section text-center text-dark">
-  <div class="container py-5">
+
+
+  <section class="cta-section text-center text-white mt-3">
+  <div class="container py-5 text-white">
     <h1 class="mb-3">Ready to Start Your Courses<br>and Grow Your Career</h1>
     <p class="mb-4">
       Experts teach you everything from the comfort of your own home. Improve your career today by 
@@ -328,5 +302,5 @@
   <!-- Footer -->
   <%- include('partials/footer') %>
 </body>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </html>

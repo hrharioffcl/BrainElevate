@@ -1,76 +1,40 @@
-  <!-- Promotion -->
-                  <div class="tab-pane fade" id="promotion">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <h4>Coupons</h4>
+<section class="profile">
+    <div class="profile-card">
+      <div style="margin-left:5%;">  
 
+        
+         <div class="profile-avatar profile-pic-wrapper position-relative d-inline-block">
+        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
+        <button class="btn btn-sm edit-btn position-absolute">
+        <i class="bi bi-pencil"></i>
+      </button>
+      </div>
 
-                      <% if (course && course._id) { %>
-                        <a href="/admin/coupons/new" class="btn btn-dark">New
-                          Coupon</a>
-                        <% } else { %>
-                          <span class="text-muted">Save the course first to add Coupons</span>
-                          <% } %>
-                    </div>
+      <div class="profile-info">
+        <h2><%= user.fullName %></h2>
+        <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
+      </div></div>
+   <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="#"><i class="fa-solid fa-person-running"></i>
 
-                    <table class="table table-hover align-middle">
-                      <thead>
-                        <tr>
-                          <th scope="col">Offer Name</th>
-                          <th scope="col">Code</th>
-                          <th scope="col">Amount</th>
-                          <th scope="col">Status</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <% if (coupons && coupons.length> 0) { %>
-                          <% coupons.forEach(coupon=> { %>
-                            <tr>
-                              <td>
-                                <%= coupon.couponName %>
-                              </td>
-                              <td>
-                                <%= coupon.couponCode %>
-                              </td>
-                              <td>
-                                <% if (coupon.discountType==='Percentage' ) { %>
-                                  <%= coupon.discountValue %>%
-                                    <% } else { %>
-                                      $<%= coupon.discountValue %>
-                                        <% } %>
-                              </td>
-                              <td>
-                                <% if (coupon.status==='Active' ) { %>
-                                  <span class="text-success fw-bold">Active</span>
-                                  <% } else if (coupon.status==='Expired' ) { %>
-                                    <span class="text-danger fw-bold">Expired</span>
-                                    <% } else if (coupon.status==='Draft' ) { %>
-                                      <span class="text-muted fw-bold">Draft</span>
-                                      <% } else { %>
-                                        <span class="text-primary fw-bold">
-                                          <%= coupon.status %>
-                                        </span>
-                                        <% } %>
-                              </td>
-                              <td>
-                                <a href="/admin/coupons/<%= coupon._id %>/edit" class="text-success me-2">Edit</a>
-                                <a href="/admin/coupons/<%= coupon._id %>/delete" class="text-danger"
-                                  onclick="return confirm('Are you sure you want to delete this coupon?')">Delete</a>
-                              </td>
-                            </tr>
-                            <% }) %>
-                              <% } else { %>
-                                <tr>
-                                  <td colspan="5" class="text-center">No coupons created yet.</td>
-                                </tr>
-                                <% } %>
-                      </tbody>
-                    </table>
-                  </div>
+ Log Out</a></div>
+     
+    </div>
 
 
 
 
-                  <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#promotion">Promotion</a>
-                  </li>
+
+      <div class="profile-pic-wrapper position-relative d-inline-block">
+      <img src="/images/defaultdp.svg" alt="Profile" class="profile-img rounded-circle mb-2">
+      <button class="btn btn-sm edit-btn position-absolute">
+        <i class="bi bi-pencil"></i>
+      </button>
+    </div>
+
+    <h5 class="mt-2">Miakel Corper</h5>
+    <p class="text" style="color: aqua;">Super Admin</p>
+  </div>
+
+
+
+

@@ -8,8 +8,8 @@
 
 <header class="navbar"> 
    <a href="/" class="logo">
-      <img src="/images/logo.png" alt="BrainElevate Logo" />
-
+      <img src="/images/teallogo.png" alt="BrainElevate Logo" />
+    
     </a>
  
   <div class="nav-left">
@@ -61,19 +61,21 @@
   <a href="/career">Teach on BrainElevate</a>
   <a href="/courses">Courses</a>
 
-  <% if (token) { %>
-    <!-- Show only when user is logged in -->
-     <a href="#" id="referNow">Refer Now</a>
-    <a href="/mylearning">My Learning</a>
-    <a href="/wishlist"><i class="fa fa-heart"></i></a>
-    <a href="/cart"><i class="fa fa-shopping-cart"></i></a>
-    <a href="/profile/<%= user._id %>"><i class="fa fa-user"></i></a>
-     
-  <% } else { %>
-    <!-- Show when user is NOT logged in -->
-    <a href="/login">Login</a>
-  <a class="btn join-btn" href="/signup">Join for free</a>
-  <% } %>
+<% if (token) { %>
+  <a href="#" id="referNow">Refer Now</a>
+  <a href="/mylearning">My Learning</a>
+  <a href="/wishlist"><i class="fa fa-heart"></i></a>
+  <a href="/cart"><i class="fa fa-shopping-cart"></i></a>
+  <a href="/profile/<%= user._id %>/dashboard" class="profile-link">
+  
+              <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"    class="profile-img"  referrerpolicy="no-referrer">
+
+  </a>
+<% } else { %>
+  <a href="/login">Login</a>
+  <a class="btn btn-danger text-white " href="/signup">Join for free</a>
+<% } %>
+
 </div>
 
   <!-- Hidden Popup for Referral -->

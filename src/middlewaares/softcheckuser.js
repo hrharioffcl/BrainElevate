@@ -22,9 +22,11 @@ console.log("one")
             
             return next()
         }
+           
         req.user = user;
-        console.log("running the authentication middleware")
-        next()
+res.locals.user = user; // 👈 add this line
+next();
+    
     } catch (error) {
         console.log(error)
         return res.render('login', { fieldErrors: "field error", formData: null })

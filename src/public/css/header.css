@@ -6,11 +6,10 @@
        url("/fonts/playfair-display-400.woff") format("woff");
   font-display: swap;
 }
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* header.css */
+* { box-sizing: border-box; }
+body {
+  margin: 0 ;
   font-family: "Poppins", sans-serif;
 
 }
@@ -48,10 +47,15 @@
 
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  background: #4BEADA; /* turquoise shade like in screenshot */
+ /* background: url('/images/header3.png') no-repeat center center; */
+ background-color: #ffffff;
   padding: 0.5rem 1rem;
+  background-size: cover;
+   background-position: center bottom;
+
+
 }
 
 .nav-left {
@@ -64,34 +68,38 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  color: black;
+  color: rgb(0, 0, 0);
   font-weight: bold;
+
+
 }
 
 .logo img {
-  height: 50px;
-  margin-right: 1rem;
+  height: 80px;
+  margin-left: 1rem;
+  
   
 }
 
 .search-form input {
   border-radius: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #4BEADA;
   padding: 5px 10px;
-  outline: none;
+
 }
 
 .nav-right {
   display: flex;
   align-items: center;
   gap: 1.2rem;
+
 }
 
 .nav-right a {
   text-decoration:none;
-  color: black;
+  color: grey;
   font-size: 1rem;
-  font-weight: lighter;
+ font-weight: 700;
 font-family: "Montserrat", sans-serif;
 
 
@@ -101,6 +109,7 @@ font-family: "Montserrat", sans-serif;
    .nav-right a:hover {
       color:  #D2042D;
       /* Bootstrap primary */
+      border-bottom: 2px solid #D2042D
     }
 .nav-right i {
   font-size: 1.2rem;
@@ -220,4 +229,25 @@ font-family: "Montserrat", sans-serif;
     .page-link.rounded-circle {
       border-radius: 50% !important;
     }
+
+
+
+
+
+
+.profile-img {
+width: 1.8rem;
+height: 1.7rem;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #4BEADA; /* optional highlight */
+  transition: transform 0.3s ease;
+
+}
+
+.profile-img:hover {
+  transform: scale(1.05);
+  border: 1px solid #D2042D;
+}
+
 

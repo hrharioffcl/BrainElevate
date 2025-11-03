@@ -35,7 +35,10 @@ app.use((req,res,next)=>{
    res.locals.token = req.cookies?.jwt||null
     next()
 })
-
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 const passport = require("passport");
 require("./config/passport"); // passport config

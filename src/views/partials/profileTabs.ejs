@@ -1,0 +1,15 @@
+<!-- <div class="tabs" style="position: relative; display: flex; justify-content: space-around;">
+  <a href="/profile" class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Profile</a>
+  <a href="/wallet" class="tab <%= activeTab === 'wallet' ? 'active' : '' %>">Wallet</a>
+  <a href="/settings" class="tab <%= activeTab === 'settings' ? 'active' : '' %>">Settings</a>
+</div> -->
+
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <a href="/profile/<%= user._id %>/dashboard"class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Dashboard</a>
+      <a href="/profile/<%= user._id %>/myLearning"class="tab <%= activeTab === 'mylearning' ? 'active' : '' %>">My Learning</a>
+      <a href="#wishlist" class="tab">Wishlist</a>
+      <a href="#history" class="tab">Purchase History</a>
+      <a href="#cart" class="tab">Cart</a>
+    </div>

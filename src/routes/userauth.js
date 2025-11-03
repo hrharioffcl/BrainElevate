@@ -7,7 +7,7 @@ const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
-const{getprofile}= require("../controllers/userProfileController")
+const{getprofiledashboard,getprofileProgress}= require("../controllers/userProfileController")
 
 
 
@@ -52,8 +52,8 @@ router.get('/home', verifytoken,createReferralLink,gethome )
 router.get('/courses',getcourse)
 
 router.get('/courses/:_id',getcoursedetails)
-router.get('/profile/:_id',verifytoken,getprofile)
-
+router.get('/profile/:_id/dashboard',verifytoken,getprofiledashboard)
+router.get('/profile/:_id/myLearning',verifytoken,getprofileProgress)
 
 
 
