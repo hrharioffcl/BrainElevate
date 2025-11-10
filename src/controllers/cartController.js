@@ -35,14 +35,6 @@ exports.postBuyNow = async (req, res) => {
         })
 
         cart.items.push(newItem._id)
-
-        // const allItems = await cartItems.find({ cart: cart._id });
-        // const totalBasePrice = allItems.reduce((sum, item) => {
-        //     return sum + item.basePrice
-
-        // }, 0)
-
-
         await cart.save()
 
 
@@ -56,6 +48,59 @@ exports.postBuyNow = async (req, res) => {
 
 
 }
+
+
+
+
+
+exports.addToCart = async (req, res) => {
+    const user = res.locals.user
+    const { courseId } = req.body
+    let course = await Course.findById(courseId)
+    try {
+        if (!user) {
+            return res.redirect('/login')
+        }
+
+        let cart = await Cart.findOne({ cartUser: user._id })
+
+        if (!cart) {
+            cart = await Cart.create({ cartUser: user._id })
+        }
+
+        const existingItem = await cartItems.findOne({ cart: cart._id, course: course._id });
+        if (existingItem) {
+            return res.redirect(`/profile/${res.locals.user._id}/cart`);
+        }
+
+
+        const newItem = await cartItems.create({
+            cart: cart._id,
+            course: course._id,
+            basePrice: course.price,
+            finalPrice: 0
+        })
+
+        cart.items.push(newItem._id)
+
+        await cart.save()
+
+        res.redirect(`/courses/${course._id}`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Something went wrong.');
+        res.redirect(`/courses/${course._id}`);
+    }
+
+
+}
+
+
+
+
+
+
+
 
 exports.removeItem = async (req, res) => {
     try {
@@ -89,19 +134,29 @@ exports.applyCoupon = async (req, res) => {
     const { couponCode } = req.body
 
     try {
-        const cart = await Cart.findOne({ cartUser: user._id }).populate("items")
+        const cart = await Cart.findOne({ cartUser: user._id }).populate({
+            path: 'items',
+            populate: { path: 'course', model: 'Course' },
+            select: 'name author thumbnail price details'
+        })
         const coupon = await Coupon.findOne({ couponCode: couponCode })
-        if (!coupon || coupon.isDeleted === true) {
-            req.flash('error', 'Invalid Coupon');
+        if (!coupon) {
+            cart.appliedCoupon = null
+            req.flash('error', 'Invalid or expired coupon.');
             return res.redirect(`/profile/${user._id}/cart`);
         }
         const userUsage = await couponUsage.findOne({ userId: user._id, couponId: coupon._id })
-        const result = await validateCoupon(cart, coupon, user, userUsage, req, res)
+
+        const result = await validateCoupon(cart, coupon, user, userUsage)
 
         if (!result.valid) {
-            req.flash('error', result.message);
+            cart.appliedCoupon = null;
+            await cart.save();
+            req.flash('error', result.message
+            );
             return res.redirect(`/profile/${user._id}/cart`);
         }
+
 
         cart.appliedCoupon = coupon._id
         await cart.save();

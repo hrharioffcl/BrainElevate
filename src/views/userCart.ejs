@@ -153,16 +153,16 @@
                         <div class="modal-content border-0 rounded-4 shadow-lg">
                           <div class="modal-header  text-white rounded-top-4 ">
                             <h5 class="modal-title fw-semibold  " id="couponDetailsModalLabel">
-                              <i class="bi bi-ticket-perforated-fill me-2"></i>
+                              <i class="bi bi-ticket-perforated-fill me-2 text-dark"></i>
                                 <%= coupon.couponName %>
                             </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            <button type="button" class="btn-close btn-close btn-danger" data-bs-dismiss="modal"
                               aria-label="Close"></button>
                           </div>
 
                           <div class="modal-body ">
                             <p class="text-start"><strong>Code:</strong>
-                              <%= cart.couponCode %>
+                              <%= coupon.couponCode %>
                             </p>
                             <p class="text-start"><strong>Discount:</strong>
                               <% if (coupon.discountType==='Percentage' ) { %>
@@ -198,7 +198,7 @@
         You can retrieve and use it again if unused before expiry.
       <% } %>
 
-    <% } else if (coupon.scope === 'course') { %>
+    <% } else if (coupon.scope === 'coursespecific') { %>
       This coupon is <strong>course-specific</strong> — valid only for certain courses.<br>
    There are <strong><%= coupon.couponQuantity %></strong> total uses left
       and valid only until <br> <strong><%= coupon.endDateTime.toDateString() %></strong>.<br>
@@ -232,7 +232,7 @@
                 <p class="mb-1">Coupon Discount: <strong>$<%= cart.totalDiscount.toFixed(2) %></strong></p>
                 <h5 class="fw-bold mt-2">TOTAL: $<%= cart.total.toFixed(2) %>
                 </h5>
-                <button class="btn btn-info text-white w-100 rounded-pill mt-3">Place Order</button>
+                <button class="btn btn-info text-dark w-100 rounded-pill mt-3">Proceed To checkout</button>
               </div>
             </div>
           </div>

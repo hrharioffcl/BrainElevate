@@ -8,7 +8,7 @@ const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserU
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
 const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart}= require("../controllers/userProfileController")
-const{postBuyNow,removeItem,applyCoupon,removeCoupon}=require('../controllers/cartController')
+const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon}=require('../controllers/cartController')
 
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
@@ -67,6 +67,7 @@ router.post('/login', restrictUnauthenticatedRoutes, login)
 router.post('/forgot-password', forgotpassword)
 router.post('/reset-password', resetpassword)
 router.post('/buyNow',verifytoken,postBuyNow)
+router.post('/addToCart',verifytoken,addToCart)
 router.post("/cart/remove",verifytoken,removeItem)
 router.post("/applyCoupon",applyCoupon)
 router.post('/removeCoupon',removeCoupon)

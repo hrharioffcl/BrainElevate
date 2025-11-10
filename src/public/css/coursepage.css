@@ -108,12 +108,33 @@ body {
     cursor: pointer;
     transition: background 0.2s;
 }
-
 .course-price button:hover {
     background: #fff;
     color: #1ed6a9;
     border: 1.5px solid #1ed6a9;
 }
+.course-price a {
+    display: block;
+    width: 100%;
+    margin: 6px 0;
+    background-color: #111;
+    color: #ffffff;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.course-price a:hover {
+    background: #fff;
+    color: #1ed6a9;
+    border: 1.5px solid #1ed6a9;
+}
+
+
 
 .course-description h6 {
     color: #232323;
