@@ -45,7 +45,11 @@
                         <div class="course-price mb-3">
                             <h2>₹<%= course.price %>
                             </h2>
-                            <button>Buy Course Now</button>
+                            <form action="/buyNow"  method="POST">
+                                <input type="hidden" name="courseId" value="<%= course._id %>"> 
+                                 <button type="submit">Buy Course Now</button>
+                            </form>
+                           
                             <button>Add to Cart</button>
                         </div>
                         <div class="course-description">
@@ -82,6 +86,7 @@
                 <h2>Reviews</h2>
             </div>
         </section>
+                            <%- include("partials/flashalerts") %>
 
         <!-- Footer Partial -->
         <%- include('partials/footer') %>

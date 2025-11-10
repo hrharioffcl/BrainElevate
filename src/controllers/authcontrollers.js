@@ -433,3 +433,19 @@ exports.getresetpassword = (req, res) => {
     // Otherwise render page
     res.render('resetpassword', { fieldErrors: {} });
 }
+
+exports.userLogOut =async (req,res)=>{
+    res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", 
+        sameSite: "strict",
+    })
+        if (req.session) {
+        req.session.destroy(() => {
+            res.redirect("/login"); 
+        });
+    } else {
+        res.redirect("/login");
+    }
+
+}

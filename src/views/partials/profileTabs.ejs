@@ -9,7 +9,7 @@
     <div class="tabs">
       <a href="/profile/<%= user._id %>/dashboard"class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Dashboard</a>
       <a href="/profile/<%= user._id %>/myLearning"class="tab <%= activeTab === 'mylearning' ? 'active' : '' %>">My Learning</a>
-      <a href="#wishlist" class="tab">Wishlist</a>
-      <a href="#history" class="tab">Purchase History</a>
-      <a href="#cart" class="tab">Cart</a>
+      <a href="/profile/<%= user._id %>/wishlist" class="tab <%= activeTab === 'wishlist' ? 'active' : '' %>">Wishlist</a>
+      <a href="/profile/<%= user._id %>/history" class="tab <%= activeTab === 'history' ? 'active' : '' %>">Purchase History</a>
+      <a href="/profile/<%= user._id %>/cart" class="tab <%= activeTab === 'cart' ? 'active' : '' %>">Cart</a>
     </div>

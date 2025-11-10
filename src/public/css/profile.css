@@ -78,7 +78,6 @@
 .wallet-box {
   background: #4BEADA;
   padding: 25px;
-  border-radius: 20px;
   text-align: center;
 }
 
@@ -135,7 +134,7 @@
   border-radius: 8px;             /* optional rounded corners */
   font-weight: 500;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: 0.8s ease;
 }
 
 .border-btn:hover {
@@ -151,4 +150,75 @@
   font-size: 14px;
   background-color: #2fb5a6;;
   border:1px solid #000000;
+}
+
+
+.learning-cart {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.cart-container {
+  width: 70%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.cart-title {
+  text-align: left;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.cart-course-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+.cartCourse{
+  color: #000000;
+  text-decoration: none;
+}
+.cartCourse:hover{
+  color: #4BEADA;
+}
+
+.cart-summary {
+  text-align: right;
+}
+
+.btn-info {
+  background-color: #4BEADA !important;
+  border: none;
+}
+
+.btn-info:hover {
+  background-color: #37c6b8 !important;
+}
+
+
+
+.remove-btn {
+  border: none;
+  background: transparent;
+  color: #dc3545;
+  font-size: 14px;
+  margin-left: 10px;
+  padding: 2px 6px;
+  transition: 0.2s ease;
+  margin-top: -1rem;
+}
+
+.remove-btn:hover {
+  color: #a71d2a;
+  transform: scale(1.1);
+}
+
+.modal-header {
+ background-color: #4BEADA;
 }

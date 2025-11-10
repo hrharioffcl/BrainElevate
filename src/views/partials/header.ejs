@@ -63,9 +63,9 @@
 
 <% if (token) { %>
   <a href="#" id="referNow">Refer Now</a>
-  <a href="/mylearning">My Learning</a>
-  <a href="/wishlist"><i class="fa fa-heart"></i></a>
-  <a href="/cart"><i class="fa fa-shopping-cart"></i></a>
+  <a href="/profile/<%= user._id %>/myLearning">My Learning</a>
+  <a href="/profile/<%= user._id %>/wishlist"><i class="fa fa-heart"></i></a>
+  <a href="/profile/<%= user._id %>/cart"><i class="fa fa-shopping-cart"></i></a>
   <a href="/profile/<%= user._id %>/dashboard" class="profile-link">
   
               <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"    class="profile-img"  referrerpolicy="no-referrer">

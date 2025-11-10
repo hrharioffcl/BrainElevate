@@ -1,5 +1,5 @@
 const express = require("express")
-const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword } = require("../controllers/authcontrollers")
+const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword ,userLogOut} = require("../controllers/authcontrollers")
 const{gethome} = require("../controllers/userHomeController")
 const{getcourse,getcoursedetails}= require("../controllers/userCourseController")
 const router = express.Router();
@@ -7,8 +7,8 @@ const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
-const{getprofiledashboard,getprofileProgress}= require("../controllers/userProfileController")
-
+const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart}= require("../controllers/userProfileController")
+const{postBuyNow,removeItem,applyCoupon,removeCoupon}=require('../controllers/cartController')
 
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
@@ -49,13 +49,15 @@ router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
 })
 router.get('/home', verifytoken,createReferralLink,gethome )
 
-router.get('/courses',getcourse)
+router.get('/courses',softCheckUser,getcourse)
 
 router.get('/courses/:_id',getcoursedetails)
 router.get('/profile/:_id/dashboard',verifytoken,getprofiledashboard)
 router.get('/profile/:_id/myLearning',verifytoken,getprofileProgress)
-
-
+router.get('/profile/:_id/wishlist',verifytoken,getprofileWishlist)
+router.get('/profile/:_id/hiStory',verifytoken,getprofilePurchaseHistory)
+router.get('/profile/:_id/cart',verifytoken,getprofileCart)
+router.get('/logout', userLogOut)
 
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
@@ -64,5 +66,9 @@ router.post("/resend-otp", resendotp)
 router.post('/login', restrictUnauthenticatedRoutes, login)
 router.post('/forgot-password', forgotpassword)
 router.post('/reset-password', resetpassword)
+router.post('/buyNow',verifytoken,postBuyNow)
+router.post("/cart/remove",verifytoken,removeItem)
+router.post("/applyCoupon",applyCoupon)
+router.post('/removeCoupon',removeCoupon)
 
 module.exports = router;

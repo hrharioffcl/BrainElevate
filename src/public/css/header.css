@@ -107,9 +107,9 @@ font-family: "Montserrat", sans-serif;
    
 }
    .nav-right a:hover {
-      color:  #D2042D;
+      color:  #4BEADA;
       /* Bootstrap primary */
-      border-bottom: 2px solid #D2042D
+      border-bottom: 2px solid #4BEADA;
     }
 .nav-right i {
   font-size: 1.2rem;

@@ -109,7 +109,7 @@ body {
     transition: background 0.2s;
 }
 
-.course-price button:last-child {
+.course-price button:hover {
     background: #fff;
     color: #1ed6a9;
     border: 1.5px solid #1ed6a9;
