@@ -7,8 +7,8 @@ const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
-const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart}= require("../controllers/userProfileController")
-const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon}=require('../controllers/cartController')
+const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile}= require("../controllers/userProfileController")
+const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
 
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
@@ -58,6 +58,8 @@ router.get('/profile/:_id/wishlist',verifytoken,getprofileWishlist)
 router.get('/profile/:_id/hiStory',verifytoken,getprofilePurchaseHistory)
 router.get('/profile/:_id/cart',verifytoken,getprofileCart)
 router.get('/logout', userLogOut)
+router.get('/profile/:_id/editProfile',verifytoken,getEditProfile)
+
 
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
@@ -71,5 +73,6 @@ router.post('/addToCart',verifytoken,addToCart)
 router.post("/cart/remove",verifytoken,removeItem)
 router.post("/applyCoupon",applyCoupon)
 router.post('/removeCoupon',removeCoupon)
+router.post('/addToWishList',addToWishList)
 
 module.exports = router;

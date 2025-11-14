@@ -19,39 +19,71 @@
 
     <%- include('partials/header') %>
 
-  <!-- Profile Section -->
-  <section class="profile">
-    <div class="profile-card">
-      <div style="margin-left:5%;">  
-
-        
-            
-         <div class="profile-avatar  position-relative d-inline-block">
-        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
-        <a href="" class="btn btn-sm edit-btn position-absolute">  <i class="bi bi-pencil"></i>
-
-</a>
-    
-      </div>
-
-      <div class="profile-info">
-        <h2><%= user.fullName %></h2>
-    
-            <p><i class="bi bi-envelope-at-fill"></i>  <%= user.email %></p>
-                <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
-      </div>
-    </div>
-   <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="/logout"><i class="fa-solid fa-person-running"></i>
-
- Log Out</a></div>
-     
-    </div>
 <%- include('partials/profileTabs', { activeTab: 'wishlist' }) %>
 
 
-  </section>
+ 
+<section class="learning-cart">
+  <div class="cart-container">
+    <h3 class="cart-title">My Wishlist (<%= wishlist.length %>)</h3><hr>
 
-  
+    <% if (wishlist.length === 0) { %>
+      <p class="text-muted text-center py-5">Your wishlist is empty ❤️</p>
+    <% } else { %>
+      <table class="table align-middle">
+        <thead>
+          <tr>
+         
+          </tr>
+        </thead>
+        <tbody>
+          <% wishlist.forEach(item => { %>
+            <tr class="cart-row">
+              <td>
+                <div class="d-flex align-items-center">
+                  <a href="/courses/<%= item.courseId._id %>">
+                    <img src="<%= item.courseId.thumbnail %>" 
+                         alt="<%= item.courseId.name %>" 
+                         class="cart-course-img">
+                  </a>
+                  <div class="cart-details">
+                    <h6 class="mb-1 cart-title">
+                      <a href="/courses/<%= item.courseId._id %>" class="cartCourse">
+                        <%= item.courseId.name %>
+                      </a>
+                    </h6>
+                    <small class="text-muted d-block">Course by: <%= item.courseId.author %></small>
+                    <small class="text-muted d-block">
+                      <i class="bi bi-star-fill text-warning"></i>
+                      <%= item.courseId.rating %> (<%= item.courseId.reviewCount || "0" %> Reviews)
+                    </small>
+                    <strong>₹<%= item.courseId.price %></strong>
+                  </div>
+                </div>
+              </td>
+
+              <td class="text-end">
+                <form action="/addToWishList" method="POST" class="d-inline">
+                  <input type="hidden" name="courseId" value="<%= item.courseId._id %>">
+                  <input type="hidden" name="redirectTo" value="/profile/<%= user._id %>/wishlist">
+                  <button type="submit" class="btn btn-link text-decoration-none p-0 remove-btn">
+               <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDEyIDE2Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHBhdGggZD0iTS0xLjUuNWgxNXYxNWgtMTV6Ii8+CiAgICAgICAgPHBhdGggZmlsbD0iI0MyQzJDMiIgZmlsbC1ydWxlPSJub256ZXJvIiBkPSJNMSAxMy44MzNjMCAuOTE3Ljc1IDEuNjY3IDEuNjY3IDEuNjY3aDYuNjY2Yy45MTcgMCAxLjY2Ny0uNzUgMS42NjctMS42Njd2LTEwSDF2MTB6bTEwLjgzMy0xMi41SDguOTE3TDguMDgzLjVIMy45MTdsLS44MzQuODMzSC4xNjdWM2gxMS42NjZWMS4zMzN6Ii8+CiAgICA8L2c+Cjwvc3ZnPgo=" 
+     alt="delete" width="16" height="16">
+
+                  </button>
+                </form>
+
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+</section>
+
+
+        <%- include("partials/flashalerts") %>
 
   <!-- Footer -->
           <%- include('partials/footer') %>

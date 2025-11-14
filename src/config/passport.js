@@ -39,8 +39,6 @@ passport.use(new GoogleStrategy({
 
         else if (user) {
             // Update user info if necessary
-            user.fullName = profile.displayName || user.fullName;
-            user.profilepic = profile.photos[0]?.value || user.profilepic;
             user.lastLogin = new Date();
             await user.save();
         } else {

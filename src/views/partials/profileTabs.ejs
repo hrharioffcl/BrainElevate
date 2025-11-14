@@ -5,6 +5,34 @@
 </div> -->
 
 
+  <!-- Profile Section -->
+  <section class="profile">
+    <div class="profile-card">
+      <div style="margin-left:5%;">  
+
+        
+            
+         <div class="profile-avatar  position-relative d-inline-block">
+        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
+        <a href="/profile/<%= user._id %>/editProfile" class="btn btn-sm edit-btn position-absolute">  <i class="bi bi-pencil"></i>
+
+</a>
+    
+      </div>
+
+      <div class="profile-info">
+        <h2><%= user.fullName %></h2>
+    
+            <p><i class="bi bi-envelope-at-fill"></i>  <%= user.email %></p>
+                <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
+      </div>
+    </div>
+   <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="/logout"><i class="fa-solid fa-person-running"></i>
+
+ Log Out</a></div>
+     
+    </div>
+     </section>
     <!-- Tabs -->
     <div class="tabs">
       <a href="/profile/<%= user._id %>/dashboard"class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Dashboard</a>

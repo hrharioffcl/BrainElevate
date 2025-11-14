@@ -2,7 +2,7 @@
 const course = require("../models/coursesSchema")
 const category = require("../models/categorySchema")
 const Cart = require("../models/cartSchema");
-
+const Wishlist = require("../models/wishListSchema")
 
 exports.getcourse = async (req, res) => {
   try {
@@ -81,6 +81,7 @@ exports.getcourse = async (req, res) => {
     //adding addedtocartlogic flag for every course (checking wether ithe course isadded to the cart)
     //ADD WISHLIST IN FUTURE// ALSO BOUGHT LIST IF NEEDED
     if (user) {
+
       let cartCourseIds = [];
       const cart = await Cart.findOne({ cartUser: user._id }).populate({
         path: 'items',
@@ -91,16 +92,23 @@ exports.getcourse = async (req, res) => {
         cartCourseIds = cart.items.map((i) => {
           return i.course._id.toString()
         })
+
       }
+      const wishlistItems = await Wishlist.find({ userId: user._id }).select('courseId');
+      const wishlistCourseIds = wishlistItems.map(w => w.courseId.toString());
+
+
       courses = courses.map((c) => {
         return {
-          ...c.toObject(), inCart: cartCourseIds.includes(c._id.toString())
+          ...c.toObject(), inCart: cartCourseIds.includes(c._id.toString()),
+          inWish: wishlistCourseIds.includes(c._id.toString())
         }
       })
     } else {
       courses = courses.map((c) => {
         return {
-          ...c.toObject(), inCart: false
+          ...c.toObject(), inCart: false, inWish: false
+
         }
       })
     }

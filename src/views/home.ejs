@@ -247,7 +247,6 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
           <div class="row g-4">
             <% courses.forEach(course=> { %>
               <div class="col-md-4 col-lg-3 d-flex">
-                <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
                   <div class="card shadow-sm border-0 d-flex flex-column w-100">
                     <div class="card-header bg-white d-flex justify-content-between align-items-start">
 
@@ -263,12 +262,14 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
                           <% }%>
                       </div>
                       <div>
-                        <i class="bi bi-heart fs-4 end-0 m-2 text-danger "></i>
                       </div>
                     </div>
 
                     <!-- Course Image -->
+                                     <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
+
                     <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
+                                     </a>
 
                     <!-- Card Body -->
                     <div class="card-body d-flex flex-column">
@@ -287,9 +288,11 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
                       <hr>
 
                       <!-- Dedicated Name Space -->
+                                       <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
                       <h6 class="fw-bold text-dark course-name mb-3">
                         <%= course.name %>
                       </h6>
+                                       </a>
                       <!-- Footer -->
                       <div class="mt-auto d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
@@ -331,7 +334,6 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
         <div class="row g-4">
           <% lowpricecourse.forEach(course=> { %>
             <div class="col-md-4 col-lg-3 d-flex">
-              <a href="#" class="text-decoration-none w-100 d-flex">
                 <div class="card shadow-sm border-0 d-flex flex-column w-100">
                   <div class="card-header bg-white d-flex justify-content-between align-items-start">
 
@@ -347,14 +349,13 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
                         <% }%>
                     </div>
                     <div>
-                      <i class="bi bi-heart fs-4 end-0 m-2 text-danger "></i>
                     </div>
                   </div>
 
-
+                <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
                   <!-- Course Image -->
                   <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
-
+                </a>
                   <!-- Card Body -->
                   <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -372,10 +373,11 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
                     <hr>
 
                     <!-- Dedicated Name Space -->
+                                     <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
                     <h6 class="fw-bold text-dark course-name mb-3">
                       <%= course.name %>
                     </h6>
-
+                                     </a>
                     <!-- Footer -->
                     <div class="mt-auto d-flex justify-content-between align-items-center">
                       <div class="d-flex align-items-center">
@@ -408,6 +410,93 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
       </div>
       </section>
 
+      
+      <div class="container my-5">
+        <h2 class="fw-bold">Try Our Free Courses</h2>
+        <p class="text-muted">Recommended for you</p>
+        <hr>
+
+        <div class="row g-4">
+          <% freeCourses.forEach(course=> { %>
+            <div class="col-md-4 col-lg-3 d-flex">
+                <div class="card shadow-sm border-0 d-flex flex-column w-100">
+                  <div class="card-header bg-white d-flex justify-content-between align-items-start">
+
+                    <!-- Heart icon wrapped in a form -->
+                    <div>
+
+                      <% if (course.price===0 ) { %>
+                        <span>
+                          <i class="badge  bi-lightning-charge-fill  fs-6  start-0 m-2 text-warning "> Free</i>
+
+                        </span>
+
+                        <% }%>
+                    </div>
+                    <div>
+
+                    </div>
+                  </div>
+
+                <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
+                  <!-- Course Image -->
+                  <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.title %>">
+                </a>
+                  <!-- Card Body -->
+                  <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="bg-category text-dark p-1" style="font-size: small;">
+                        <%= course.category.name %>
+                      </span>
+
+                      <!-- Price -->
+                      <span>
+                        <p class="fw-bold mb-0 text-dark">₹<%= course.price %>
+                        </p>
+                      </span>
+                    </div>
+
+                    <hr>
+
+                    <!-- Dedicated Name Space -->
+                                     <a href="/courses/<%= course._id %>" class="text-decoration-none w-100 d-flex">
+                    <h6 class="fw-bold text-dark course-name mb-3">
+                      <%= course.name %>
+                    </h6>
+                                     </a>
+                    <!-- Footer -->
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
+                        <span class="fw-bold me-2">
+                          <%= course.rating %>
+                        </span>
+                        <span class="text-warning">
+                          <% for (let i=1; i <=5; i++) { %>
+                            <% if (i <=Math.floor(course.rating)) { %>
+                              <i class="bi bi-star-fill"></i>
+                              <% } else if (i - course.rating < 1) { %>
+                                <i class="bi bi-star-half"></i>
+                                <% } else { %>
+                                  <i class="bi bi-star"></i>
+                                  <% } %>
+                                    <% } %>
+                        </span>
+                      </div>
+                      <span class="text-danger">
+                        <%= course.duration %>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <% }) %>
+        </div>
+      </div>
+      </section>
+
+      <section>
       <section>
         <h1>top rated frontend courses</h1>
       </section>

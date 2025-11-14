@@ -1,6 +1,7 @@
 const user = require("../models/userSchema")
 const Cart = require("../models/cartSchema")
 const Coupon = require("../models/couponSchema")
+const Wishlist = require('../models/wishListSchema')
 const { calculateSubTotal } = require("../utils/calculateSubTotal")
 
 const couponUsage = require("../models/couponUsageSchema")
@@ -18,19 +19,21 @@ exports.getprofileProgress = async (req, res) => {
     const users = await user.findById(userid)
     res.render('userProgress', { user: users, courses: [] })
 }
-
+//profile/wishlist
 exports.getprofileWishlist = async (req, res) => {
     const userid = req.params._id
     const users = await user.findById(userid)
-    res.render('userWishlist', { user: users, courses: [] })
+const wishlist = await Wishlist.find({ userId: users._id })
+  .populate('courseId','name author thumbnail price details');
+    res.render('userWishlist', { user: users, wishlist})
 }
-
+//profile/purchase History
 exports.getprofilePurchaseHistory = async (req, res) => {
     const userid = req.params._id
     const users = await user.findById(userid)
     res.render('userPurchaseHistory', { user: users, courses: [] })
 }
-
+//profile/cart
 exports.getprofileCart = async (req, res) => {
     try {
 
@@ -111,5 +114,19 @@ exports.getprofileCart = async (req, res) => {
         res.render('userCart', { user: users, cart, coupon })
     } catch (error) {
         console.log(error)
+    }
+}
+
+
+//edit Profile
+exports.getEditProfile = async(req,res)=>{
+    const userid = req.params._id
+    const users =await user.findById(userid)
+    try {
+
+        res.render('editProfile',{user:users})
+    } catch (error) {
+                res.send("error")
+
     }
 }

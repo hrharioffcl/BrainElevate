@@ -54,4 +54,24 @@
       }
     });
   <% } %>
+
+    <% if (messages.warning && messages.warning.length > 0) { %>
+    Swal.fire({
+      icon: "warning",
+      title: "<%= messages.warning[0] %>",
+      position: "top",
+      toast: true,
+      background: "#fff",
+      color: "#2980b9",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+      width: "350px",
+      customClass: {
+        popup: "rounded shadow-lg"
+      }
+    });
+  <% } %>
+
+  
 </script>

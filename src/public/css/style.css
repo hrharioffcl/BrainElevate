@@ -204,7 +204,27 @@ body {
       background-color: transparent !important;
       color: #1abc9c !important;
     }
+/* course wishlist css */
+.heart {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  font-size: 26px;
+  transition: transform 0.2s ease;
+}
+.heart:active { transform: scale(1.2); }
 
-
-
-
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: red;
+  opacity: 0;
+  pointer-events: none;
+  animation: pop 600ms ease-out forwards;
+}
+@keyframes pop {
+  0% {transform: translate(0,0) scale(1);opacity:1;}
+  100% {transform: translate(var(--x),var(--y)) scale(0);opacity:0;}
+}

@@ -4,6 +4,7 @@ const cartItems = require('../models/cartItemSchema')
 const Course = require('../models/coursesSchema')
 const Coupon = require('../models/couponSchema')
 const couponUsage = require("../models/couponUsageSchema")
+const Wishlist = require('../models/wishListSchema')
 const { validateCoupon } = require("../utils/validateCoupon")
 
 exports.postBuyNow = async (req, res) => {
@@ -186,6 +187,41 @@ exports.removeCoupon = async (req, res) => {
         console.log(error)
         req.flash('error', `Some error occured`);
         res.redirect(`/profile/${user._id}/cart`);
+    }
+
+}
+
+
+
+exports.addToWishList = async (req, res) => {
+    const user = res.locals.user
+    try {
+        const { courseId,redirectTo } = req.body
+        let course = await Course.findById(courseId)
+        if (!user) {
+            return res.redirect('/login')
+        }
+        const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
+
+        if (existing) {
+
+            // Remove from wishlist
+            await Wishlist.deleteOne({ _id: existing._id });
+            req.flash("warning", "Removed from wishlist");
+
+            console.log("Removed from wishlist");
+        } else {
+            // Add to wishlist
+            await Wishlist.create({ userId: user._id, courseId: course._id });
+req.flash('success', "Added to wishlist!");
+            console.log("Added to wishlist");
+        }
+
+
+        res.redirect(redirectTo ||'/courses')
+
+    } catch (error) {
+        console.log(error)
     }
 
 }

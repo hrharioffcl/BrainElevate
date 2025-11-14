@@ -144,12 +144,11 @@
 
 .edit-btn {
   top: 0; /* adjust vertical position */
-  right: -10px; /* adjust horizontal position */
-  border-radius: 50%;
+  right: -20px; /* adjust horizontal position */
+  border-radius: 50%!important;
   padding: 4px 6px;
   font-size: 14px;
-  background-color: #2fb5a6;;
-  border:1px solid #000000;
+  background-color: #4BEADA !important;
 }
 
 

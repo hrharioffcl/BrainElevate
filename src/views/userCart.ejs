@@ -22,40 +22,7 @@
   <%- include('partials/header') %>
 
     <!-- Profile Section -->
-    <section class="profile">
-      <div class="profile-card">
-        <div style="margin-left:5%;">
 
-
-
-          <div class="profile-avatar  position-relative d-inline-block">
-            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User" referrerpolicy="no-referrer">
-            <a href="" class="btn btn-sm edit-btn position-absolute"> <i class="bi bi-pencil"></i>
-
-            </a>
-
-          </div>
-
-          <div class="profile-info">
-            <h2>
-              <%= user.fullName %>
-            </h2>
-
-            <p><i class="bi bi-envelope-at-fill"></i>
-              <%= user.email %>
-            </p>
-            <p><i class="fa-solid fa-location-dot"></i>
-              <%= user.location %>
-            </p>
-          </div>
-        </div>
-        <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="/logout"><i
-              class="fa-solid fa-person-running"></i>
-
-
-            Log Out</a></div>
-
-      </div>
       <%- include('partials/profileTabs', { activeTab: 'cart' }) %>
         <section class="learning-cart">
           <div class="cart-container">
@@ -64,6 +31,7 @@
               <thead>
                 <tr>
                   <th style="width:60%">Course</th>
+                  <th></th>
                   <th class="text-end">Price</th>
                 </tr>
               </thead>
@@ -83,21 +51,24 @@
                                   <%= item.course.name %>
                                 </a>
                               </h6>
-                              <form action="/cart/remove" method="POST" class="delete-form d-inline">
-                                <input type="hidden" name="itemId" value="<%= item._id %>">
-                                <button type="submit" class=" remove-btn">
-                                  <i class="fa-solid fa-xmark"></i>
-                                </button>
-                              </form>
-
                             </div>
                             <small class="text-muted">Course by <%= item.course.author %></small>
                           </div>
                         </div>
                       </td>
 
-
-                      <td class="text-end fw-semibold">$<%= item.course.price.toFixed(2) %>
+                      <td>
+                        <form action="/cart/remove" method="POST" class="delete-form d-inline">
+                          <input type="hidden" name="itemId" value="<%= item._id %>">
+                          <button type="submit" class=" remove-btn">
+                            <img
+                              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDEyIDE2Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHBhdGggZD0iTS0xLjUuNWgxNXYxNWgtMTV6Ii8+CiAgICAgICAgPHBhdGggZmlsbD0iI0MyQzJDMiIgZmlsbC1ydWxlPSJub256ZXJvIiBkPSJNMSAxMy44MzNjMCAuOTE3Ljc1IDEuNjY3IDEuNjY3IDEuNjY3aDYuNjY2Yy45MTcgMCAxLjY2Ny0uNzUgMS42NjctMS42Njd2LTEwSDF2MTB6bTEwLjgzMy0xMi41SDguOTE3TDguMDgzLjVIMy45MTdsLS44MzQuODMzSC4xNjdWM2gxMS42NjZWMS4zMzN6Ii8+CiAgICA8L2c+Cjwvc3ZnPgo="
+                              alt="delete" width="16" height="16">
+                              </button>
+                        </form>
+                      </td>
+                      
+                      <td class="text-end fw-semibold">₹<%= item.course.price.toFixed(2) %>
                       </td>
                     </tr>
                     <% }) %>
@@ -122,7 +93,7 @@
                         <span class="text-muted">Applied</span>
                       </div>
                       <form action="/removeCoupon" method="POST" class="d-inline removeCoupon">
-                                                        <input type="hidden" name="cartId" value="<%= cart._id %>">
+                        <input type="hidden" name="cartId" value="<%= cart._id %>">
                         <button type="submit" class="btn btn-link text-danger text-decoration-none p-0">Remove</button>
                       </form>
                     </div>
@@ -139,8 +110,8 @@
                         <i class="bi bi-ticket-perforated-fill text-success me-1"></i>
                         <span>Coupon Details</span>
                       </div>
-                      <button type="button" class="btn btn-link  fw-semibold p-0"  style="color: #4beada;"  data-bs-toggle="modal"
-                        data-bs-target="#couponDetailsModal">
+                      <button type="button" class="btn btn-link  fw-semibold p-0" style="color: #4beada;"
+                        data-bs-toggle="modal" data-bs-target="#couponDetailsModal">
                         View Details
                       </button>
                     </div>
@@ -154,7 +125,7 @@
                           <div class="modal-header  text-white rounded-top-4 ">
                             <h5 class="modal-title fw-semibold  " id="couponDetailsModalLabel">
                               <i class="bi bi-ticket-perforated-fill me-2 text-dark"></i>
-                                <%= coupon.couponName %>
+                              <%= coupon.couponName %>
                             </h5>
                             <button type="button" class="btn-close btn-close btn-danger" data-bs-dismiss="modal"
                               aria-label="Close"></button>
@@ -182,31 +153,44 @@
                                       <% } %>
                             </p>
                             <p class="text-start"><strong>Minimum purchase Amount:</strong>
-                              <%= coupon.minPurchaseAmount%>
+                              ₹<%= coupon.minPurchaseAmount%>
                             </p>
-                              <p class="text-start"><strong>Uses Per Customer:</strong>
+                            <p class="text-start"><strong>Uses Per Customer:</strong>
                               <%= coupon.usesPerCustomer %>
                             </p>
 
                             <hr>
-                                <% if (coupon.scope === 'global') { %>
-      This coupon is <strong>global</strong> — usable across all courses.<br>
-         There are <strong><%= coupon.couponQuantity %></strong> total uses left
-      and valid only until  <br><strong><%= coupon.endDateTime.toDateString() %></strong>.<br>
-      <% if (coupon.usesPerCustomer && coupon.usesPerCustomer > 1) { %>
-        Each user can use this coupon <strong><%= coupon.usesPerCustomer %></strong> times.<br>
-        You can retrieve and use it again if unused before expiry.
-      <% } %>
+                            <% if (coupon.scope==='global' ) { %>
+                              This coupon is <strong>global</strong> — usable across all courses.<br>
+                              There are <strong>
+                                <%= coupon.couponQuantity %>
+                              </strong> total uses left
+                              and valid only until <br><strong>
+                                <%= coupon.endDateTime.toDateString() %>
+                              </strong>.<br>
+                              <% if (coupon.usesPerCustomer && coupon.usesPerCustomer> 1) { %>
+                                Each user can use this coupon <strong>
+                                  <%= coupon.usesPerCustomer %>
+                                </strong> times.<br>
+                                You can retrieve and use it again if unused before expiry.
+                                <% } %>
 
-    <% } else if (coupon.scope === 'coursespecific') { %>
-      This coupon is <strong>course-specific</strong> — valid only for certain courses.<br>
-   There are <strong><%= coupon.couponQuantity %></strong> total uses left
-      and valid only until <br> <strong><%= coupon.endDateTime.toDateString() %></strong>.<br>
-      <% if (coupon.usesPerCustomer && coupon.usesPerCustomer > 1) { %>
-        Each user can use it <strong><%= coupon.usesPerCustomer %></strong> times.<br>
-        You can retrieve it anytime before expiry.
-      <% } %>
-    <% } %>
+                                  <% } else if (coupon.scope==='coursespecific' ) { %>
+                                    This coupon is <strong>course-specific</strong> — valid only for certain
+                                    courses.<br>
+                                    There are <strong>
+                                      <%= coupon.couponQuantity %>
+                                    </strong> total uses left
+                                    and valid only until <br> <strong>
+                                      <%= coupon.endDateTime.toDateString() %>
+                                    </strong>.<br>
+                                    <% if (coupon.usesPerCustomer && coupon.usesPerCustomer> 1) { %>
+                                      Each user can use it <strong>
+                                        <%= coupon.usesPerCustomer %>
+                                      </strong> times.<br>
+                                      You can retrieve it anytime before expiry.
+                                      <% } %>
+                                        <% } %>
                           </div>
                         </div>
                       </div>
@@ -228,9 +212,9 @@
 
 
               <div class="col-md-5 text-end cart-summary">
-                <p class="mb-1">Subtotal: <strong>$<%= cart.subTotal.toFixed(2) %></strong></p>
-                <p class="mb-1">Coupon Discount: <strong>$<%= cart.totalDiscount.toFixed(2) %></strong></p>
-                <h5 class="fw-bold mt-2">TOTAL: $<%= cart.total.toFixed(2) %>
+                <p class="mb-1">Subtotal: <strong>₹<%= cart.subTotal.toFixed(2) %></strong></p>
+                <p class="mb-1">Coupon Discount: <strong>₹<%= cart.totalDiscount.toFixed(2) %></strong></p>
+                <h5 class="fw-bold mt-2">TOTAL: ₹<%= cart.total.toFixed(2) %>
                 </h5>
                 <button class="btn btn-info text-dark w-100 rounded-pill mt-3">Proceed To checkout</button>
               </div>
