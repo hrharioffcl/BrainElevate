@@ -130,3 +130,33 @@ exports.getEditProfile = async(req,res)=>{
 
     }
 }
+
+exports.postUploadProfilePic = async (req, res) => {
+  try {
+    const userid = req.params._id;
+    const users = await user.findById(userid);
+
+    if (!req.file) {
+      req.flash("error", "No file uploaded");
+      return res.redirect(`/profile/${userid}/editProfile`);
+    }
+
+
+       const imageUrl = req.file.path || req.file.url;  // FIX HERE
+
+
+    users.profilepic = imageUrl;
+    console.log(imageUrl)
+console.log(users.profilepic )
+    await users.save(); // important!
+
+    req.flash("success", "Profile picture updated!");
+    return res.redirect(`/profile/${userid}/editProfile`);
+
+  } catch (error) {
+    console.log("Upload Error:", error);
+    req.flash("error", "Upload failed");
+    res.send(error)
+  }
+};
+

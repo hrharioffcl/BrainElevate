@@ -1,40 +1,23 @@
-<section class="profile">
-    <div class="profile-card">
-      <div style="margin-left:5%;">  
+     <!-- Profile image -->
+                    <div class="profile-image">
+                        <div class="image-wrapper">
+                            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"
+                                referrerpolicy="no-referrer">
+                            <form action="/profile/upload-photo/<%= user._id %>" method="POST"
+                                enctype="multipart/form-data">
 
-        
-         <div class="profile-avatar profile-pic-wrapper position-relative d-inline-block">
-        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
-        <button class="btn btn-sm edit-btn position-absolute">
-        <i class="bi bi-pencil"></i>
-      </button>
-      </div>
+                                <label for="photo" class="overlay">
+                                    <i class="bi bi-upload"></i>
+                                    <span>Upload Photo</span>
+                                </label>
+<input id="photo" 
+       name="profile" 
+       type="file" 
+       hidden 
+     onchange="if (this.files.length) { this.form.submit(); this.value = null; }"
 
-      <div class="profile-info">
-        <h2><%= user.fullName %></h2>
-        <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
-      </div></div>
-   <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="#"><i class="fa-solid fa-person-running"></i>
-
- Log Out</a></div>
-     
-    </div>
-
-
-
-
-
-      <div class="profile-pic-wrapper position-relative d-inline-block">
-      <img src="/images/defaultdp.svg" alt="Profile" class="profile-img rounded-circle mb-2">
-      <button class="btn btn-sm edit-btn position-absolute">
-        <i class="bi bi-pencil"></i>
-      </button>
-    </div>
-
-    <h5 class="mt-2">Miakel Corper</h5>
-    <p class="text" style="color: aqua;">Super Admin</p>
-  </div>
-
-
-
-
+/>
+                            </form>
+                        </div>
+                        <small>Image size should be under 1MB and ratio 1:1</small>
+                    </div>

@@ -7,7 +7,8 @@ const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
-const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile}= require("../controllers/userProfileController")
+const uploadProfilePic = require("../middlewaares/uploadProfilePic");
+const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic}= require("../controllers/userProfileController")
 const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
 
 
@@ -74,5 +75,10 @@ router.post("/cart/remove",verifytoken,removeItem)
 router.post("/applyCoupon",applyCoupon)
 router.post('/removeCoupon',removeCoupon)
 router.post('/addToWishList',addToWishList)
+router.post(
+  "/profile/upload-photo/:_id",
+  uploadProfilePic.single("profile"),
+  postUploadProfilePic
+);
 
 module.exports = router;
