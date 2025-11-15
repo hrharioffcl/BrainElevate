@@ -100,8 +100,24 @@
 
 
   .btn-save:hover {
-    background-color: #16cfa1;
+    background-color:  #000000;
   }
+
+
+.btn-cancel {
+  background-color: #ffffff;
+  color: rgba(184, 13, 50, 0.655);
+ border: none;
+}
+
+
+  .btn-cancel:hover {
+  color:  #000000;
+
+  }
+
+
+
 
   /* Change password section */
   .change-password {
@@ -201,7 +217,7 @@ width: clamp(180px, 25vw, 260px);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 0.5;
   transition: opacity 0.3s ease;
   cursor: pointer;
   font-size: 0.9rem;
@@ -216,3 +232,42 @@ width: clamp(180px, 25vw, 260px);
 .overlay i {
   font-size: 1.2rem;
 }
+
+
+.settings-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Each card */
+.settings-card {
+    flex: 1;
+    min-width: 320px;
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Card headers */
+.card-title {
+    margin: 0 0 1rem 0;
+}
+
+.edit-text-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    text-decoration: none;
+    color: #1de9b6; /* Bootstrap primary color */
+    cursor: pointer;
+}
+
+.edit-text-btn:hover {
+    
+       border: 1px solid #1de9b6;
+        border-radius: 50px;
+}
+

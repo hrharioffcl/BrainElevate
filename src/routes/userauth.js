@@ -10,7 +10,7 @@ const{softCheckUser}=require("../middlewaares/softcheckuser")
 const uploadProfilePic = require("../middlewaares/uploadProfilePic");
 const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic}= require("../controllers/userProfileController")
 const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
-
+const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
     const token = req.cookies.jwt
@@ -77,7 +77,7 @@ router.post('/removeCoupon',removeCoupon)
 router.post('/addToWishList',addToWishList)
 router.post(
   "/profile/upload-photo/:_id",
-  uploadProfilePic.single("profile"),
+  uploadProfilePic.single("profile"),multerErrorHandler,
   postUploadProfilePic
 );
 

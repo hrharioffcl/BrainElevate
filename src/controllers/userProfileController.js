@@ -4,6 +4,7 @@ const Coupon = require("../models/couponSchema")
 const Wishlist = require('../models/wishListSchema')
 const { calculateSubTotal } = require("../utils/calculateSubTotal")
 
+const { cloudinary } = require("../config/cloudinary");
 const couponUsage = require("../models/couponUsageSchema")
 const { validateCoupon } = require("../utils/validateCoupon")
 
@@ -132,20 +133,27 @@ exports.getEditProfile = async(req,res)=>{
 }
 
 exports.postUploadProfilePic = async (req, res) => {
-  try {
     const userid = req.params._id;
     const users = await user.findById(userid);
+  try {
+    
 
     if (!req.file) {
       req.flash("error", "No file uploaded");
       return res.redirect(`/profile/${userid}/editProfile`);
     }
-
+if (users.profilepicId) {
+      const result = await cloudinary.uploader.destroy(users.profilepicId);
+      console.log("Delete result:", result);
+    }
+    
 
        const imageUrl = req.file.path || req.file.url;  // FIX HERE
 
 
     users.profilepic = imageUrl;
+    users. profilepicId = req.file.filename; // REAL public_id
+
     console.log(imageUrl)
 console.log(users.profilepic )
     await users.save(); // important!
@@ -156,7 +164,21 @@ console.log(users.profilepic )
   } catch (error) {
     console.log("Upload Error:", error);
     req.flash("error", "Upload failed");
-    res.send(error)
+return res.redirect(`/profile/${userid}/editProfile`);
+
   }
 };
 
+
+exports.postUpdateProfile =async(req,res)=>{
+   const userid = req.params._id;
+    const users = await user.findById(userid);
+    try {
+        
+        
+    } catch (error) {
+        console.log(error)
+        res.redirect(`/profile/${userid}/editProfile`)
+    }
+
+}

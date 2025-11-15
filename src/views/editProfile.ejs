@@ -22,10 +22,6 @@
 
     <%- include('partials/header') %>
 
-
-
-
-
         <div class="edit-profile-container">
             <h4 style="margin-bottom:1.5rem;">Account Settings</h4>
 
@@ -33,69 +29,116 @@
             <section class="account-settings">
                 <div class="profile-section">
 
-                    <!-- Profile image -->
-                    <div class="profile-image">
-                        <div class="image-wrapper">
-                            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"
-                                referrerpolicy="no-referrer">
-                            <form action="/profile/upload-photo/<%= user._id %>" method="POST"
-                                enctype="multipart/form-data">
+  <!-- Profile Image Card -->
+<div class="profile-image">
 
-                                <label for="photo" class="overlay">
-                                    <i class="bi bi-upload"></i>
-                                    <span>Upload Photo</span>
-                                </label>
-<input id="photo" 
-       name="profile" 
-       type="file" 
-       hidden 
-     onchange="if (this.files.length) { this.form.submit(); this.value = null; }"
-
-/>
-                            </form>
-                        </div>
-                        <small>Image size should be under 1MB and ratio 1:1</small>
-                    </div>
+         <div class="settings-card">
 
 
-                    <!-- Form fields -->
-                    <form action="/profile/update" method="POST" class="profile-form">
-                        <div>
-                            <label>Full name</label>
-                            <input type="text" name="fullName" value="<%= user.fullName || '' %>">
-                        </div>
+    <!-- VIEW MODE -->
+    <div id="imageView">
+        <div class="image-wrapper">
+            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" 
+                 alt="User" referrerpolicy="no-referrer">
+        </div>
+    </div>
 
-                        <div></div> <!-- spacer column -->
+       
+        <button  id="imgEditBtn" type="button" class="edit-text-btn"  onclick="toggleImageEdit()">
+        + Upload Photo
+        </button>
+ 
 
-                        <div>
-                            <label>Location</label>
-                            <input type="text" name="location" value="<%= user.location || '' %>">
-                        </div>
+    <!-- EDIT MODE -->
+    <div id="imageEdit" style="display:none;">
+        <div class="image-wrapper">
+            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" 
+                 alt="User" referrerpolicy="no-referrer">
 
+            <form action="/profile/upload-photo/<%= user._id %>" method="POST" enctype="multipart/form-data">
+                <label for="photo" class="overlay">
+                    <i class="bi bi-upload"></i>
+                    <span>Upload Photo</span>
+                </label>
+                <input id="photo" name="profile" type="file" hidden
+                       onchange="if (this.files.length) { this.form.submit(); this.value = null; }">
+            </form>
+        </div>
 
+        <button class="btn-cancel" onclick="toggleImageEdit()">Cancel</button>
+        <small>Image size should be under 1MB and ratio 1:1</small>
+    </div>
 
-                        <div></div> <!-- spacer column -->
-                        <div>
-                            <label>Contact Number</label>
-                            <input type="text" name="contact" value="<%= user.contact || '' %>">
-                        </div>
+</div>
 
-                        <div>
-                            <label>Gender</label>
-                            <div class="gender-group">
-                                <label><input type="radio" name="gender" value="Male" <%=user.gender==='Male'
-                                        ? 'checked' : '' %>> Male</label>
-                                <label><input type="radio" name="gender" value="Female" <%=user.gender==='Female'
-                                        ? 'checked' : '' %>> Female</label>
-                                <label><input type="radio" name="gender" value="Others" <%=user.gender==='Others'
-                                        ? 'checked' : '' %>> Others</label>
-                            </div>
-                        </div>
+        </div>
+<!-- ========================= -->
+<!-- ACCOUNT DETAILS (View/Edit Toggle) -->
+<!-- ========================= -->
 
+<div class="account-details">
+        <div class="settings-card">
 
-                        <div></div> <!-- spacer column -->
-                        <button type="submit" class="btn-save">Save Changes</button>
-                    </form>
+    <!-- Title + Edit Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3" >
+        <h4 style="margin:0;">Account Details</h4>
+<button id="infoEditBtn" type="button" class="edit-text-btn" onclick="toggleInfo()">
+    <strong>Edit</strong>
+</button>
+    </div>
+
+    <!-- VIEW MODE -->
+    <div id="infoView">
+
+        <p><strong>Name:</strong> <%= user.fullName %></p>
+        <p><strong>Location:</strong> <%= user.location || '––' %></p>
+        <p><strong>Contact:</strong> <%= user.contact || '––' %></p>
+        <p><strong>Gender:</strong> <%= user.gender || '––' %></p>
+
+    </div>
+
+    <!-- EDIT MODE -->
+    <form action="/profile/<%= user._id %>/update" method="POST" id="infoEdit" style="display:none;" class="profile-form">
+
+        <div>
+            <label>Full name</label>
+            <input type="text" name="fullName" value="<%= user.fullName || '' %>">
+        </div>
+
+        <div></div>
+
+        <div>
+            <label>Location</label>
+            <input type="text" name="location" value="<%= user.location || '' %>">
+        </div>
+
+        <div></div>
+
+        <div>
+            <label>Contact Number</label>
+            <input type="text" name="contact" value="<%= user.contact || '' %>">
+        </div>
+
+        <div>
+            <label>Gender</label>
+            <div class="gender-group">
+                <label><input type="radio" name="gender" value="Male" <%= user.gender==='Male' ? 'checked' : '' %>> Male</label>
+                <label><input type="radio" name="gender" value="Female" <%= user.gender==='Female' ? 'checked' : '' %>> Female</label>
+                <label><input type="radio" name="gender" value="Others" <%= user.gender==='Others' ? 'checked' : '' %>> Others</label>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+ <button type="button"  class="btn-cancel mt-2 " onclick="toggleInfo()">Cancel</button>
+        <button type="submit" class="btn-save mt-2">Save Changes</button>
+    
+             
+</div>
+       
+
+    </form>
+
+</div>
+
                 </div>
             </section>
 
@@ -125,5 +168,37 @@
             <%- include('partials/footer') %>
 
 </body>
+<script>
+function toggleInfo() {
+    const view = document.getElementById("infoView");
+    const edit = document.getElementById("infoEdit");
+    const editBtn = document.getElementById("infoEditBtn");
+
+    const isView = view.style.display !== "none";
+
+    view.style.display = isView ? "none" : "block";
+    edit.style.display = isView ? "block" : "none";
+
+    // 🔥 Hide/show the Edit button
+    editBtn.style.display = isView ? "none" : "inline-block";
+}
+
+function toggleImageEdit() {
+    const imgView = document.getElementById("imageView");
+    const imgEdit = document.getElementById("imageEdit");
+    const imgEditBtn = document.getElementById("imgEditBtn");
+
+    const isView = imgView.style.display !== "none";
+
+    imgView.style.display = isView ? "none" : "block";
+    imgEdit.style.display = isView ? "block" : "none";
+
+    // 🔥 Hide/show the Edit button
+    imgEditBtn.style.display = isView ? "none" : "inline-block";
+}
+
+</script>
+
+
 
 </html>

@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "/images/defaultdp.svg"
         },
+        profilepicId:{
+            type:String,
+            default:null
+        },
         location: {
             type: String,
 
