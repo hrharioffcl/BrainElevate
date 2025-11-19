@@ -7,6 +7,10 @@ const { calculateSubTotal } = require("../utils/calculateSubTotal")
 const { cloudinary } = require("../config/cloudinary");
 const couponUsage = require("../models/couponUsageSchema")
 const { validateCoupon } = require("../utils/validateCoupon")
+const validator = require('validator')
+
+const { isValidPhoneNumber } = require('libphonenumber-js');
+
 
 
 exports.getprofiledashboard = async (req, res) => {
@@ -24,9 +28,9 @@ exports.getprofileProgress = async (req, res) => {
 exports.getprofileWishlist = async (req, res) => {
     const userid = req.params._id
     const users = await user.findById(userid)
-const wishlist = await Wishlist.find({ userId: users._id })
-  .populate('courseId','name author thumbnail price details');
-    res.render('userWishlist', { user: users, wishlist})
+    const wishlist = await Wishlist.find({ userId: users._id })
+        .populate('courseId', 'name author thumbnail price details');
+    res.render('userWishlist', { user: users, wishlist })
 }
 //profile/purchase History
 exports.getprofilePurchaseHistory = async (req, res) => {
@@ -120,14 +124,14 @@ exports.getprofileCart = async (req, res) => {
 
 
 //edit Profile
-exports.getEditProfile = async(req,res)=>{
+exports.getEditProfile = async (req, res) => {
     const userid = req.params._id
-    const users =await user.findById(userid)
+    const users = await user.findById(userid)
     try {
 
-        res.render('editProfile',{user:users})
+        res.render('editProfile', { user: users, formData: null, fieldErrors: null })
     } catch (error) {
-                res.send("error")
+        res.send("error")
 
     }
 }
@@ -135,50 +139,79 @@ exports.getEditProfile = async(req,res)=>{
 exports.postUploadProfilePic = async (req, res) => {
     const userid = req.params._id;
     const users = await user.findById(userid);
-  try {
-    
+    try {
 
-    if (!req.file) {
-      req.flash("error", "No file uploaded");
-      return res.redirect(`/profile/${userid}/editProfile`);
+
+        if (!req.file) {
+            req.flash("error", "No file uploaded");
+            return res.redirect(`/profile/${userid}/editProfile`);
+        }
+        if (users.profilepicId) {
+            const result = await cloudinary.uploader.destroy(users.profilepicId);
+            console.log("Delete result:", result);
+        }
+
+
+        const imageUrl = req.file.path || req.file.url;  // FIX HERE
+
+
+        users.profilepic = imageUrl;
+        users.profilepicId = req.file.filename; // REAL public_id
+
+        console.log(imageUrl)
+        console.log(users.profilepic)
+        await users.save(); // important!
+
+        req.flash("success", "Profile picture updated!");
+        return res.redirect(`/profile/${userid}/editProfile`);
+
+    } catch (error) {
+        console.log("Upload Error:", error);
+        req.flash("error", "Upload failed");
+        return res.redirect(`/profile/${userid}/editProfile`);
+
     }
-if (users.profilepicId) {
-      const result = await cloudinary.uploader.destroy(users.profilepicId);
-      console.log("Delete result:", result);
-    }
-    
-
-       const imageUrl = req.file.path || req.file.url;  // FIX HERE
-
-
-    users.profilepic = imageUrl;
-    users. profilepicId = req.file.filename; // REAL public_id
-
-    console.log(imageUrl)
-console.log(users.profilepic )
-    await users.save(); // important!
-
-    req.flash("success", "Profile picture updated!");
-    return res.redirect(`/profile/${userid}/editProfile`);
-
-  } catch (error) {
-    console.log("Upload Error:", error);
-    req.flash("error", "Upload failed");
-return res.redirect(`/profile/${userid}/editProfile`);
-
-  }
 };
 
-
-exports.postUpdateProfile =async(req,res)=>{
-   const userid = req.params._id;
+//update profile
+exports.postUpdateProfile = async (req, res) => {
+    const userid = req.params._id;
     const users = await user.findById(userid);
+    const { fullName, country, code, phone, gender, iso } = req.body
+    const cleanNumber = phone.trim();
+    let formData = {}
+    const fieldErrors = {}
     try {
-        
-        
+        if (!/^[A-Za-z ]{4,30}$/.test(fullName)) {
+            fieldErrors.invalidName = "Name must be 4–30 letters only."
+            return res.render(`editProfile`, { formData: req.body, fieldErrors })
+        }
+
+
+        const validNUmber = isValidPhoneNumber(cleanNumber, iso)
+
+        if (!validNUmber) {   // ISO: IN, US, SG, etc.
+            fieldErrors.invalidNum = "Invalid phone number for selected country";
+            return res.render(`editProfile`, { formData: req.body, fieldErrors })
+        }
+
+        users.fullName = fullName || users.fullName;
+        users.location = country || users.location;
+        users.countryCode=code||users.code;
+        users.contactNumber=phone||users.contactNumber;
+        users.gender=gender||users.gender
+
+
+
+await users.save()
+
+
+        req.flash("success", "Profile updated Successfully !");
+        return res.redirect(`/profile/${userid}/editProfile`);
+
     } catch (error) {
         console.log(error)
-        res.redirect(`/profile/${userid}/editProfile`)
+        res.render(`editProfile`, { formData: req.body, fieldErrors })
     }
 
 }

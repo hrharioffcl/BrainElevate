@@ -35,9 +35,9 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "/images/defaultdp.svg"
         },
-        profilepicId:{
-            type:String,
-            default:null
+        profilepicId: {
+            type: String,
+            default: null
         },
         location: {
             type: String,
@@ -45,12 +45,13 @@ const userSchema = new mongoose.Schema(
         },
         contactNumber: {
             type: String,
-
+        },
+        countryCode: {
+            type: String,
         },
         gender: {
             type: String,
             enum: ["Male", "Female", "Other"],//enum for dropdown
-            default: "Other",
         },
         referralCode: {
             type: String,
@@ -73,9 +74,10 @@ const userSchema = new mongoose.Schema(
             default: null,
         },
         // Soft delete field
-        isDeleted: { type: Boolean, 
+        isDeleted: {
+            type: Boolean,
             default: false
-         }
+        }
     },
     { timestamps: true }
 

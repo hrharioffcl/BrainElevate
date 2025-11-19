@@ -8,7 +8,7 @@ const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserU
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
 const uploadProfilePic = require("../middlewaares/uploadProfilePic");
-const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic}= require("../controllers/userProfileController")
+const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic,postUpdateProfile}= require("../controllers/userProfileController")
 const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
@@ -81,4 +81,5 @@ router.post(
   postUploadProfilePic
 );
 
+router.post('/profile/:_id/update',postUpdateProfile)
 module.exports = router;
