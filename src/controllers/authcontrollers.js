@@ -80,8 +80,8 @@ exports.verifyOtp = async (req, res) => {
         const { otp1, otp2, otp3, otp4, otp5, otp6 } = req.body
         const otp = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
         //getting purpuse and email from session memmory
-        const { purpose } = req.session.signupData || req.session.forgotPassword;
-        const email = req.session.signupData?.email || req.session.forgotPassword?.email;
+        const { purpose } = req.session.signupData || req.session.forgotPassword||req.session.changeUserPassword;
+        const email = req.session.signupData?.email || req.session.forgotPassword?.email||req.session.changeUserPassword?.email;
         //find otp in collection
         const otpRecord = await Otp.findOne({ email, purpose }).sort({ createdAt: -1 });
         //compare otp
@@ -126,6 +126,11 @@ exports.verifyOtp = async (req, res) => {
         } else if (purpose === "forgotpassword") {
             await Otp.deleteOne({ _id: otpRecord._id })
             res.redirect('/reset-password')
+        }else if(purpose==='changeUserPassword'){
+               await Otp.deleteOne({ _id: otpRecord._id })
+       req.session.forgotPassword =   req.session.changeUserPassword
+            req.session.changeUserPassword =null
+                 res.redirect('/reset-password')
         }
     }
     catch (error) {
@@ -139,8 +144,8 @@ exports.verifyOtp = async (req, res) => {
 exports.resendotp = async function (req, res) {
     try {
         //getting purpuse and email from session memmory
-        const { purpose } = req.session.signupData || req.session.forgotPassword;
-        const email = req.session.signupData?.email || req.session.forgotPassword?.email;
+      const { purpose } = req.session.signupData || req.session.forgotPassword||req.session.changeUserPassword;
+        const email = req.session.signupData?.email || req.session.forgotPassword?.email||req.session.changeUserPassword?.email;
         await Otp.deleteMany({ email, purpose });
         const otpcode = createOtpcode()
         const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
@@ -290,7 +295,7 @@ exports.resetpassword = async (req, res) => {
         return res.render('resetpassword', { fieldErrors })
     }
     try {
-        if (purpose === "forgotpassword") {
+        if (purpose === "forgotpassword"||purpose==="changeUserPassword") {
             const existinguser = await User.findOne({ email });
             const isMatch = await bcrypt.compare(password, existinguser.password)
             if (isMatch) {
@@ -303,7 +308,7 @@ exports.resetpassword = async (req, res) => {
 
             req.session.forgotPassword = null;
 
-
+req.flash('success',"Password Changed Successfully")
             res.redirect('/login')
         } else if (purpose === "adminforgotpassword") {
 
@@ -318,6 +323,7 @@ exports.resetpassword = async (req, res) => {
             await isadmin.save()
 
             req.session.forgotPassword = null;
+
             res.redirect('/admin/login')
 
 

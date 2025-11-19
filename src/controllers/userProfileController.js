@@ -3,14 +3,18 @@ const Cart = require("../models/cartSchema")
 const Coupon = require("../models/couponSchema")
 const Wishlist = require('../models/wishListSchema')
 const { calculateSubTotal } = require("../utils/calculateSubTotal")
-
 const { cloudinary } = require("../config/cloudinary");
 const couponUsage = require("../models/couponUsageSchema")
 const { validateCoupon } = require("../utils/validateCoupon")
 const validator = require('validator')
-
 const { isValidPhoneNumber } = require('libphonenumber-js');
 
+const Otp = require('../models/otp')
+const sendOtp = require("../utils/sendotp")
+const createOtpcode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+const bcrypt = require("bcrypt")
 
 
 exports.getprofiledashboard = async (req, res) => {
@@ -212,6 +216,52 @@ exports.postUpdateProfile = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.render(`editProfile`, { formData: req.body, fieldErrors })
+    }
+
+}
+
+exports.changePassword = async (req, res) => {
+
+    const userid = req.params._id;
+    const users = await user.findById(userid);
+    try {
+        const { currentPassword } = req.body
+        const isMatch = await bcrypt.compare(currentPassword, users.password)
+        if (isMatch) {
+            //delete otp records
+            await Otp.deleteMany({ email: users.email, purpose: "changeUserPassword" })
+            //otp generate
+            const otpcode = createOtpcode();
+            const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
+
+            await Otp.create({ email: users.email, otpcode, purpose: "changeUserPassword", expiresAt })
+
+            //send dOTP via email
+            await sendOtp(users.email, otpcode)
+
+
+            //adding fullname password and email to session
+            req.session.changeUserPassword = { email: users.email, purpose: "changeUserPassword" }
+
+
+
+            await res.clearCookie("jwt", {
+
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // only secure in prod
+                sameSite: "strict",
+            })
+
+
+
+            console.log("redirecting to verify")
+            res.redirect('/verify-otp')
+        } else {
+            req.flash('error', "Invalid password")
+            return res.redirect(`/profile/${userid}/editProfile`);
+        }
+    } catch (error) {
+        console.log(error)
     }
 
 }

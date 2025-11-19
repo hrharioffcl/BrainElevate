@@ -189,7 +189,7 @@
             <!-- Change Password -->
             <section class="change-password">
                 <h3 style="margin-bottom:1.5rem;">Change password</h3>
-                <form action="/profile/change-password" method="POST">
+                <form action="/profile/<%= user._id %>/updatePassword" method="POST">
                     <label>Current Password</label>
                     <input type="password" name="currentPassword" placeholder="Password"
                         class="form-control change-password-input">
@@ -229,14 +229,11 @@
         const view = document.getElementById("infoView");
         const edit = document.getElementById("infoEdit");
         const editBtn = document.getElementById("infoEditBtn");
-
-
         const isView = view.style.display !== "none";
-
         view.style.display = isView ? "none" : "block";
         edit.style.display = isView ? "block" : "none";
 
-        // 🔥 Hide/show the Edit button
+        //Hide/show the Edit button
         editBtn.style.display = isView ? "none" : "inline-block";
     }
 
@@ -244,16 +241,12 @@
         const imgView = document.getElementById("imageView");
         const imgEdit = document.getElementById("imageEdit");
         const imgEditBtn = document.getElementById("imgEditBtn");
-
         const isView = imgView.style.display !== "none";
-
         imgView.style.display = isView ? "none" : "block";
         imgEdit.style.display = isView ? "block" : "none";
-
-        // 🔥 Hide/show the Edit button
+        //Hide/show the Edit button
         imgEditBtn.style.display = isView ? "none" : "inline-block";
     }
-
 </script>
 
 
