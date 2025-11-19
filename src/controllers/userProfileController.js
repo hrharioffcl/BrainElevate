@@ -197,13 +197,13 @@ exports.postUpdateProfile = async (req, res) => {
 
         users.fullName = fullName || users.fullName;
         users.location = country || users.location;
-        users.countryCode=code||users.code;
-        users.contactNumber=phone||users.contactNumber;
-        users.gender=gender||users.gender
+        users.countryCode = code || users.code;
+        users.contactNumber = phone || users.contactNumber;
+        users.gender = gender || users.gender
 
 
 
-await users.save()
+        await users.save()
 
 
         req.flash("success", "Profile updated Successfully !");
