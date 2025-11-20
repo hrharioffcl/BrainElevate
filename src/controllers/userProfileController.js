@@ -225,6 +225,13 @@ exports.changePassword = async (req, res) => {
     const userid = req.params._id;
     const users = await user.findById(userid);
     try {
+if(users.googleUser){
+       req.flash('error', "Google based login found!!")
+            return res.redirect(`/profile/${userid}/editProfile`);
+}
+
+
+
         const { currentPassword } = req.body
         const isMatch = await bcrypt.compare(currentPassword, users.password)
         if (isMatch) {
@@ -262,6 +269,58 @@ exports.changePassword = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
+        req.flash('error', "Something Went Wrong")
+        return res.redirect(`/profile/${userid}/editProfile`);
     }
 
+}
+
+
+exports.deleteAccount = async (req, res) => {
+    const userid = req.params._id;
+    const users = await user.findById(userid);
+    fieldErrors = {}
+    formData = null
+    try {
+        const { agreeTerms, agreeBalance, agreeRefund, feedback, password } = req.body;
+        if (!agreeTerms || !agreeBalance || !agreeRefund) {
+            fieldErrors.deleteError = "Please agree to all the terms before deleting your account.";
+            fieldErrors.openDeleteModal = true;
+            return res.render(`editProfile`, { formData, fieldErrors })
+        }
+if(!users.googleUser){
+     const isMatch = await bcrypt.compare(password, users.password);
+        if (!isMatch) {
+         fieldErrors.deleteError = "Incorrect password. Please try again.";
+            fieldErrors.openDeleteModal = true;
+            return res.render(`editProfile`, { formData, fieldErrors });
+        }
+    }
+    
+        if (feedback && feedback.trim() !== "") {
+            users.feedBack=feedback
+        }
+
+users.isDeleted=true;
+await users.save()
+
+      
+ res.clearCookie("jwt", {
+
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production", // only secure in prod
+                sameSite: "strict",
+            })
+
+                    req.flash("success", "Account Deleted Successfully");
+                    res.redirect('/login')
+
+
+
+    } catch (error) {
+        console.log(error)
+            fieldErrors.deleteError = "some error occured";
+                fieldErrors.openDeleteModal = true;
+            return res.render(`editProfile`, { formData, fieldErrors });
+    }
 }

@@ -103,7 +103,7 @@ exports.verifyOtp = async (req, res) => {
                 req.session.referral = null; // clear after use
             }
             ///create user if otp verified
-            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(), referredBy })
+            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(), referredBy ,googleUser:false})
             await Otp.deleteOne({ _id: otpRecord._id })
             req.session.signupData = null
 
@@ -304,6 +304,7 @@ exports.resetpassword = async (req, res) => {
             }
             // set new password
             existinguser.password = password
+            existinguser.googleUser=false
             await existinguser.save();
 
             req.session.forgotPassword = null;

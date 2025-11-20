@@ -197,6 +197,7 @@ exports.addToWishList = async (req, res) => {
     const user = res.locals.user
     try {
         const { courseId,redirectTo } = req.body
+        console.log("orginal url :",redirectTo)
         let course = await Course.findById(courseId)
         if (!user) {
             return res.redirect('/login')

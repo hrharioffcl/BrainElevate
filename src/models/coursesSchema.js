@@ -51,7 +51,11 @@ const courseSchema = new mongoose.Schema(
   isDeleted: {
     type: Boolean,
     default: false,
-  },price:{
+  },
+  ogPrice:{
+type:Number
+  },
+  price:{
     type:Number,
 
   },

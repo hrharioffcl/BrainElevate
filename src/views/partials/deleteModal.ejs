@@ -1,0 +1,100 @@
+<div class="modal fade" id="deleteAccountModal"  data-bs-backdrop="static"
+     data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <% if (fieldErrors?.deleteError) { %>
+  <div class="alert alert-danger">
+    <%= fieldErrors.deleteError %>
+  </div>
+<% } %>
+
+                <!-- Long Info Text -->
+                <div class="mb-3">
+                    <p>If you wish to proceed with an account deletion request, please ensure that you have read
+                        and understood the following:</p>
+
+                    <ul>
+                        <li>There are no ongoing orders, cancellations, refunds, or other service requests.</li>
+                        <li>If you have any subscription, it will be permanently cancelled immediately.</li>
+                        <li>You will lose access to rewards, history, saved items, and other account information.</li>
+                        <li>You will NOT be able to restore your account once deleted.</li>
+                        <li>Your wallet/SuperCoins/Gift Cards (if any) will be forfeited.</li>
+                        <li>You may stop receiving notifications after deletion.</li>
+                        <li>Once deleted, your account cannot be recovered under any circumstances.</li>
+                    </ul>
+                </div>
+
+                <!-- Warning Box -->
+                <div class="alert alert-warning">
+                    <strong>Deleting account is a permanent action.</strong><br />
+                    Once your account is deleted, you will lose all data including order history and it cannot be restored.
+                </div>
+
+                <!-- Checkboxes -->
+                <form action="/profile/<%= user._id %>/deleteAccount" method="POST" id="deleteForm">
+
+    <!-- Checkboxes -->
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" name="agreeTerms" id="agree1">
+        <label class="form-check-label" for="agree1">
+            I have read and agreed to the Terms and Conditions.
+        </label>
+    </div>
+
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" name="agreeBalance" id="agree2">
+        <label class="form-check-label" for="agree2">
+            I acknowledge that I do not have any wallet/SuperCoin balance or I am willing to forfeit it.
+        </label>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="agreeRefund" id="agree3">
+        <label class="form-check-label" for="agree3">
+            I acknowledge I cannot request any return/refund after deleting this account.
+        </label>
+    </div>
+
+    <!-- Feedback -->
+    <label class="form-label">Please tell us why you are leaving</label>
+    <textarea class="form-control mb-3" name="feedback" rows="3"
+        placeholder="your feedback helps us improve"></textarea>
+
+    <!-- Password Confirmation -->
+<% if (!user.googleUser) { %>
+    <label class="form-label">Confirm your password</label>
+    <input type="password" name="password" class="form-control">
+<% } else { %>
+    <p class="text-muted small">
+        You logged in using Google. No password needed.
+    </p>
+<% } %>
+
+
+
+
+</form>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer d-flex justify-content-between">
+                <button class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+
+                <!-- Delete Button -->
+                <button type="submit" form="deleteForm" class="btn btn-danger rounded-pill">
+                    Delete Account
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

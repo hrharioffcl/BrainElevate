@@ -148,7 +148,7 @@ exports.updatedetails = async (req, res) => {
         const id = req.params.course_id
         console.log(id)
 
-        const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
+        const { name, details, author, status, description, level, learnPoints, price, category, duration ,ogPrice} = req.body
 
         const existing = await course.findById(id)
 
@@ -173,6 +173,7 @@ exports.updatedetails = async (req, res) => {
         existing.level = level;
         existing.learnPoints = points;
         existing.price = price;
+        existing.ogPrice=ogPrice
         existing.duration = duration;
         existing.category = category
         await existing.save();

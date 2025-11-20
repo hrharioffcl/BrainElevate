@@ -100,7 +100,7 @@
                                     <%= user.location || '––' %>
                                 </p>
                                 <p><strong>Contact:</strong>
-                                    <%= `${user.countryCode }  ${user.contactNumber }`|| '––' %>
+                                    <%= `${user.countryCode } ${user.contactNumber }`|| '––' %>
                                 </p>
                                 <p><strong>Gender:</strong>
                                     <%= user.gender || '––' %>
@@ -140,10 +140,10 @@
                                     <label>Contact Number</label>
                                     <input type="hidden" id="iso" name="iso">
                                     <div class="d-flex">
-                                        <input type="text" id="dialCode" name="code"  class="dialform"  readonly>
-                                    <input type="text" id="phone" name="phone" class="dialform-opposite">
+                                        <input type="text" id="dialCode" name="code" class="dialform" readonly>
+                                        <input type="text" id="phone" name="phone" class="dialform-opposite">
                                     </div>
-                                    
+
                                     <% if (fieldErrors?.invalidNum ) { %>
                                         <div class="error">
                                             <p>
@@ -191,14 +191,22 @@
                 <h3 style="margin-bottom:1.5rem;">Change password</h3>
                 <form action="/profile/<%= user._id %>/updatePassword" method="POST">
                     <label>Current Password</label>
+
                     <input type="password" name="currentPassword" placeholder="Password"
                         class="form-control change-password-input">
                     <p style="font-size:0.85rem; color:#888; margin-top:0.5rem;">(OTP verification required)</p>
 
                     <button type="submit" class=" btn-change mt-3">Change Password</button>
-                    <a href="/profile/delete" class="delete-link">Delete Account</a>
+
+
+                    
+                    <a href="#" class="delete-link" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        Delete Account
+                    </a>
 
                 </form>
+                <%- include("partials/deleteModal") %>
+
 
             </section>
 
@@ -212,15 +220,23 @@
             <%- include('partials/footer') %>
 
 </body>
+<script>
+  <% if (fieldErrors?.openDeleteModal) { %>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+            modal.show();
+        });
+  <% } %>
+</script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const hasFormData = <%= formData ? "true" : "false" %>;
+        document.addEventListener("DOMContentLoaded", () => {
+            const hasFormData = <%= formData ? "true" : "false" %>;
 
-        if (hasFormData) {
-            toggleInfo();
-        }
-    });
+            if (hasFormData) {
+                toggleInfo();
+            }
+        });
 </script>
 
 
@@ -320,7 +336,9 @@
     });
 </script>
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
 
 
 </html>

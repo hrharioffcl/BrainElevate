@@ -77,7 +77,15 @@ const userSchema = new mongoose.Schema(
         isDeleted: {
             type: Boolean,
             default: false
-        }
+        },
+        feedBack: {
+            type: String,
+            default: null
+        },
+        googleUser: {
+            type: Boolean,
+            default: false
+        },
     },
     { timestamps: true }
 

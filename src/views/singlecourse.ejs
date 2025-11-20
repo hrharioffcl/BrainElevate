@@ -43,8 +43,11 @@
                     <img src="<%= course.thumbnail %>" class="card-img-top" alt="<%= course.name %>">
                     <div class="card-body">
                         <div class="course-price mb-3">
-                            <h2>₹<%= course.price %>
-                            </h2>
+                            <div class="d-flex align-items-center justify-content-center">  <h6 class="text-muted text-decoration-line-through">₹<%= course.ogPrice %>
+                            </h6>
+                            <h2 class="ms-2">₹<%= course.price %>
+                            </h2></div>
+                           
                             <form action="/buyNow" method="POST">
                                 <input type="hidden" name="courseId" value="<%= course._id %>">
                                 <button type="submit">Buy Course Now</button>

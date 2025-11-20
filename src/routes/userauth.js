@@ -8,7 +8,7 @@ const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserU
 const { createReferralLink } = require("../middlewaares/refferallink");
 const{softCheckUser}=require("../middlewaares/softcheckuser")
 const uploadProfilePic = require("../middlewaares/uploadProfilePic");
-const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic,postUpdateProfile,changePassword}= require("../controllers/userProfileController")
+const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic,postUpdateProfile,changePassword,deleteAccount}= require("../controllers/userProfileController")
 const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
@@ -35,12 +35,29 @@ router.get('/verify-otp', restrictUnauthenticatedRoutes, (req, res) => {
 })
 
 router.get('/login', restrictUnauthenticatedRoutes, (req, res) => {
-    fieldErrors={}
-    if (req.query.error === "blocked") {
-        fieldErrors.email ="Account blocked please contact Helpline"
+    let fieldErrors = {};
+    const error = req.query.error;
+
+    if (error === "blocked") {
+        fieldErrors.email = "Account blocked. Please contact support.";
     }
-    res.render('login', { fieldErrors, formData: {} })
-})
+    else if (error === "notfound") {
+        fieldErrors.email = "Account not found.";
+    }
+    else if (error === "manual") {
+        fieldErrors.email = "Please sign in using email & password.";
+    }
+    else if (error === "server") {
+        fieldErrors.email = "Something went wrong. Please try again.";
+    }
+    else if (error === "unknown") {
+        fieldErrors.email = "Unable to login. Try again.";
+    }
+
+    res.render('login', { fieldErrors, formData: {} });
+});
+
+
 router.get('/forgot-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('forgotpassword', { fieldErrors: {}, formData: {}, type: "user" })
 })
@@ -83,4 +100,5 @@ router.post(
 
 router.post('/profile/:_id/update',verifytoken,postUpdateProfile)
 router.post('/profile/:_id/updatePassword',verifytoken,changePassword)
+router.post('/profile/:_id/deleteAccount',verifytoken,deleteAccount)
 module.exports = router;

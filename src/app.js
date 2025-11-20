@@ -71,6 +71,10 @@ const userroutes= require("./routes/userauth")
 const adminroutes = require("./routes/adminauth")
 const googleauthRoutes = require("./routes/googleauth");
 
+app.use((req, res, next) => {
+    res.locals.originalUrl = req.originalUrl;
+    next();
+});
 
 
 app.use("/",softCheckUser,createReferralLink,userroutes)
