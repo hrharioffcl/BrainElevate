@@ -15,7 +15,7 @@ const { getprofiledashboard, getprofileProgress, getprofileWishlist, getprofileP
     
 const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishList } = require('../controllers/cartController')
 
-const{getChekoutPage,createOrder,razorpayWebhook}=require('../controllers/paymentController')
+const{getChekoutPage,createOrder,verifyPayment}=require('../controllers/paymentController')
 
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
@@ -110,4 +110,6 @@ router.post('/profile/:_id/update', verifytoken, postUpdateProfile)
 router.post('/profile/:_id/updatePassword', verifytoken, changePassword)
 router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
 router.post('/create-order',createOrder)
+router.post("/verify-payment",verifyPayment);
+
 module.exports = router;

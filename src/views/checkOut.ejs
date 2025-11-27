@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrainElavate||CheckOut</title>
-      <!-- CSS -->
-    <link rel="stylesheet" href="/css/header.css" />
-    <link rel="stylesheet" href="/css/profile.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrainElavate||CheckOut</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+
 <body>
-        <%- include('partials/header') %>
+  <%- include('partials/header') %>
 
-        <main class="checkout-container container py-4">
-          <h4 class="fw-bold mb-0">Checkout</h4>
-<p class="text-muted small">Review your order and choose payment method</p>
-<div class="row g-4">
-  <!-- left side coloumn -->
-<div class="col-md-6">
-
-
+    <main class="checkout-container container py-4">
+      <h4 class="fw-bold mb-0">Checkout</h4>
+      <p class="text-muted small">Review your order and choose payment method</p>
+      <div class="row g-4">
+        <!-- left side coloumn -->
+        <div class="col-md-6">
 
 
 
-<div class="card p-4 mb-3">
-<h5 class="fw-semibold mb-3">Payment Method</h5>
 
 
-<form id="paymentForm">
-<div class="payment-method d-flex align-items-center mb-2 p-2">
-<input class="form-check-input me-2" type="radio" name="method" value="razorpay"  />
-<div>
-<strong>Razorpay</strong><br />
-<span class="text-muted small">Pay securely via Razorpay</span>
-</div>
-</div>
-</form>
-</div>
-
-</div>
-<!-- right side -->
- <div class="col-md-6">
+          <div class="card p-4 mb-3">
+            <h5 class="fw-semibold mb-3">Payment Method</h5>
 
 
-<!-- order details  cart -->
-<div class="card p-4 mb-3">
- <table class="table align-middle">
+            <form id="paymentForm">
+              <div class="payment-method d-flex align-items-center mb-2 p-2">
+                <input class="form-check-input me-2" type="radio" name="method" value="razorpay" />
+                <div>
+                  <strong>Razorpay</strong><br />
+                  <span class="text-muted small">Pay securely via Razorpay</span>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <!-- right side -->
+        <div class="col-md-6">
+
+
+          <!-- order details  cart -->
+          <div class="card p-4 mb-3">
+            <table class="table align-middle">
               <thead>
                 <tr>
                   <th style="width:60%">Course</th>
-                  
+
                   <th class="text-end">Price</th>
                 </tr>
               </thead>
@@ -77,8 +79,8 @@
                         </div>
                       </td>
 
-                    
-                      
+
+
                       <td class="text-end fw-semibold">₹<%= item.course.price.toFixed(2) %>
                       </td>
                     </tr>
@@ -91,87 +93,142 @@
               </tbody>
 
             </table>
-</div>
+          </div>
 
 
 
-<div class="card p-4 mb-3">
-<h5 class="fw-semibold">Order Summary</h5>
+          <div class="card p-4 mb-3">
+            <h5 class="fw-semibold">Order Summary</h5>
 
 
-<div class="d-flex justify-content-between py-1 summary-row">
-<span>Subtotal</span><span>₹<%= cart.subTotal.toFixed(2) %></span>
-</div>
-<div class="d-flex justify-content-between py-1 summary-row">
-<span>Discount</span><span>₹<%= cart.totalDiscount.toFixed(2) %></span>
-</div>
-<div class="d-flex justify-content-between py-1 fw-bold fs-5">
-<span>Total</span><span> ₹<%= cart.total.toFixed(2) %></span>
-</div>
+            <div class="d-flex justify-content-between py-1 summary-row">
+              <span>Subtotal</span><span>₹<%= cart.subTotal.toFixed(2) %></span>
+            </div>
+            <div class="d-flex justify-content-between py-1 summary-row">
+              <span>Discount</span><span>₹<%= cart.totalDiscount.toFixed(2) %></span>
+            </div>
+            <div class="d-flex justify-content-between py-1 fw-bold fs-5">
+              <span>Total</span><span> ₹<%= cart.total.toFixed(2) %></span>
+            </div>
 
 
-<button type="button" id="payNowSmall" class="btn btn-info text-dark w-100 rounded-pill mt-3">
-Pay ₹<%= cart.total.toFixed(2) %>
-</button>
-</div>
+
+            <button type="button" id="payNowSmall" class="btn btn-info text-dark w-100 rounded-pill mt-3">
+              Pay ₹<%= cart.total.toFixed(2) %>
+            </button>
+          </div>
 
 
-</div>
-        </main>
-   <%- include("partials/flashalerts") %>
+        </div>
+    </main>
+    <%- include("partials/flashalerts") %>
 
-                    <%- include('partials/footer') %>
+      <%- include('partials/footer') %>
 
 
 
 </body>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-document.getElementById('payNowSmall').onclick = async function(e) {
+  window.RAZORPAY_KEY = "<%= process.env.RAZORPAY_KEY_ID %>"; // only in server-rendered page
+</script>
+<script>
+  // then use window.RAZORPAY_KEY
+</script>
+<script>
+  document.getElementById('payNowSmall').onclick = async function (e) {
     e.preventDefault();
 
-    // 1. Call your server to create an order
-    const res = await fetch('/create-order', {
+const amount = parseInt("<%= cart.total %>");
+    const userId = "<%= user._id %>"; // or cart.cartUser
+    const cartId = "<%= cart._id %>";
+
+    if (!amount || amount <= 0) {
+      alert("Invalid amount");
+      return;
+    }
+
+    try {
+      // Step 1: Create order on backend
+      const res = await fetch('/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            amount: <%= (cart.total * 100).toFixed(0) %>, // total in paise
-            currency: 'INR'
+          amount: amount,
+          userId: userId,
+          cartId: cartId
         })
-    });
+      });
 
-    const order = await res.json();
+      const orderData = await res.json();
 
-    // 2. Configure Razorpay options
-    const options = {
-        key: "<%= process.env.RAZORPAY_KEY_ID %>", // your key
-        amount: order.amount,
-        currency: order.currency,
+      if (!orderData.success) {
+        alert("Failed to create order: " + (orderData.error || "Unknown error"));
+        return;
+      }
+
+      const { razorOrder, localOrderId } = orderData;
+
+      // Step 2: Open Razorpay
+      const options = {
+        key:  window.RAZORPAY_KEY , // NEVER hardcode in prod!
+        amount: razorOrder.amount,
+        currency: razorOrder.currency,
         name: "BrainElavate",
-        description: "Course Payment",
-        order_id: order.id,
+        description: "Course Enrollment Payment",
+        image: "https://res.cloudinary.com/ds2jpl6lv/image/upload/v1764153541/brain.tealpng_ky9kvn.png",
+        order_id: razorOrder.id,
+        handler: async function (response) {
+          // Step 3: Verify payment
+          const verifyRes = await fetch("/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              cartId: cartId,
+              userId: userId,
+              localOrderId: localOrderId
+            })
+          });
+
+          const result = await verifyRes.json();
+
+          if (result.success) {
+            alert("Payment Successful! Redirecting...");
+            window.location.href = `/payment-success?orderId=${localOrderId}`;
+          } else {
+            alert("Payment failed or verification failed!");
+            window.location.href = `/payment-failed?orderId=${localOrderId}`;
+          }
+        },
         prefill: {
-            name: "<%= user.name %>",
-            email: "<%= user.email %>",
-            contact: "<%= user.phone || '' %>"
+          name: "<%= user.name %>",
+          email: "<%= user.email %>",
+          contact: "<%= user.phone || '' %>"
         },
         theme: {
-            color: "#3399cc"
+          color: "#4beada"
         },
-        handler: function(response) {
-            // You can call your server to verify payment here
-            alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+        modal: {
+          ondismiss: function() {
+            alert("Payment cancelled");
+            // Optional: mark order as cancelled
+          }
         }
-    };
+      };
 
-    const rzp = new Razorpay(options);
-    rzp.open();
-};
+      const rzp = new Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 </script>
 
-
-
-                    
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>
