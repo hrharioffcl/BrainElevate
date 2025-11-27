@@ -40,7 +40,7 @@ exports.gethome = async (req,res)=>{
             }
         }
     ])
-    console.log(categories)
+   
     res.render('home', { fullName: req.user.fullName,referralLink:res.locals.referralLink ,courses,lowpricecourse,categories,freeCourses})
 }
 

@@ -7,19 +7,23 @@
 .profile-card {
   display: flex;
   justify-content: space-between;
-    align-items: center;            /* ✅ Vertically centers everything */
-  background: white;
+    align-items: center;   
+background: linear-gradient(90deg, #fce25a 0%, #ffb166 100%);
+
+       /* ✅ Vertically centers everything */
   width: 70%;
   margin: 0 auto;
   border-radius: 16px;
   padding: 30px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+ 
 }
 
 .profile-avatar img {
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  border: 3px solid #4BEADA;
 }
 .tabs {
   margin-top: 20px;
@@ -129,7 +133,7 @@
 .border-btn {
   background: transparent;        /* no background */
   border: 1px solid #ee0909;         /* visible border */
-  color: #100f0f;                    /* text color same as border */
+  color: #ffffff;                    /* text color same as border */
   padding: 8px 16px;
   border-radius: 8px;             /* optional rounded corners */
   font-weight: 500;
@@ -138,10 +142,9 @@
 }
 
 .border-btn:hover {
-  background: #060606;               /* on hover, fill it */
-  color: white;                   /* invert text */
+  background: #000000d1;               /* on hover, fill it */
+  color: #4BEADA;
 }
-
 .edit-btn {
   top: 0; /* adjust vertical position */
   right: -20px; /* adjust horizontal position */

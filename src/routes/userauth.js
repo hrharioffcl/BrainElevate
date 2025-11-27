@@ -1,23 +1,30 @@
 const express = require("express")
-const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword ,userLogOut} = require("../controllers/authcontrollers")
-const{gethome} = require("../controllers/userHomeController")
-const{getcourse,getcoursedetails}= require("../controllers/userCourseController")
+const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
+const { gethome } = require("../controllers/userHomeController")
+const { getcourse, getcoursedetails } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
 const { createReferralLink } = require("../middlewaares/refferallink");
-const{softCheckUser}=require("../middlewaares/softcheckuser")
+const { softCheckUser } = require("../middlewaares/softcheckuser")
 const uploadProfilePic = require("../middlewaares/uploadProfilePic");
-const{getprofiledashboard,getprofileProgress,getprofileWishlist,getprofilePurchaseHistory,getprofileCart,getEditProfile,postUploadProfilePic,postUpdateProfile,changePassword,deleteAccount}= require("../controllers/userProfileController")
-const{postBuyNow,addToCart,removeItem,applyCoupon,removeCoupon,addToWishList}=require('../controllers/cartController')
+const { getprofiledashboard, getprofileProgress, getprofileWishlist, getprofilePurchaseHistory,
+    getprofileCart, getEditProfile, postUploadProfilePic,
+    postUpdateProfile, changePassword, deleteAccount } = require("../controllers/userProfileController")
+
+    
+const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishList } = require('../controllers/cartController')
+
+const{getChekoutPage,createOrder,razorpayWebhook}=require('../controllers/paymentController')
+
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
     const token = req.cookies.jwt
-    res.render('homewithoutlogin',{referralLink:res.locals.referralLink||null,token})
+    res.render('homewithoutlogin', { referralLink: res.locals.referralLink || null, token })
 })
-router.get('/career',(req,res)=>{
-    res.render("career", );
+router.get('/career', (req, res) => {
+    res.render("career",);
 
 })
 
@@ -65,18 +72,19 @@ router.get('/forgot-password', restrictUnauthenticatedRoutes, (req, res) => {
 router.get('/reset-password', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('resetpassword', { fieldErrors: {} })
 })
-router.get('/home', verifytoken,createReferralLink,gethome )
+router.get('/home', verifytoken, createReferralLink, gethome)
 
-router.get('/courses',softCheckUser,getcourse)
+router.get('/courses', softCheckUser, getcourse)
 
-router.get('/courses/:_id',getcoursedetails)
-router.get('/profile/:_id/dashboard',verifytoken,getprofiledashboard)
-router.get('/profile/:_id/myLearning',verifytoken,getprofileProgress)
-router.get('/profile/:_id/wishlist',verifytoken,getprofileWishlist)
-router.get('/profile/:_id/hiStory',verifytoken,getprofilePurchaseHistory)
-router.get('/profile/:_id/cart',verifytoken,getprofileCart)
+router.get('/courses/:_id', getcoursedetails)
+router.get('/profile/:_id/dashboard', verifytoken, getprofiledashboard)
+router.get('/profile/:_id/myLearning', verifytoken, getprofileProgress)
+router.get('/profile/:_id/wishlist', verifytoken, getprofileWishlist)
+router.get('/profile/:_id/hiStory', verifytoken, getprofilePurchaseHistory)
+router.get('/profile/:_id/cart', verifytoken, getprofileCart)
 router.get('/logout', userLogOut)
-router.get('/profile/:_id/editProfile',verifytoken,getEditProfile)
+router.get('/profile/:_id/editProfile', verifytoken, getEditProfile)
+router.get('/profile/:_id/cart/checkOut',verifytoken,getChekoutPage)
 
 
 
@@ -86,19 +94,20 @@ router.post("/resend-otp", resendotp)
 router.post('/login', restrictUnauthenticatedRoutes, login)
 router.post('/forgot-password', forgotpassword)
 router.post('/reset-password', resetpassword)
-router.post('/buyNow',verifytoken,postBuyNow)
-router.post('/addToCart',verifytoken,addToCart)
-router.post("/cart/remove",verifytoken,removeItem)
-router.post("/applyCoupon",applyCoupon)
-router.post('/removeCoupon',removeCoupon)
-router.post('/addToWishList',addToWishList)
+router.post('/buyNow', verifytoken, postBuyNow)
+router.post('/addToCart', verifytoken, addToCart)
+router.post("/cart/remove", verifytoken, removeItem)
+router.post("/applyCoupon", applyCoupon)
+router.post('/removeCoupon', removeCoupon)
+router.post('/addToWishList', addToWishList)
 router.post(
-  "/profile/upload-photo/:_id",
-  uploadProfilePic.single("profile"),multerErrorHandler,verifytoken,
-  postUploadProfilePic
+    "/profile/upload-photo/:_id",
+    uploadProfilePic.single("profile"), multerErrorHandler, verifytoken,
+    postUploadProfilePic
 );
 
-router.post('/profile/:_id/update',verifytoken,postUpdateProfile)
-router.post('/profile/:_id/updatePassword',verifytoken,changePassword)
-router.post('/profile/:_id/deleteAccount',verifytoken,deleteAccount)
+router.post('/profile/:_id/update', verifytoken, postUpdateProfile)
+router.post('/profile/:_id/updatePassword', verifytoken, changePassword)
+router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
+router.post('/create-order',createOrder)
 module.exports = router;

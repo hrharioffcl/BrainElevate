@@ -26,6 +26,10 @@ const {softCheckUser}=require("./middlewaares/softcheckuser")
 const flash = require("connect-flash");
 app.use(flash());
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+
+
 // Make flash messages available in all views
 app.use((req, res, next) => {
   res.locals.messages = req.flash();
@@ -47,9 +51,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.set('views', path.join(__dirname, "views"));

@@ -7,8 +7,8 @@
 
   <!-- Profile Section -->
   <section class="profile">
-    <div class="profile-card">
-      <div style="margin-left:5%;">  
+    <div class=" profile-card">
+<div style="margin-left:5%;" class="d-flex justify-content-between align-items-center w-100">
 
         
             
@@ -20,16 +20,17 @@
     
       </div>
 
-      <div class="profile-info">
-        <h2><%= user.fullName %></h2>
+      <div class="profile-info text-white">
+        <h2 ><%= user.fullName %></h2>
     
             <p><i class="bi bi-envelope-at-fill"></i>  <%= user.email %></p>
                 <p><i class="fa-solid fa-location-dot"></i> <%= user.location %></p>
-      </div>
-    </div>
-   <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="/logout"><i class="fa-solid fa-person-running"></i>
+      </div> 
+      <div style="margin-right:5%;"> <a class="border-btn rounded-pill" href="/logout"><i class="fa-solid fa-person-running"></i>
 
  Log Out</a></div>
+    </div>
+  
      
     </div>
      </section>
