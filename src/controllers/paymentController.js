@@ -1,9 +1,14 @@
 const User = require("../models/userSchema")
 const Cart = require("../models/cartSchema")
+const cartItem = require("../models/cartItemSchema")
 const Razorpay = require("razorpay");
 const Enrollment = require('../models/enrollmentSchema')
 const Order = require("../models/orderSchema")
 const mongoose = require('mongoose')
+const PDFDocument = require("pdfkit");
+const path = require("path");
+const fs = require('fs')
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,       // from step 1
   key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -44,10 +49,16 @@ exports.createOrder = async (req, res) => {
   try {
     const { amount, userId, cartId } = req.body; // amount in rupees
     console.log(amount, userId, cartId);
-    const cart = await Cart.findById(cartId)
-    const user = await User.findById(userId)
+  let cart = await Cart.findById(cartId).populate({
+      path: 'items',
+      populate: { path: 'course', model: 'Course' },
+      select: 'name author thumbnail price details'
+    })  
+
+       console.log("COURSES USED IN ORDER:", cart.items.map(i => i.course.name));
+     const user = await User.findById(userId)
     const options = {
-      amount: amount*100, // convert to paise
+      amount: Number(amount )* 100, // convert to paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`
     };
@@ -58,7 +69,7 @@ exports.createOrder = async (req, res) => {
     const order = await Order.create({
       user: userId,
       cart: cartId,
-      items: cart.items,
+  items: cart.items.map(cartItem => cartItem.course._id),  // ← FIXED!,
       razorpayOrderId: razorOrder.id,
       subTotal: cart.subTotal,
       discount: cart.totalDiscount,
@@ -68,7 +79,7 @@ exports.createOrder = async (req, res) => {
       transactionId: null,
 
     });
-console.log(order)
+    console.log(order)
     res.json({
       success: true,
       razorOrder,
@@ -76,6 +87,7 @@ console.log(order)
     });
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Order creation failed" });
   }
 };
@@ -100,10 +112,13 @@ exports.verifyPayment = async (req, res) => {
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(body.toString())
       .digest("hex");
-
+console.log(process.env.RAZORPAY_KEY_SECRET)
+console.log(expectedSignature)
+console.log(razorpay_signature)
     const isAuthentic = expectedSignature === razorpay_signature;
 
     if (isAuthentic) {
+     console.log("is auhtenticc")
       // Fetch payment status from Razorpay (optional but recommended)
       const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
@@ -132,7 +147,9 @@ exports.verifyPayment = async (req, res) => {
       }
 
       // Clear cart
+
       cart.items = [];
+await cartItem.deleteMany({cart:cartId})
       await cart.save();
 
       // Update order as paid
@@ -161,4 +178,77 @@ exports.verifyPayment = async (req, res) => {
 
     return res.json({ success: false, message: "Server error" });
   }
+};
+
+
+exports.getPaymentSuccess = async (req, res) => {
+  const orderId = req.query.orderId
+  try {
+    const order = await Order.findById(orderId)
+      .populate({
+        path: 'items',
+        select: 'name author',
+      })
+      .select('items totalAmount _id createdAt transactionId')
+      .lean();
+
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    res.render('PaymentSuccessPage', { order })
+  } catch (error) {
+    console.log(error)
+  }
+
+}
+
+
+
+
+
+
+const puppeteer = require("puppeteer");
+const ejs = require("ejs");
+const { url } = require("inspector");
+
+exports.downloadReceipt = async (req, res) => {
+  const order = await Order.findById(req.params._id)
+    .populate("items")
+    .populate("user");
+    
+  const logoPath = path.join(__dirname, "../public/images/logo.png");
+  const logoBase64 = fs.readFileSync(logoPath, "base64");
+
+  const html = await ejs.renderFile(
+    path.join(__dirname, "../views/receiptTemplate.ejs"),
+    {
+      order,
+      logo: `data:image/png;base64,${logoBase64}`
+    }
+  );
+
+ 
+
+ 
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.setContent(html, { waitUntil: "networkidle0" });
+
+  const pdf = await page.pdf({
+    format: "A4",
+    printBackground: true
+  });
+
+  await browser.close();
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=receipt_${order._id}.pdf`
+  );
+
+  res.send(pdf);
 };

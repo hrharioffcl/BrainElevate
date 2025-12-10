@@ -113,9 +113,11 @@
 
 
 
-            <button type="button" id="payNowSmall" class="btn btn-info text-dark w-100 rounded-pill mt-3">
+            <button type="button" id="payNowSmall" class="btn btn-info text-dark w-100 rounded-pill mt-3"
+              data-amount="<%= cart.total %>">
               Pay ₹<%= cart.total.toFixed(2) %>
             </button>
+
           </div>
 
 
@@ -129,78 +131,55 @@
 
 </body>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  window.RAZORPAY_KEY = "<%= process.env.RAZORPAY_KEY_ID %>"; // only in server-rendered page
-</script>
-<script>
-  // then use window.RAZORPAY_KEY
-</script>
+
 <script>
   document.getElementById('payNowSmall').onclick = async function (e) {
     e.preventDefault();
 
-const amount = parseInt("<%= cart.total %>");
-    const userId = "<%= user._id %>"; // or cart.cartUser
+    const amount = parseFloat(document.getElementById('payNowSmall').getAttribute('data-amount'));
+    const userId = "<%= user._id %>";
     const cartId = "<%= cart._id %>";
 
-    if (!amount || amount <= 0) {
-      alert("Invalid amount");
-      return;
-    }
-
     try {
-      // Step 1: Create order on backend
-      const res = await fetch('/create-order', {
+      // 1. Get public key securely
+      const keyRes = await fetch('/razorpay-key');
+      const { key } = await keyRes.json();
+
+      // 2. Create order
+      const orderRes = await fetch('/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: amount,
-          userId: userId,
-          cartId: cartId
-        })
+        body: JSON.stringify({ amount, userId, cartId })
       });
-
-      const orderData = await res.json();
-
-      if (!orderData.success) {
-        alert("Failed to create order: " + (orderData.error || "Unknown error"));
-        return;
-      }
+      const orderData = await orderRes.json();
+      if (!orderData.success) throw new Error("Order failed");
 
       const { razorOrder, localOrderId } = orderData;
 
-      // Step 2: Open Razorpay
       const options = {
-        key:  window.RAZORPAY_KEY , // NEVER hardcode in prod!
+        key: key,  // Now safe and dynamic
         amount: razorOrder.amount,
-        currency: razorOrder.currency,
+        currency: "INR",
         name: "BrainElavate",
-        description: "Course Enrollment Payment",
+        description: "Course Enrollment",
         image: "https://res.cloudinary.com/ds2jpl6lv/image/upload/v1764153541/brain.tealpng_ky9kvn.png",
         order_id: razorOrder.id,
-        handler: async function (response) {
-          // Step 3: Verify payment
-          const verifyRes = await fetch("/verify-payment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        handler: async (response) => {
+          const verify = await fetch('/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              cartId: cartId,
-              userId: userId,
-              localOrderId: localOrderId
+              cartId, userId, localOrderId
             })
           });
-
-          const result = await verifyRes.json();
-
+          const result = await verify.json();
           if (result.success) {
-            alert("Payment Successful! Redirecting...");
             window.location.href = `/payment-success?orderId=${localOrderId}`;
           } else {
-            alert("Payment failed or verification failed!");
-            window.location.href = `/payment-failed?orderId=${localOrderId}`;
+            alert("Payment verification failed");
           }
         },
         prefill: {
@@ -208,15 +187,7 @@ const amount = parseInt("<%= cart.total %>");
           email: "<%= user.email %>",
           contact: "<%= user.phone || '' %>"
         },
-        theme: {
-          color: "#4beada"
-        },
-        modal: {
-          ondismiss: function() {
-            alert("Payment cancelled");
-            // Optional: mark order as cancelled
-          }
-        }
+        theme: { color: "#4beada" }
       };
 
       const rzp = new Razorpay(options);
@@ -224,7 +195,7 @@ const amount = parseInt("<%= cart.total %>");
 
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Please try again.");
+      alert("Payment failed. Please try again.");
     }
   };
 </script>

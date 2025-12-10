@@ -37,6 +37,13 @@ exports.postBuyNow = async (req, res) => {
 
         cart.items.push(newItem._id)
         await cart.save()
+        const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
+
+        if (existing) {
+            await Wishlist.deleteOne({ _id: existing._id });
+            req.flash("success", "Addded to Cart")
+            console.log("Removed from wishlist");
+        }
 
 
         res.redirect(`/profile/${user._id}/cart`)
@@ -56,12 +63,13 @@ exports.postBuyNow = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
     const user = res.locals.user
-    const { courseId } = req.body
+    const { courseId, redirectTo } = req.body
     let course = await Course.findById(courseId)
     try {
         if (!user) {
             return res.redirect('/login')
         }
+
 
         let cart = await Cart.findOne({ cartUser: user._id })
 
@@ -86,7 +94,15 @@ exports.addToCart = async (req, res) => {
 
         await cart.save()
 
-        res.redirect(`/courses/${course._id}`);
+        const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
+
+        if (existing) {
+            await Wishlist.deleteOne({ _id: existing._id });
+            req.flash("success", "Addded to Cart")
+            console.log("Removed from wishlist");
+        }
+
+        res.redirect(redirectTo || `/courses/${course._id}`);
     } catch (err) {
         console.error(err);
         req.flash('error', 'Something went wrong.');
@@ -196,12 +212,27 @@ exports.removeCoupon = async (req, res) => {
 exports.addToWishList = async (req, res) => {
     const user = res.locals.user
     try {
-        const { courseId,redirectTo } = req.body
-        console.log("orginal url :",redirectTo)
+        const { courseId, redirectTo } = req.body
+        console.log("orginal url :", redirectTo)
         let course = await Course.findById(courseId)
         if (!user) {
             return res.redirect('/login')
+
         }
+        let cart = await Cart.findOne({ cartUser: user._id })
+
+        if (!cart) {
+            cart = await Cart.create({ cartUser: user._id })
+        }
+
+
+
+        const existingItem = await cartItems.findOne({ cart: cart._id, course: course._id });
+
+
+   
+
+
         const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
 
         if (existing) {
@@ -211,15 +242,19 @@ exports.addToWishList = async (req, res) => {
             req.flash("warning", "Removed from wishlist");
 
             console.log("Removed from wishlist");
+        } else if (existingItem) {
+            req.flash("warning", "Already in the Cart");
+            res.redirect('/courses')
+
         } else {
             // Add to wishlist
             await Wishlist.create({ userId: user._id, courseId: course._id });
-req.flash('success', "Added to wishlist!");
+            req.flash('success', "Added to wishlist!");
             console.log("Added to wishlist");
         }
 
 
-        res.redirect(redirectTo ||'/courses')
+        res.redirect(redirectTo || '/courses')
 
     } catch (error) {
         console.log(error)

@@ -15,7 +15,7 @@ const { getprofiledashboard, getprofileProgress, getprofileWishlist, getprofileP
     
 const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishList } = require('../controllers/cartController')
 
-const{getChekoutPage,createOrder,verifyPayment}=require('../controllers/paymentController')
+const{getChekoutPage,createOrder,verifyPayment,getPaymentSuccess,downloadReceipt}=require('../controllers/paymentController')
 
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
 
@@ -85,8 +85,8 @@ router.get('/profile/:_id/cart', verifytoken, getprofileCart)
 router.get('/logout', userLogOut)
 router.get('/profile/:_id/editProfile', verifytoken, getEditProfile)
 router.get('/profile/:_id/cart/checkOut',verifytoken,getChekoutPage)
-
-
+router.get('/payment-success',getPaymentSuccess)
+router.get("/order/:_id/receipt", downloadReceipt)
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);
@@ -111,5 +111,18 @@ router.post('/profile/:_id/updatePassword', verifytoken, changePassword)
 router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
 router.post('/create-order',createOrder)
 router.post("/verify-payment",verifyPayment);
+
+
+
+
+
+
+// ADD THIS ANYWHERE BEFORE module.exports = router;
+router.get('/razorpay-key', (req, res) => {
+  if (!process.env.RAZORPAY_KEY_ID) {
+    return res.status(500).json({ error: "Razorpay key not configured" });
+  }
+  res.json({ key: process.env.RAZORPAY_KEY_ID });
+});
 
 module.exports = router;
