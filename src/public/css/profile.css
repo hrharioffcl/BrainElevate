@@ -224,3 +224,12 @@ background: linear-gradient(90deg, #fce25a 0%, #ffb166 100%);
 .modal-header {
  background-color: #4BEADA;
 }
+
+ .mylearning-section-title { font-size: 28px; font-weight: 600; margin-bottom: 20px; }
+    .mylearning-course-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .mylearning-course-img { width: 100%; height: 150px; object-fit: cover; }
+    .mylearning-course-body { padding: 15px; }
+    .mylearning-progress { height: 6px; border-radius: 10px; }
+    .mylearning-tab-btn { padding: 8px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; text-decoration: none;}
+    .mylearning-tab-active { background: #000; color: #fff; }
+    .mylearning-tab-inactive { background: #eee; color: #555; }

@@ -5,6 +5,7 @@ const Course = require('../models/coursesSchema')
 const Coupon = require('../models/couponSchema')
 const couponUsage = require("../models/couponUsageSchema")
 const Wishlist = require('../models/wishListSchema')
+const Enrollment = require('../models/enrollmentSchema')
 const { validateCoupon } = require("../utils/validateCoupon")
 
 exports.postBuyNow = async (req, res) => {
@@ -226,14 +227,11 @@ exports.addToWishList = async (req, res) => {
         }
 
 
+        const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
 
         const existingItem = await cartItems.findOne({ cart: cart._id, course: course._id });
 
-
-   
-
-
-        const existing = await Wishlist.findOne({ userId: user._id, courseId: course._id })
+        const enrolled = await Enrollment.findOne({ studentId: user._id, courseId: course._id })
 
         if (existing) {
 
@@ -244,9 +242,14 @@ exports.addToWishList = async (req, res) => {
             console.log("Removed from wishlist");
         } else if (existingItem) {
             req.flash("warning", "Already in the Cart");
-            res.redirect('/courses')
+            res.redirect(redirectTo ||'/courses')
 
-        } else {
+        } else if (enrolled) {
+            req.flash("warning", "Course already Bought");
+            res.redirect(redirectTo ||'/courses')
+        }
+
+        else {
             // Add to wishlist
             await Wishlist.create({ userId: user._id, courseId: course._id });
             req.flash('success', "Added to wishlist!");

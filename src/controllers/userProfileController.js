@@ -2,6 +2,7 @@ const user = require("../models/userSchema")
 const Cart = require("../models/cartSchema")
 const Coupon = require("../models/couponSchema")
 const Wishlist = require('../models/wishListSchema')
+const Enrollment = require("../models/enrollmentSchema")
 const { calculateSubTotal } = require("../utils/calculateSubTotal")
 const { cloudinary } = require("../config/cloudinary");
 const couponUsage = require("../models/couponUsageSchema")
@@ -18,19 +19,73 @@ const bcrypt = require("bcrypt")
 
 
 exports.getprofiledashboard = async (req, res) => {
-    const userid = req.params._id
+    const userid = req.user._id
     const users = await user.findById(userid)
     res.render('userProfile', { user: users, courses: [] })
 }
 
+//profile/my Learining
+
 exports.getprofileProgress = async (req, res) => {
-    const userid = req.params._id
-    const users = await user.findById(userid)
-    res.render('userProgress', { user: users, courses: [] })
-}
+    try {
+        const userId = req.user._id; // /profile/:id/mylearning
+        const users = await user.findById(userId);
+
+        // Which tab to show
+        const view = req.query.view;
+
+        // Fetch all enrollment documents for this student
+        const enrollments = await Enrollment.find({ studentId: userId })
+            .populate('courseId', 'name author thumbnail price details _id');
+
+        // IN-PROGRESS COURSES
+        const inProgressCourses = enrollments
+            .filter(en => en.progress < 100)  // progress NOT completed
+            .map(en => ({
+                title: en.courseId.name,
+                instructor: en.courseId.author,
+                thumbnail: en.courseId.thumbnail,
+                progress: en.progress,
+                id: en.courseId._id,
+                eid: en._id
+            }));
+
+        // COMPLETED COURSES
+        const completedCourses = enrollments
+            .filter(en => en.progress === 100)
+            .map(en => ({
+                title: en.courseId.name,
+                instructor: en.courseId.author,
+                thumbnail: en.courseId.thumbnail,
+                progress: en.progress,
+               eid: en._id
+            }));
+
+        res.render("userProgress", {
+            user: users,
+            view,
+            inProgressCourses,
+            completedCourses
+        });
+
+    } catch (e) {
+        console.error(e);
+        res.status(500).send("Server Error");
+    }
+};
+
+
+
+
+
+
+
+
+
+
 //profile/wishlist
 exports.getprofileWishlist = async (req, res) => {
-    const userid = req.params._id
+    const userid = req.user._id
     const users = await user.findById(userid)
     const wishlist = await Wishlist.find({ userId: users._id })
         .populate('courseId', 'name author thumbnail price details');
@@ -38,7 +93,7 @@ exports.getprofileWishlist = async (req, res) => {
 }
 //profile/purchase History
 exports.getprofilePurchaseHistory = async (req, res) => {
-    const userid = req.params._id
+    const userid = req.user._id
     const users = await user.findById(userid)
     res.render('userPurchaseHistory', { user: users, courses: [] })
 }
@@ -46,7 +101,7 @@ exports.getprofilePurchaseHistory = async (req, res) => {
 exports.getprofileCart = async (req, res) => {
     try {
 
-        const userid = req.params._id
+        const userid = req.user._id
         const users = await user.findById(userid)
 
         let cart = await Cart.findOne({ cartUser: users._id }).populate({
@@ -69,7 +124,7 @@ exports.getprofileCart = async (req, res) => {
             if (!coupon) {
                 cart.appliedCoupon = null
                 req.flash('error', 'Invalid or expired coupon.');
-                return res.redirect(`/profile/${user._id}/cart`);
+                return res.redirect(`/profile/${users.fullName}/cart`);
             }
 
             const userUsage = await couponUsage.findOne({ userId: users._id, couponId: coupon._id })
@@ -129,7 +184,7 @@ exports.getprofileCart = async (req, res) => {
 
 //edit Profile
 exports.getEditProfile = async (req, res) => {
-    const userid = req.params._id
+    const userid = req.user._id
     const users = await user.findById(userid)
     try {
 
@@ -141,7 +196,7 @@ exports.getEditProfile = async (req, res) => {
 }
 
 exports.postUploadProfilePic = async (req, res) => {
-    const userid = req.params._id;
+    const userid = req.user._id;
     const users = await user.findById(userid);
     try {
 
@@ -167,19 +222,19 @@ exports.postUploadProfilePic = async (req, res) => {
         await users.save(); // important!
 
         req.flash("success", "Profile picture updated!");
-        return res.redirect(`/profile/${userid}/editProfile`);
+        return res.redirect(`/profile/${users.fullName}/editProfile`);
 
     } catch (error) {
         console.log("Upload Error:", error);
         req.flash("error", "Upload failed");
-        return res.redirect(`/profile/${userid}/editProfile`);
+        return res.redirect(`/profile/${users.fullName}/editProfile`);
 
     }
 };
 
 //update profile
 exports.postUpdateProfile = async (req, res) => {
-    const userid = req.params._id;
+    const userid = req.user._id;
     const users = await user.findById(userid);
     const { fullName, country, code, phone, gender, iso } = req.body
     const cleanNumber = phone.trim();
@@ -211,7 +266,7 @@ exports.postUpdateProfile = async (req, res) => {
 
 
         req.flash("success", "Profile updated Successfully !");
-        return res.redirect(`/profile/${userid}/editProfile`);
+        return res.redirect(`/profile/${users.fullName}/editProfile`);
 
     } catch (error) {
         console.log(error)
@@ -222,13 +277,13 @@ exports.postUpdateProfile = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
 
-    const userid = req.params._id;
+    const userid = req.user._id;
     const users = await user.findById(userid);
     try {
-if(users.googleUser){
-       req.flash('error', "Google based login found!!")
-            return res.redirect(`/profile/${userid}/editProfile`);
-}
+        if (users.googleUser) {
+            req.flash('error', "Google based login found!!")
+            return res.redirect(`/profile/${users.fullName}/editProfile`);
+        }
 
 
 
@@ -265,19 +320,19 @@ if(users.googleUser){
             res.redirect('/verify-otp')
         } else {
             req.flash('error', "Invalid password")
-            return res.redirect(`/profile/${userid}/editProfile`);
+            return res.redirect(`/profile/${users.fullName}/editProfile`);
         }
     } catch (error) {
         console.log(error)
         req.flash('error', "Something Went Wrong")
-        return res.redirect(`/profile/${userid}/editProfile`);
+        return res.redirect(`/profile/${users.fullName}/editProfile`);
     }
 
 }
 
 
 exports.deleteAccount = async (req, res) => {
-    const userid = req.params._id;
+    const userid = req.user._id;
     const users = await user.findById(userid);
     fieldErrors = {}
     formData = null
@@ -288,39 +343,39 @@ exports.deleteAccount = async (req, res) => {
             fieldErrors.openDeleteModal = true;
             return res.render(`editProfile`, { formData, fieldErrors })
         }
-if(!users.googleUser){
-     const isMatch = await bcrypt.compare(password, users.password);
-        if (!isMatch) {
-         fieldErrors.deleteError = "Incorrect password. Please try again.";
-            fieldErrors.openDeleteModal = true;
-            return res.render(`editProfile`, { formData, fieldErrors });
+        if (!users.googleUser) {
+            const isMatch = await bcrypt.compare(password, users.password);
+            if (!isMatch) {
+                fieldErrors.deleteError = "Incorrect password. Please try again.";
+                fieldErrors.openDeleteModal = true;
+                return res.render(`editProfile`, { formData, fieldErrors });
+            }
         }
-    }
-    
+
         if (feedback && feedback.trim() !== "") {
-            users.feedBack=feedback
+            users.feedBack = feedback
         }
 
-users.isDeleted=true;
-await users.save()
+        users.isDeleted = true;
+        await users.save()
 
-      
- res.clearCookie("jwt", {
 
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production", // only secure in prod
-                sameSite: "strict",
-            })
+        res.clearCookie("jwt", {
 
-                    req.flash("success", "Account Deleted Successfully");
-                    res.redirect('/login')
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // only secure in prod
+            sameSite: "strict",
+        })
+
+        req.flash("success", "Account Deleted Successfully");
+        res.redirect('/login')
 
 
 
     } catch (error) {
         console.log(error)
-            fieldErrors.deleteError = "some error occured";
-                fieldErrors.openDeleteModal = true;
-            return res.render(`editProfile`, { formData, fieldErrors });
+        fieldErrors.deleteError = "some error occured";
+        fieldErrors.openDeleteModal = true;
+        return res.render(`editProfile`, { formData, fieldErrors });
     }
 }

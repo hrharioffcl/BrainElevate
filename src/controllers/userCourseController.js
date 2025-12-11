@@ -3,7 +3,9 @@ const course = require("../models/coursesSchema")
 const category = require("../models/categorySchema")
 const Cart = require("../models/cartSchema");
 const Wishlist = require("../models/wishListSchema")
-
+const User = require("../models/userSchema")
+const Enrollments = require("../models/enrollmentSchema")
+const Chapters = require("../models/chapterScheema")
 exports.getcourse = async (req, res) => {
   try {
     const { search, categories, rating, level, price, duration, sortBy = 'latest', page = 1, limit = 12 } = req.query;
@@ -138,12 +140,20 @@ exports.getcoursedetails = async (req, res) => {
       req.flash('error', 'Course not found');
       return res.redirect('/courses');
     }
+    let freeCourse = false
+    if (courses.price === 0) {
+      freeCourse = true;
+    }
 
     //adding incartgfalg can be used for future wishlist
     //here its single course so just tries to find if the course belongs tio the cart coiurse ids
     let inCart = false;
+    let enrolled = false;
+    let eid = 0;
     if (user) {
       let cartCourseIds = [];
+
+      const enrollments = await Enrollments.findOne({ studentId: user._id, courseId: courseId })
       const cart = await Cart.findOne({ cartUser: user._id }).populate({
         path: 'items',
         populate: { path: 'course', model: 'Course' },
@@ -155,9 +165,14 @@ exports.getcoursedetails = async (req, res) => {
         })
         inCart = cartCourseIds.includes(courses._id.toString())
       }
+      if (enrollments) {
+        enrolled = true
+        eid = enrollments._id
+      }
+
     }
     const courseDet = {
-      ...courses.toObject(), inCart
+      ...courses.toObject(), inCart, enrolled, eid, freeCourse
     }
     console.log('Course inCart flag:', inCart);
 
@@ -168,4 +183,47 @@ exports.getcoursedetails = async (req, res) => {
     res.redirect('/courses')
   }
 
+}
+
+exports.tryFreeCourse = async (req, res) => {
+  try {
+   const userId = req.user?._id;
+    if (!userId) {
+      req.flash('warning', 'Please sign up or log in first');
+      return res.redirect('/signup');
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      req.flash('warning', 'User not found');
+      return res.redirect('/signup');
+    }
+    const {courseId} = req.body
+    const courses = await course.findById(courseId)
+      const enrollment = await Enrollments.create({ studentId: userId, courseId: courses._id })
+    req.flash('success',"congragulations you have enrolled for free")
+    res.redirect(`profile/${user.fullName}/mylearning/${courses.name}/${enrollment._id}`)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
+
+exports.getBoughtCourse = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const eid = req.params.eid
+    const user = await User.findById(userId)
+    const enrolled = await Enrollments.findOne({ studentId: user._id, _id: eid })
+    if (!enrolled) {
+      return res.status(404).send("404 - Page Not Found")
+    }
+    const courses = await course.findById(enrolled.courseId)
+    const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
+    res.render('boughtCourse', { course: courses, enrolled, chapters: chapters })
+  } catch (error) {
+    console.log(error)
+  }
 }

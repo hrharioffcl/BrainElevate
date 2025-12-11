@@ -6,128 +6,124 @@
 
 
 
-<header class="navbar"> 
-   <a href="/" class="logo">
-      <img src="/images/teallogo.png" alt="BrainElevate Logo" />
-    
-    </a>
- 
+<header class="navbar">
+  <a href="/" class="logo">
+    <img src="/images/teallogo.png" alt="BrainElevate Logo" />
+
+  </a>
+
   <div class="nav-left">
-    
+
     <!-- Logo -->
-  
-  
+
+
 
     <!-- Search bar -->
-     
-  <% if (referralLink  ) { %>
-    
-<form method="GET" action="/courses" class="d-flex search-form">
-  <input type="text" name="search" class="form-control" 
-         placeholder="Search courses..." 
-         value="<%= (typeof selectedFilters !== 'undefined' && selectedFilters.search) ? selectedFilters.search : '' %>"
-         onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
 
-  <!-- Preserve other filters if selectedFilters exists -->
-  <% if (typeof selectedFilters !== 'undefined' && selectedFilters) { %>
-    <% if (selectedFilters.categories) { selectedFilters.categories.forEach(cat => { %>
-      <input type="hidden" name="categories" value="<%= cat %>">
-    <% }) } %>
+    <% if (referralLink ) { %>
 
-    <% if (selectedFilters.rating) { selectedFilters.rating.forEach(r => { %>
-      <input type="hidden" name="rating" value="<%= r %>">
-    <% }) } %>
+      <form method="GET" action="/courses" class="d-flex search-form">
+        <input type="text" name="search" class="form-control" placeholder="Search courses..."
+          value="<%= (typeof selectedFilters !== 'undefined' && selectedFilters.search) ? selectedFilters.search : '' %>"
+          onkeypress="if(event.key === 'Enter'){ this.form.submit(); }">
 
-    <% if (selectedFilters.level) { selectedFilters.level.forEach(l => { %>
-      <input type="hidden" name="level" value="<%= l %>">
-    <% }) } %>
+        <!-- Preserve other filters if selectedFilters exists -->
+        <% if (typeof selectedFilters !=='undefined' && selectedFilters) { %>
+          <% if (selectedFilters.categories) { selectedFilters.categories.forEach(cat=> { %>
+            <input type="hidden" name="categories" value="<%= cat %>">
+            <% }) } %>
 
-    <% if (selectedFilters.price) { selectedFilters.price.forEach(p => { %>
-      <input type="hidden" name="price" value="<%= p %>">
-    <% }) } %>
+              <% if (selectedFilters.rating) { selectedFilters.rating.forEach(r=> { %>
+                <input type="hidden" name="rating" value="<%= r %>">
+                <% }) } %>
 
-    <% if (selectedFilters.duration) { selectedFilters.duration.forEach(d => { %>
-      <input type="hidden" name="duration" value="<%= d %>">
-    <% }) } %>
-  <% } %>
-</form>
+                  <% if (selectedFilters.level) { selectedFilters.level.forEach(l=> { %>
+                    <input type="hidden" name="level" value="<%= l %>">
+                    <% }) } %>
+
+                      <% if (selectedFilters.price) { selectedFilters.price.forEach(p=> { %>
+                        <input type="hidden" name="price" value="<%= p %>">
+                        <% }) } %>
+
+                          <% if (selectedFilters.duration) { selectedFilters.duration.forEach(d=> { %>
+                            <input type="hidden" name="duration" value="<%= d %>">
+                            <% }) } %>
+                              <% } %>
+      </form>
 
 
       <% } %>
   </div>
-    <button class="menu-toggle" id="menuToggle">☰</button>
+  <button class="menu-toggle" id="menuToggle">☰</button>
   <div class="nav-right me-4">
- 
-  <a href="/career">Teach on BrainElevate</a>
-  <a href="/courses">Courses</a>
 
-<% if (token) { %>
-  <a href="#" id="referNow">Refer Now</a>
-  <a href="/profile/<%= user._id %>/myLearning">My Learning</a>
-  <a href="/profile/<%= user._id %>/wishlist"><i class="fa fa-heart"></i></a>
-  <a href="/profile/<%= user._id %>/cart"><i class="fa fa-shopping-cart"></i></a>
-  <a href="/profile/<%= user._id %>/dashboard" class="profile-link">
-  
-              <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"    class="profile-img"  referrerpolicy="no-referrer">
+    <a href="/career">Teach on BrainElevate</a>
+    <a href="/courses">Courses</a>
 
-  </a>
-<% } else { %>
-  <a href="/login">Login</a>
-  <a class="btn btn-danger text-white " href="/signup">Join for free</a>
-<% } %>
+    <% if (token) { %>
+      <a href="#" id="referNow">Refer Now</a>
+      <a href="/profile/<%= user.fullName %>/myLearning">My Learning</a>
+      <a href="/profile/<%= user.fullName %>/wishlist"><i class="fa fa-heart"></i></a>
+      <a href="/profile/<%= user.fullName %>/cart"><i class="fa fa-shopping-cart"></i></a>
+      <a href="/profile/<%= user.fullName %>/dashboard" class="profile-link">
 
-</div>
+        <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User" class="profile-img"
+          referrerpolicy="no-referrer">
+
+      </a>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a class="btn btn-danger text-white " href="/signup">Join for free</a>
+        <% } %>
+
+  </div>
 
   <!-- Hidden Popup for Referral -->
-<div id="referPopup" class="popup" style="display:none;">
-  <div class="popup-content">
-<h3>Invite Your Friends & Earn Rewards!</h3>
-  <p>Share your referral link with friends and earn 🥳🥳🎇<strong >💵💵₹100 cashback</strong> when they make their first purchase.</p>
+  <div id="referPopup" class="popup" style="display:none;">
+    <div class="popup-content">
+      <h3>Invite Your Friends & Earn Rewards!</h3>
+      <p>Share your referral link with friends and earn 🥳🥳🎇<strong>💵💵₹100 cashback</strong> when they make their
+        first purchase.</p>
 
- <% if (referralLink) { %>
-  <input 
-    type="text" 
-    id="referralLink" 
-    readonly 
-    value="<%= referralLink %>" 
-  />
-  <button class="btn btn-dark" id="copyReferral">Copy Link</button>
-  <button class="btn btn-danger" id="closePopup">Close</button>
-<% } %> 
+      <% if (referralLink) { %>
+        <input type="text" id="referralLink" readonly value="<%= referralLink %>" />
+        <button class="btn btn-dark" id="copyReferral">Copy Link</button>
+        <button class="btn btn-danger" id="closePopup">Close</button>
+        <% } %>
+    </div>
   </div>
-</div>
 
-<script>
-  const referNow = document.getElementById("referNow");
-  const popup = document.getElementById("referPopup");
-  const closePopup = document.getElementById("closePopup");
-  const copyBtn = document.getElementById("copyReferral");
-  const referralInput = document.getElementById("referralLink");
+  <script>
+    const referNow = document.getElementById("referNow");
+    const popup = document.getElementById("referPopup");
+    const closePopup = document.getElementById("closePopup");
+    const copyBtn = document.getElementById("copyReferral");
+    const referralInput = document.getElementById("referralLink");
 
-  // Open popup
-  referNow.addEventListener("click", (e) => {
-    e.preventDefault();
-    popup.style.display = "flex";
-  });
+    // Open popup
+    referNow.addEventListener("click", (e) => {
+      e.preventDefault();
+      popup.style.display = "flex";
+    });
 
-  // Close popup
-  closePopup.addEventListener("click", () => {
-    popup.style.display = "none";
-  });
+    // Close popup
+    closePopup.addEventListener("click", () => {
+      popup.style.display = "none";
+    });
 
-  // Copy referral link
-  copyBtn.addEventListener("click", () => {
-    referralInput.select();
-    document.execCommand("copy");
-    copyBtn.textContent = "Copied!";
-    setTimeout(() => (copyBtn.textContent = "Copy Link"), 2000);
-  });
+    // Copy referral link
+    copyBtn.addEventListener("click", () => {
+      referralInput.select();
+      document.execCommand("copy");
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => (copyBtn.textContent = "Copy Link"), 2000);
+    });
 
-  
-</script>
-<script>document.getElementById("menuToggle").addEventListener("click", () => {
-  document.querySelector(".nav-right").classList.toggle("show");
-});
-</script>
+
+  </script>
+  <script>document.getElementById("menuToggle").addEventListener("click", () => {
+      document.querySelector(".nav-right").classList.toggle("show");
+    });
+  </script>
 
 </header>

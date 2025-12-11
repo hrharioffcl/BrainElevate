@@ -1,0 +1,134 @@
+
+    .course-header-section{
+        padding: 5% 10%;
+    }
+/* The main content container */
+.content-wrapper {
+           /* center it */
+    padding: 0 10%;         /* inner spacing */
+}
+
+.progress-circle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+/* Text centered in the middle of the circle */
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-text h3 {
+    margin: 0;
+    font-weight: 500;
+    color: #4bead4;
+}
+
+.progress-text p {
+    margin: 0;
+    font-size: 10px;
+    color: #ffffff;
+}
+
+
+/* Default (desktop): right aligned */
+.progress-block {
+    display: flex;
+    justify-content: end;
+}
+
+/* Mobile styling */
+@media (max-width: 768px) {
+
+    /* Center the progress circle */
+    .progress-block {
+        justify-content: center !important;
+        margin-top: 20px;
+    }
+
+    /* Make the circle bigger */
+    .progress-circle {
+        width: 150px;
+        height: 150px;
+    }
+
+    /* Increase SVG size */
+    .progress-circle svg {
+        width: 150px;
+        height: 150px;
+    }
+
+.progress-text {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    
+}
+    /* Adjust the text size inside */
+    .progress-text h3 {
+        font-size: 28px;
+    }
+
+    .progress-text p {
+        font-size: 16px;
+    }
+}
+
+
+
+.animated-ring {
+    transition: stroke-dashoffset 1.5s ease;
+}
+
+
+/* Chapter Cards Container */
+.chapters-section .chapter-card {
+    background-color: #1e1e1e;       /* Dark black/gray background */
+    color: #fff;                      /* White text */
+    border-radius: 12px;              /* Rounded corners */
+    padding: 20px;                     /* Internal spacing */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);  /* Soft shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover Effect */
+.chapters-section .chapter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+}
+
+/* Chapter Title */
+.chapters-section .chapter-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #00C49A; /* Highlight color for titles */
+}
+
+/* Chapter Description */
+.chapters-section .chapter-card p {
+    font-size: 0.95rem;
+    color: #ccc; /* Lighter text for description */
+    margin-bottom: 15px;
+}
+
+/* Button Styling */
+.chapters-section .chapter-card .btn-outline-dark {
+    border-color: #00C49A;
+    color: #00C49A;
+    transition: all 0.3s ease;
+}
+
+.chapters-section .chapter-card .btn-outline-dark:hover {
+    background-color: #00C49A;
+    color: #fff;
+    border-color: #00C49A;
+}

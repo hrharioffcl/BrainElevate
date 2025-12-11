@@ -1,7 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
 const { gethome } = require("../controllers/userHomeController")
-const { getcourse, getcoursedetails } = require("../controllers/userCourseController")
+const { getcourse, getcoursedetails, getBoughtCourse,tryFreeCourse } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -12,12 +12,14 @@ const { getprofiledashboard, getprofileProgress, getprofileWishlist, getprofileP
     getprofileCart, getEditProfile, postUploadProfilePic,
     postUpdateProfile, changePassword, deleteAccount } = require("../controllers/userProfileController")
 
-    
+
 const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishList } = require('../controllers/cartController')
 
-const{getChekoutPage,createOrder,verifyPayment,getPaymentSuccess,downloadReceipt}=require('../controllers/paymentController')
+const { getChekoutPage, createOrder, verifyPayment, getPaymentSuccess, downloadReceipt } = require('../controllers/paymentController')
 
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
+
+
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
     const token = req.cookies.jwt
@@ -77,16 +79,18 @@ router.get('/home', verifytoken, createReferralLink, gethome)
 router.get('/courses', softCheckUser, getcourse)
 
 router.get('/courses/:_id', getcoursedetails)
-router.get('/profile/:_id/dashboard', verifytoken, getprofiledashboard)
+router.get('/profile/:fullName/dashboard', verifytoken, getprofiledashboard)
 router.get('/profile/:_id/myLearning', verifytoken, getprofileProgress)
 router.get('/profile/:_id/wishlist', verifytoken, getprofileWishlist)
 router.get('/profile/:_id/hiStory', verifytoken, getprofilePurchaseHistory)
 router.get('/profile/:_id/cart', verifytoken, getprofileCart)
 router.get('/logout', userLogOut)
 router.get('/profile/:_id/editProfile', verifytoken, getEditProfile)
-router.get('/profile/:_id/cart/checkOut',verifytoken,getChekoutPage)
-router.get('/payment-success',getPaymentSuccess)
-router.get("/order/:_id/receipt", downloadReceipt)
+router.get('/profile/:_id/cart/checkOut', verifytoken, getChekoutPage)
+router.get('/payment-success', verifytoken, getPaymentSuccess)
+router.get("/order/:_id/receipt", verifytoken, downloadReceipt)
+router.get('/profile/:_id/myLearning/:courseId/:eid', verifytoken, getBoughtCourse)
+
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);
@@ -97,9 +101,9 @@ router.post('/reset-password', resetpassword)
 router.post('/buyNow', verifytoken, postBuyNow)
 router.post('/addToCart', verifytoken, addToCart)
 router.post("/cart/remove", verifytoken, removeItem)
-router.post("/applyCoupon", applyCoupon)
-router.post('/removeCoupon', removeCoupon)
-router.post('/addToWishList', addToWishList)
+router.post("/applyCoupon", verifytoken, applyCoupon)
+router.post('/removeCoupon', verifytoken, removeCoupon)
+router.post('/addToWishList', verifytoken, addToWishList)
 router.post(
     "/profile/upload-photo/:_id",
     uploadProfilePic.single("profile"), multerErrorHandler, verifytoken,
@@ -109,8 +113,9 @@ router.post(
 router.post('/profile/:_id/update', verifytoken, postUpdateProfile)
 router.post('/profile/:_id/updatePassword', verifytoken, changePassword)
 router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
-router.post('/create-order',createOrder)
-router.post("/verify-payment",verifyPayment);
+router.post('/create-order', verifytoken, createOrder)
+router.post("/verify-payment", verifytoken, verifyPayment);
+router.post('/tryFreeCourse',tryFreeCourse)
 
 
 
@@ -119,10 +124,10 @@ router.post("/verify-payment",verifyPayment);
 
 // ADD THIS ANYWHERE BEFORE module.exports = router;
 router.get('/razorpay-key', (req, res) => {
-  if (!process.env.RAZORPAY_KEY_ID) {
-    return res.status(500).json({ error: "Razorpay key not configured" });
-  }
-  res.json({ key: process.env.RAZORPAY_KEY_ID });
+    if (!process.env.RAZORPAY_KEY_ID) {
+        return res.status(500).json({ error: "Razorpay key not configured" });
+    }
+    res.json({ key: process.env.RAZORPAY_KEY_ID });
 });
 
 module.exports = router;

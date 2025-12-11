@@ -14,7 +14,7 @@
             
          <div class="profile-avatar  position-relative d-inline-block">
         <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"referrerpolicy="no-referrer">
-        <a href="/profile/<%= user._id %>/editProfile" class="btn btn-sm edit-btn position-absolute">  <i class="bi bi-pencil"></i>
+        <a href="/profile/<%= user.fullName %>/editProfile" class="btn btn-sm edit-btn position-absolute">  <i class="bi bi-pencil"></i>
 
 </a>
     
@@ -36,9 +36,9 @@
      </section>
     <!-- Tabs -->
     <div class="tabs">
-      <a href="/profile/<%= user._id %>/dashboard"class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Dashboard</a>
-      <a href="/profile/<%= user._id %>/myLearning"class="tab <%= activeTab === 'mylearning' ? 'active' : '' %>">My Learning</a>
-      <a href="/profile/<%= user._id %>/wishlist" class="tab <%= activeTab === 'wishlist' ? 'active' : '' %>">Wishlist</a>
-      <a href="/profile/<%= user._id %>/history" class="tab <%= activeTab === 'history' ? 'active' : '' %>">Purchase History</a>
-      <a href="/profile/<%= user._id %>/cart" class="tab <%= activeTab === 'cart' ? 'active' : '' %>">Cart</a>
+      <a href="/profile/<%= user.fullName %>/dashboard"class="tab <%= activeTab === 'profile' ? 'active' : '' %>">Dashboard</a>
+      <a href="/profile/<%= user.fullName %>/myLearning"class="tab <%= activeTab === 'mylearning' ? 'active' : '' %>">My Learning</a>
+      <a href="/profile/<%= user.fullName %>/wishlist" class="tab <%= activeTab === 'wishlist' ? 'active' : '' %>">Wishlist</a>
+      <a href="/profile/<%= user.fullName %>/history" class="tab <%= activeTab === 'history' ? 'active' : '' %>">Purchase History</a>
+      <a href="/profile/<%= user.fullName %>/cart" class="tab <%= activeTab === 'cart' ? 'active' : '' %>">Cart</a>
     </div>

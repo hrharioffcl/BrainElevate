@@ -67,7 +67,7 @@
                       <td class="text-end">
                         <form action="/addToWishList" method="POST" class="d-inline">
                           <input type="hidden" name="courseId" value="<%= item.courseId._id %>">
-                          <input type="hidden" name="redirectTo" value="/profile/<%= user._id %>/wishlist">
+                          <input type="hidden" name="redirectTo" value="/profile/<%= user.fullName %>/wishlist">
                           <button type="submit" class="btn btn-link text-decoration-none p-0 remove-btn">
                             <img
                               src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDEyIDE2Ij4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPHBhdGggZD0iTS0xLjUuNWgxNXYxNWgtMTV6Ii8+CiAgICAgICAgPHBhdGggZmlsbD0iI0MyQzJDMiIgZmlsbC1ydWxlPSJub256ZXJvIiBkPSJNMSAxMy44MzNjMCAuOTE3Ljc1IDEuNjY3IDEuNjY3IDEuNjY3aDYuNjY2Yy45MTcgMCAxLjY2Ny0uNzUgMS42NjctMS42Njd2LTEwSDF2MTB6bTEwLjgzMy0xMi41SDguOTE3TDguMDgzLjVIMy45MTdsLS44MzQuODMzSC4xNjdWM2gxMS42NjZWMS4zMzN6Ii8+CiAgICA8L2c+Cjwvc3ZnPgo="
@@ -79,7 +79,7 @@
                       </td>
                       <td>  <form action="/addToCart" method="POST">
                           <input type="hidden" name="courseId" value="<%= item.courseId._id %>">
-                          <input type="hidden" name="redirectTo" value="/profile/<%= user._id %>/wishlist">
+                          <input type="hidden" name="redirectTo" value="/profile/<%= user.fullName %>/wishlist">
                           <button type="submit" class="btn btn-outline-secondary p-2"> Add To Cart</button>
                         </form></td>
                     </tr>
