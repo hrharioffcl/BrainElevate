@@ -1,7 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
 const { gethome } = require("../controllers/userHomeController")
-const { getcourse, getcoursedetails, getBoughtCourse,tryFreeCourse } = require("../controllers/userCourseController")
+const { getcourse, getcoursedetails, getBoughtCourse,tryFreeCourse,postAddReview } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -116,7 +116,7 @@ router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
 router.post('/create-order', verifytoken, createOrder)
 router.post("/verify-payment", verifytoken, verifyPayment);
 router.post('/tryFreeCourse',tryFreeCourse)
-
+router.post('/course/:courseName/review',postAddReview)
 
 
 

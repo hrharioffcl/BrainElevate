@@ -6,6 +6,7 @@ const Wishlist = require("../models/wishListSchema")
 const User = require("../models/userSchema")
 const Enrollments = require("../models/enrollmentSchema")
 const Chapters = require("../models/chapterScheema")
+const Review = require("../models/reviewSchema")
 exports.getcourse = async (req, res) => {
   try {
     const { search, categories, rating, level, price, duration, sortBy = 'latest', page = 1, limit = 12 } = req.query;
@@ -223,6 +224,23 @@ exports.getBoughtCourse = async (req, res) => {
     const courses = await course.findById(enrolled.courseId)
     const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
     res.render('boughtCourse', { course: courses, enrolled, chapters: chapters })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.postAddReview = async(req,res)=>{
+  try {
+        const userId = req.user._id;
+        const {courseId,rating,comment,title} = req.body
+        console.log("course=",courseId 
+          ,"rating=",rating
+          ,"comment=",comment,
+          "title=",title,
+          'userId=',req.user.fullName
+        )
+
+
   } catch (error) {
     console.log(error)
   }

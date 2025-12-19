@@ -86,22 +86,29 @@
 
         <% chapters.forEach((chapter) => { %>
             <div class="col-12 col-md-4 mb-4">
+                <a href="" class="text-decoration-none">
                 <div class="chapter-card p-3">
 
                     <div class="d-flex justify-content-between">
                         <h4>Chapter <%= chapter.order %> – <%= chapter.title %></h4>
 
-                      
-
                     </div>
+                    <hr>
+<div  class="d-flex justify-content-between">
+                    <p class="text-white"><%= chapter.progress || "" %></p>
 
-                    <p class="text-muted"><%= chapter.lectureDescription || "" %></p>
-
-                    <a href="/course/<%= course._id %>/chapter/<%= chapter._id %>" class="btn btn-outline-dark">
-                        View Chapter
+                    <a href="/course/<%= course._id %>/chapter/<%= chapter._id %>" class="btn ">
+                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
+<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+	<circle cx="45" cy="45" r="45" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(32,196,203); fill-rule: nonzero; opacity: 1;" transform="  matrix(1 0 0 1 0 0) "/>
+	<path d="M 61.749 50.066 L 28.345 75.123 c -1.38 1.035 -3.35 0.05 -3.35 -1.675 V 23.335 c 0 -1.725 1.97 -2.71 3.35 -1.675 l 33.405 25.057 C 62.866 47.554 62.866 49.229 61.749 50.066 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(27,167,173); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+	<path d="M 65.532 46.283 L 32.127 71.34 c -1.38 1.035 -3.35 0.05 -3.35 -1.675 V 19.552 c 0 -1.725 1.97 -2.71 3.35 -1.675 l 33.405 25.057 C 66.648 43.771 66.648 45.446 65.532 46.283 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
+</g>
+</svg>
                     </a>
-
+</div>
                 </div>
+                </a>
             </div>
         <% }) %>
 
@@ -110,8 +117,62 @@
 
 
 
-            </div>
+         
+       <!-- ADD REVIEW SECTION (STYLISH STAR RATING) -->
+<div class="reviews-section mt-5 pt-4 mb-5">
+  <h2>Add a Review</h2>
+  <hr>
+
+  <div class="card review-card">
+    <div class="card-body">
+      <form action="/course/<%= course.name %>/review" method="POST">
+<!-- course id -->`
+ <input type="hidden" name="courseId" value = "<%= course._id %>">
+        <!-- Star Rating -->
+        <div class="mb-3">
+          <label class="form-label d-block">Your Rating</label>
+          <div class="star-rating">
+            <input type="radio" id="star5" name="rating" value="5" required />
+            <label for="star5" title="5 stars">★</label>
+
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 stars">★</label>
+
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 stars">★</label>
+
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 stars">★</label>
+
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 star">★</label>
+          </div>
         </div>
+
+        <!-- Review Text -->
+        <div class="mb-3">
+            
+          <label for="comment" class="form-label text-dark"><h6>Write a review</h6></label>
+          <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Share your experience..." required></textarea>
+        </div>
+        <!-- Review Title -->
+<div class="mb-3">
+     <label for="title" class="form-label text-dark"><h6>Title your review (required)</h6></label>
+<input type="text" class="form-control" id="title" name="title" placeholder="Whats most important to know?" maxlength="60" required>
+</div>
+
+<div class="text-end">
+<button type="submit" class="btn btn-dark rounded-pill px-4">Submit</button>
+</div>        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+   </div>
+        </div>
+
             <%- include("partials/flashalerts") %>
 
               
