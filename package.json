@@ -34,6 +34,7 @@
     "pdfkit": "^0.17.2",
     "puppeteer": "^24.31.0",
     "razorpay": "^2.9.6",
+    "slugify": "^1.6.6",
     "validator": "^13.15.15"
   },
   "devDependencies": {

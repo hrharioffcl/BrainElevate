@@ -1,7 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
 const { gethome } = require("../controllers/userHomeController")
-const { getcourse, getcoursedetails, getBoughtCourse,tryFreeCourse,postAddReview } = require("../controllers/userCourseController")
+const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -18,7 +18,7 @@ const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishL
 const { getChekoutPage, createOrder, verifyPayment, getPaymentSuccess, downloadReceipt } = require('../controllers/paymentController')
 
 const multerErrorHandler = require("../middlewaares/multerErrorHandler");
-
+const { saveReturnTo } = require("../middlewaares/saveReturnTo")
 
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
@@ -78,18 +78,18 @@ router.get('/home', verifytoken, createReferralLink, gethome)
 
 router.get('/courses', softCheckUser, getcourse)
 
-router.get('/courses/:_id', getcoursedetails)
+router.get('/courses/:slug', getcoursedetails)
 router.get('/profile/:fullName/dashboard', verifytoken, getprofiledashboard)
 router.get('/profile/:_id/myLearning', verifytoken, getprofileProgress)
 router.get('/profile/:_id/wishlist', verifytoken, getprofileWishlist)
 router.get('/profile/:_id/hiStory', verifytoken, getprofilePurchaseHistory)
 router.get('/profile/:_id/cart', verifytoken, getprofileCart)
 router.get('/logout', userLogOut)
-router.get('/profile/:_id/editProfile', verifytoken, getEditProfile)
+router.get('/profile/:_id/editProfile', saveReturnTo, verifytoken, getEditProfile)
 router.get('/profile/:_id/cart/checkOut', verifytoken, getChekoutPage)
 router.get('/payment-success', verifytoken, getPaymentSuccess)
 router.get("/order/:_id/receipt", verifytoken, downloadReceipt)
-router.get('/profile/:_id/myLearning/:courseId/:eid', verifytoken, getBoughtCourse)
+router.get('/profile/:_id/myLearning/:slug/:eid', verifytoken, getBoughtCourse)
 
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
@@ -106,7 +106,7 @@ router.post('/removeCoupon', verifytoken, removeCoupon)
 router.post('/addToWishList', verifytoken, addToWishList)
 router.post(
     "/profile/upload-photo/:_id",
-    uploadProfilePic.single("profile"), multerErrorHandler, verifytoken,
+    uploadProfilePic.single("profile"), verifytoken,
     postUploadProfilePic
 );
 
@@ -115,8 +115,8 @@ router.post('/profile/:_id/updatePassword', verifytoken, changePassword)
 router.post('/profile/:_id/deleteAccount', verifytoken, deleteAccount)
 router.post('/create-order', verifytoken, createOrder)
 router.post("/verify-payment", verifytoken, verifyPayment);
-router.post('/tryFreeCourse',tryFreeCourse)
-router.post('/course/:courseName/review',postAddReview)
+router.post('/tryFreeCourse', tryFreeCourse)
+router.post('/course/:courseName/review', postAddReview)
 
 
 

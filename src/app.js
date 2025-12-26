@@ -17,6 +17,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 10 * 60 * 1000 } // 10 minutes
 }));
+const multerErrorHandler = require("./middlewaares/multerErrorHandler");
 
 
 
@@ -89,5 +90,6 @@ app.use('/admin',(req, res, next) => {
 
 
 
+app.use(multerErrorHandler);
 
 

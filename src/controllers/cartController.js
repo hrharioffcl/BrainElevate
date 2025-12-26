@@ -102,8 +102,7 @@ exports.addToCart = async (req, res) => {
             req.flash("success", "Addded to Cart")
             console.log("Removed from wishlist");
         }
-
-        res.redirect(redirectTo || `/courses/${course._id}`);
+        res.redirect(redirectTo || `/courses/${course.slug}`);
     } catch (err) {
         console.error(err);
         req.flash('error', 'Something went wrong.');

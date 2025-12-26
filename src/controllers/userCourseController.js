@@ -15,7 +15,7 @@ exports.getcourse = async (req, res) => {
     const selectedFilters = {
       search: search || '',
       categories: categories ? (Array.isArray(categories) ? categories : [categories]) : [],
-      rating: rating ? (Array.isArray(rating) ? rating : [rating]) : [],
+      rating: rating ? (Array.isArray(rating) ? rating : [rating]).map(Number) : [],
       level: level ? (Array.isArray(level) ? level : [level]) : [],
       price: price ? (Array.isArray(price) ? price : [price]) : [],
       duration: duration ? (Array.isArray(duration) ? duration : [duration]) : [],
@@ -100,7 +100,6 @@ exports.getcourse = async (req, res) => {
       const wishlistItems = await Wishlist.find({ userId: user._id }).select('courseId');
       const wishlistCourseIds = wishlistItems.map(w => w.courseId.toString());
 
-
       courses = courses.map((c) => {
         return {
           ...c.toObject(), inCart: cartCourseIds.includes(c._id.toString()),
@@ -133,9 +132,8 @@ exports.getcourse = async (req, res) => {
 
 exports.getcoursedetails = async (req, res) => {
   try {
-    const courseId = req.params._id
     const user = res.locals.user
-    let courses = await course.findById(courseId)
+    let courses = await course.findOne({ slug: req.params.slug })
 
     if (!courses) {
       req.flash('error', 'Course not found');
@@ -154,7 +152,7 @@ exports.getcoursedetails = async (req, res) => {
     if (user) {
       let cartCourseIds = [];
 
-      const enrollments = await Enrollments.findOne({ studentId: user._id, courseId: courseId })
+      const enrollments = await Enrollments.findOne({ studentId: user._id, courseId: courses._id })
       const cart = await Cart.findOne({ cartUser: user._id }).populate({
         path: 'items',
         populate: { path: 'course', model: 'Course' },
@@ -176,8 +174,46 @@ exports.getcoursedetails = async (req, res) => {
       ...courses.toObject(), inCart, enrolled, eid, freeCourse
     }
     console.log('Course inCart flag:', inCart);
+    //review
+    const { rating } = req.query
+    let review = []
+    console.log(rating)
+    if (rating) {
+      review = await Review.find({ course: courses._id, rating: rating }).sort({ createdAt: -1 }).populate({
+        path: "user"
+      })
+    } else {
+      review = await Review.find({ course: courses._id }).sort({ createdAt: -1 }).populate({
+        path: "user"
+      })
+    }
+    const stats = await Review.aggregate([{ $match: { course: courses._id } }, {
+      $group: {
+        _id: "$course",
+        avgRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 },
+        star5: { $sum: { $cond: [{ $eq: ["$rating", 5] }, 1, 0] } },
+        star4: { $sum: { $cond: [{ $eq: ["$rating", 4] }, 1, 0] } },
+        star3: { $sum: { $cond: [{ $eq: ["$rating", 3] }, 1, 0] } },
+        star2: { $sum: { $cond: [{ $eq: ["$rating", 2] }, 1, 0] } },
+        star1: { $sum: { $cond: [{ $eq: ["$rating", 1] }, 1, 0] } },
 
-    res.render('singlecourse', { course: courseDet })
+      }
+
+
+    }])
+
+    const reviewStats = stats[0] || {
+      avgRating: 0,
+      totalReviews: 0,
+      star5: 0,
+      star4: 0,
+      star3: 0,
+      star2: 0,
+      star1: 0
+    };
+
+    res.render('singlecourse', { course: courseDet, review, reviewStats, rating })
 
   } catch (error) {
     console.log(error)
@@ -188,7 +224,7 @@ exports.getcoursedetails = async (req, res) => {
 
 exports.tryFreeCourse = async (req, res) => {
   try {
-   const userId = req.user?._id;
+    const userId = req.user?._id;
     if (!userId) {
       req.flash('warning', 'Please sign up or log in first');
       return res.redirect('/signup');
@@ -199,10 +235,10 @@ exports.tryFreeCourse = async (req, res) => {
       req.flash('warning', 'User not found');
       return res.redirect('/signup');
     }
-    const {courseId} = req.body
+    const { courseId } = req.body
     const courses = await course.findById(courseId)
-      const enrollment = await Enrollments.create({ studentId: userId, courseId: courses._id })
-    req.flash('success',"congragulations you have enrolled for free")
+    const enrollment = await Enrollments.create({ studentId: userId, courseId: courses._id })
+    req.flash('success', "congragulations you have enrolled for free")
     res.redirect(`profile/${user.fullName}/mylearning/${courses.name}/${enrollment._id}`)
   } catch (error) {
     console.log(error)
@@ -229,18 +265,46 @@ exports.getBoughtCourse = async (req, res) => {
   }
 }
 
-exports.postAddReview = async(req,res)=>{
+exports.postAddReview = async (req, res) => {
   try {
-        const userId = req.user._id;
-        const {courseId,rating,comment,title} = req.body
-        console.log("course=",courseId 
-          ,"rating=",rating
-          ,"comment=",comment,
-          "title=",title,
-          'userId=',req.user.fullName
-        )
+    const userId = req.user._id;
+    const { courseId, rating, comment, title } = req.body
+    console.log("course=", courseId
+      , "rating=", rating
+      , "comment=", comment,
+      "title=", title,
+      'userId=', req.user.fullName
+    )
+
+    const courses = await course.findById(courseId)
+
+    const enrollment = await Enrollments.findOne({ studentId: userId, courseId: courseId })
+
+    const review = await Review.create({
+      course: courseId, rating: rating, comment: comment, title: title, user: userId
+    })
+
+    const stats = await Review.aggregate([{ $match: { course: courses._id } }, {
+      $group: {
+        _id: "$course",
+        avgRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 },
+        star5: { $sum: { $cond: [{ $eq: ["$rating", 5] }, 1, 0] } },
+        star4: { $sum: { $cond: [{ $eq: ["$rating", 4] }, 1, 0] } },
+        star3: { $sum: { $cond: [{ $eq: ["$rating", 3] }, 1, 0] } },
+        star2: { $sum: { $cond: [{ $eq: ["$rating", 2] }, 1, 0] } },
+        star1: { $sum: { $cond: [{ $eq: ["$rating", 1] }, 1, 0] } },
+      }
+    }])
+    await course.findByIdAndUpdate(courseId, {
+      rating: Number(stats[0].avgRating.toFixed(2)),
+      reviewCount: stats[0].totalReviews
+    });
 
 
+
+    req.flash('success', "Thank you for your feedback")
+    res.redirect(`/profile/${req.user.fullName}/mylearning/${courses.name}/${enrollment._id}`)
   } catch (error) {
     console.log(error)
   }

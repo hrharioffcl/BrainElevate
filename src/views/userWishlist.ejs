@@ -56,8 +56,8 @@
                             </h6>
                             <small class="text-muted d-block">Course by: <%= item.courseId.author %></small>
                             <small class="text-muted d-block">
-                              <i class="bi bi-star-fill text-warning"></i>
-                              <%= item.courseId.rating %> (<%= item.courseId.reviewCount || "0" %> Reviews)
+                              
+                           <b>  <%= item.courseId.rating %></b> <i class="bi bi-star-fill text-warning"></i>  (<%= item.courseId.reviewCount || "0" %> Reviews)
                             </small>
                             <strong>₹<%= item.courseId.price %></strong>
                           </div>

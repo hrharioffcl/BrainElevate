@@ -90,11 +90,12 @@
                 <div class="chapter-card p-3">
 
                     <div class="d-flex justify-content-between">
-                        <h4>Chapter <%= chapter.order %> – <%= chapter.title %></h4>
+                        <h4>Chapter <%= chapter.order %> </h4>
 
                     </div>
                     <hr>
 <div  class="d-flex justify-content-between">
+    <p>g <%= chapter.title %></p>
                     <p class="text-white"><%= chapter.progress || "" %></p>
 
                     <a href="/course/<%= course._id %>/chapter/<%= chapter._id %>" class="btn ">

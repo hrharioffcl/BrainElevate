@@ -36,7 +36,7 @@ exports.getprofileProgress = async (req, res) => {
 
         // Fetch all enrollment documents for this student
         const enrollments = await Enrollment.find({ studentId: userId })
-            .populate('courseId', 'name author thumbnail price details _id');
+            .populate('courseId', 'name author thumbnail price details _id slug');
 
         // IN-PROGRESS COURSES
         const inProgressCourses = enrollments
@@ -47,7 +47,9 @@ exports.getprofileProgress = async (req, res) => {
                 thumbnail: en.courseId.thumbnail,
                 progress: en.progress,
                 id: en.courseId._id,
-                eid: en._id
+                eid: en._id,
+                slug: en.courseId.slug,
+              
             }));
 
         // COMPLETED COURSES
@@ -58,7 +60,9 @@ exports.getprofileProgress = async (req, res) => {
                 instructor: en.courseId.author,
                 thumbnail: en.courseId.thumbnail,
                 progress: en.progress,
-               eid: en._id
+                eid: en._id,
+                slug: en.courseId.slug,
+
             }));
 
         res.render("userProgress", {
@@ -88,7 +92,7 @@ exports.getprofileWishlist = async (req, res) => {
     const userid = req.user._id
     const users = await user.findById(userid)
     const wishlist = await Wishlist.find({ userId: users._id })
-        .populate('courseId', 'name author thumbnail price details');
+        .populate('courseId', 'name author thumbnail price details rating reviewCount');
     res.render('userWishlist', { user: users, wishlist })
 }
 //profile/purchase History

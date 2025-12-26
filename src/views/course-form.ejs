@@ -39,7 +39,8 @@
           <div class="course-form">
             <!-- Details + Settings Form -->
             <form action="<%= course ? '/admin/coursesmangement/update/' + course._id : '/admin/addnewcourse' %>"
-              method="POST">
+              method="POST"  enctype="multipart/form-data"
+>
 
               <!-- Tabs -->
               <ul class="nav nav-tabs">
@@ -90,10 +91,12 @@
 
                   <div class="mb-3">
                     <label class="form-label">Upload Intro Image</label>
+                    
                     <input type="file" class="form-control" name="thumbnail" accept="image/*">
                     <% if (course && course.thumbnail) { %>
-                      <img src="/uploads/<%= course.thumbnail %>" class="mt-2" style="max-width:200px;">
+                      <img src="<%= course.thumbnail.url %>" class="mt-2" style="max-width:200px;">
                     <% } %>
+               
                   </div>
 
                   <div class="mb-3">

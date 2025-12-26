@@ -1,83 +1,26 @@
-     <!-- Profile image -->
-                    <div class="profile-image">
-                        <div class="image-wrapper">
-                            <img src="<%= user.profilepic || '/images/default-avatar.png' %>" alt="User"
-                                referrerpolicy="no-referrer">
-                            <form action="/profile/upload-photo/<%= user._id %>" method="POST"
-                                enctype="multipart/form-data">
+const reviews = await Review.find({ course: course._id }).sort({ createdAt: -1 });
 
-                                <label for="photo" class="overlay">
-                                    <i class="bi bi-upload"></i>
-                                    <span>Upload Photo</span>
-                                </label>
-<input id="photo" 
-       name="profile" 
-       type="file" 
-       hidden 
-     onchange="if (this.files.length) { this.form.submit(); this.value = null; }"
+const totalReviews = reviews.length;
 
-/>
-                            </form>
-                        </div>
-                        <small>Image size should be under 1MB and ratio 1:1</small>
-                    </div>
+const ratingCounts = {
+  5: reviews.filter(r => r.rating === 5).length,
+  4: reviews.filter(r => r.rating === 4).length,
+  3: reviews.filter(r => r.rating === 3).length,
+  2: reviews.filter(r => r.rating === 2).length,
+  1: reviews.filter(r => r.rating === 1).length,
+};
 
-                    'https://restcountries.com/v3.1/all?fields=name,idd'
+const avgRating =
+  totalReviews === 0
+    ? 0
+    : (
+        reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+      ).toFixed(1);
 
-
-
-
-
-
-
-
-
-                    
-<script>
-    const savedCountryCode = "<%= user.countryCode || (formData && formData.countryCode) || '' %>";
-</script>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const selectCountry = document.querySelector('#codes');
-
-        fetch('https://restcountries.com/v3.1/all?fields=name,idd')
-            .then(res => res.json())
-            .then(data => {
-
-                data.forEach(country => {
-                    if (!country.idd || !country.idd.root) return;
-
-                    const root = country.idd.root;
-                    const suffix = country.idd.suffixes?.[0] || "";
-                    const fullCode = root + suffix; // example "+91"
-
-                    const option = document.createElement("option");
-
-                    option.value = fullCode  // sets "91"
-                    option.setAttribute("data-code", fullCode);  // store "+91"
-                  
-                });
-
-                // 🔥 After appending options, set selected value
-                if (savedCountryCode) {
-                    selectCountry.value = savedCountryCode;
-                }
-                const phoneInput = document.querySelector('input[name="phone"]');
-
-selectCountry.addEventListener("change", () => {
-    const selected = selectCountry.options[selectCountry.selectedIndex];
-    const dialCode = selected.getAttribute("data-code");
-
-    if (!phoneInput.value.startsWith(dialCode)) {
-        phoneInput.value = dialCode + " ";
-    }
+res.render("course", {
+  course,
+  reviews,
+  ratingCounts,
+  avgRating,
+  totalReviews
 });
-
-            })
-            
-
- .catch(err => console.error(err));
-    });
-</script>

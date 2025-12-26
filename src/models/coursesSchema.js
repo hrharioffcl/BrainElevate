@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const courseSchema = new mongoose.Schema(
     {
@@ -35,9 +36,11 @@ const courseSchema = new mongoose.Schema(
     default: "Beginner",
   },
   thumbnail: {
-    type: String,
-  default: "/images/pexels-yankrukov-8837809.jpg",
-  },
+  public_id: { type: String },
+  url: { type: String,
+    default:"/images/pexels-yankrukov-8837809.jpg"
+   }
+},
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",   // relation to Category schema
@@ -63,8 +66,44 @@ type:Number
     type:String,
      enum: ["1-3 months", "3-6 months", "6-12 months"],
 
-  }
+  },
+  slug: {
+  type: String,
+  unique: true,
+  index: true
+}
+,
+rating: {
+  type: Number,
+  default: 0
+},
+reviewCount: {
+  type: Number,
+  default: 0
+}
+
 }, 
 { timestamps: true });
+
+
+courseSchema.pre("save", async function (next) {
+  if (!this.isModified("name")) return next();
+
+  const baseSlug = slugify(this.name, {
+    lower: true,
+    strict: true
+  });
+
+  let slug = baseSlug;
+  let count = 1;
+
+  const Course = this.constructor;
+  while (await Course.findOne({ slug })) {
+    slug = `${baseSlug}-${++count}`;
+  }
+
+  this.slug = slug;
+  next();
+});
 
 module.exports = mongoose.model("Course", courseSchema);

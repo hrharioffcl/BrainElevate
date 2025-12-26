@@ -18,4 +18,19 @@ const profileImageStorage = new CloudinaryStorage({
   },
 });
 
-module.exports = { cloudinary, profileImageStorage };
+const courseThumbnailStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "BrainElevate/courseThumbnail",
+    transformation: [
+      { width: 800, height: 450, crop: "fill" } // 16:9 for courses
+    ]
+
+  }
+})
+
+
+
+
+
+module.exports = { cloudinary, profileImageStorage, courseThumbnailStorage };

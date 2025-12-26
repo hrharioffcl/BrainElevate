@@ -1,7 +1,7 @@
 const express = require("express")
 const { verifyadmintoken } = require('../middlewaares/adminAuthMiddleware')
 const { restrictauthadminaccess } = require('../middlewaares/restrictauthadminaccess')
-
+const{saveReturnTo}=require("../middlewaares/saveReturnTo")
 const { 
   adminlogin, getadminlogin, getforgotpassword, 
   getverifyotp, getresetpassword, adminlogout 
@@ -26,6 +26,9 @@ const {
   getcoupons, getaddcoupon, addcoupon, geteditcoupon, 
   editcoupon, deletecoupon, getcategory, getaddcategory ,addcategory,geteditcategory,editcategory,deletecategory
 } = require("../controllers/managecoursecontroller")
+
+const uploadCourseThumbnail= require("../middlewaares/uploadCourseThumbnail");
+
 
 const router = express.Router()
 
@@ -70,13 +73,24 @@ router.post('/deletestudent/:id', deletestudent)
 
 // Course Management
 router.get('/courses', getcoursemanagement)
-router.get('/addnewcourse', getaddnewcourse)
-router.post('/addnewcourse', adddetails)
+router.get('/addnewcourse', saveReturnTo,getaddnewcourse)
+// router.post('/addnewcourse', adddetails)
 
-router.get('/coursesmangement/update/:course_id', getupdatecourse)
-router.post('/coursesmangement/update/:course_id', updatedetails)
+router.get('/coursesmangement/update/:course_id',saveReturnTo, getupdatecourse)
+// router.post('/coursesmangement/update/', updatedetails)
 
 router.post('/coursesmangement/delete/:course_id', deletecourse)
+router.post(
+  "/addnewcourse",
+  uploadCourseThumbnail.single("thumbnail"),
+  adddetails
+);
+
+router.post(
+  "/coursesmangement/update/:course_id",
+  uploadCourseThumbnail.single("thumbnail"),
+  updatedetails
+);
 
 
 // Chapter Mnagement

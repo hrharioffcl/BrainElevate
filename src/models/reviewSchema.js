@@ -42,5 +42,7 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+reviewSchema.index({ course: 1, rating: 1 });
+
 
 module.exports = mongoose.model("Review", reviewSchema);

@@ -72,11 +72,11 @@
           <div class="mylearning-course-card">
 
             <!-- IMAGE -->
-              <a href="/profile/<%= user.fullName %>/mylearning/<%= course.title %>/<%= course.eid %>"><img src="<%= course.thumbnail %>" class="mylearning-course-img" alt="Course thumbnail">
+              <a href="/profile/<%= user.fullName %>/mylearning/<%= course.slug %>/<%= course.eid %>"><img src="<%= course.thumbnail %>" class="mylearning-course-img" alt="Course thumbnail">
 </a> 
             <!-- CONTENT -->
             <div class="mylearning-course-body">
-             <a href="/profile/<%= user.fullName %>/mylearning/<%= course.title %>/<%= course.eid %>" class="text-decoration-none text-dark"> <h6 class="fw-bold mb-1 "><%= course.title %></h6></a>
+             <a href="/profile/<%= user.fullName %>/mylearning/<%= course.slug %>/<%= course.eid %>" class="text-decoration-none text-dark"> <h6 class="fw-bold mb-1 "><%= course.title %></h6></a>
 
               <p class="small text-muted mb-1">
                 <%= course.instructor %>

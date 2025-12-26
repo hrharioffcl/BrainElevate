@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            enum: ["Male", "Female", "Other"],//enum for dropdown
+            enum: ["Male", "Female", "Others"],//enum for dropdown
         },
         referralCode: {
             type: String,

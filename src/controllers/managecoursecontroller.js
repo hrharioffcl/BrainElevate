@@ -11,7 +11,7 @@ exports.getcoursemanagement = async (req, res) => {
         let skip = (page - 1) * limit;
 
         // Filters
-        const { search, status, level,price } = req.query;
+        const { search, status, level, price } = req.query;
         let filter = {};
 
         // search filter
@@ -28,14 +28,14 @@ exports.getcoursemanagement = async (req, res) => {
         if (level && level !== "all") {
             filter.level = level;
         }
-// Price filter
-if (price && price !== "all") {
-  if (price === "free") {
-   filter.price = 0;
-  } else if (price === "paid") {
-   filter.price = { $gt: 0 };
-  }
-}
+        // Price filter
+        if (price && price !== "all") {
+            if (price === "free") {
+                filter.price = 0;
+            } else if (price === "paid") {
+                filter.price = { $gt: 0 };
+            }
+        }
 
         // Count total courses for pagination
         const totalCourses = await course.countDocuments(filter);
@@ -54,7 +54,7 @@ if (price && price !== "all") {
             search: search || "",
             statusFilter: status || "all",
             levelFilter: level || "all",
-             priceFilter: price || "all",
+            priceFilter: price || "all",
         });
     } catch (error) {
         console.error(error);
@@ -92,7 +92,12 @@ exports.adddetails = async (req, res) => {
     console.log(req.body)
     try {
         const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
-
+        let thumbnail ;
+        if (req.file) {
+            thumbnail.public_id=req.file.filename,
+            thumbnail.url=req.file.path
+          
+        }
         // Trim spaces
         const cleanName = name.trim();
 
@@ -115,7 +120,7 @@ exports.adddetails = async (req, res) => {
         }
         const newcourse = await course.create({
             name, details, author, status, description, level,
-            learnPoints: points, price, category, duration
+            learnPoints: points, price, category, duration, thumbnail
         });
         if (newcourse.status === "saved") {
             req.flash("success", "Course saved succesfully");
@@ -126,6 +131,7 @@ exports.adddetails = async (req, res) => {
         if (newcourse.status === "draft") {
             req.flash("success", "Course added to draft succesfully");
         }
+    if (req.session.returnTo) delete req.session.returnTo;
         return res.redirect(`/admin/coursesmangement/update/${newcourse.id}`)
     } catch (error) {
         console.log(error)
@@ -148,14 +154,29 @@ exports.updatedetails = async (req, res) => {
         const id = req.params.course_id
         console.log(id)
 
-        const { name, details, author, status, description, level, learnPoints, price, category, duration ,ogPrice} = req.body
+        const { name, details, author, status, description, level, learnPoints, price, category, duration, ogPrice } = req.body
 
         const existing = await course.findById(id)
+
+
 
         if (!existing) {
             req.flash("error", "course not found");
             return res.redirect("/admin/addnewcourse");
         }
+let thumbnail =existing.thumbnail
+         if (req.file) {
+            
+      // Optional: delete old thumbnail
+      if (existing.thumbnail?.public_id) {
+        await cloudinary.uploader.destroy(course.thumbnail.public_id);
+      }
+
+      thumbnail = {
+        public_id: req.file.filename,
+        url: req.file.path
+      };
+    }
 
         let points = [];
         if (Array.isArray(learnPoints)) {
@@ -173,9 +194,10 @@ exports.updatedetails = async (req, res) => {
         existing.level = level;
         existing.learnPoints = points;
         existing.price = price;
-        existing.ogPrice=ogPrice
+        existing.ogPrice = ogPrice
         existing.duration = duration;
         existing.category = category
+        existing.thumbnail=thumbnail;
         await existing.save();
         console.log(existing)
         if (existing.status === "saved") {
@@ -187,6 +209,7 @@ exports.updatedetails = async (req, res) => {
         if (existing.status === "draft") {
             req.flash("success", "Course added to draft succesfully");
         }
+    if (req.session.returnTo) delete req.session.returnTo;
 
         return res.redirect(`/admin/coursesmangement/update/${existing._id}`)
 
@@ -623,8 +646,8 @@ exports.getcategory = async (req, res) => {
 
     const categories = await category.aggregate([
         { $match: filter },
-      
-       
+
+
         {
             $lookup: {
                 from: "courses",
@@ -655,9 +678,9 @@ exports.getcategory = async (req, res) => {
             }
 
         },
-         { $skip: skip },
+        { $skip: skip },
         { $limit: limit },
-        {$sort:sortOption}
+        { $sort: sortOption }
 
     ])
 
