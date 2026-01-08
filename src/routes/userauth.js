@@ -17,9 +17,9 @@ const { postBuyNow, addToCart, removeItem, applyCoupon, removeCoupon, addToWishL
 
 const { getChekoutPage, createOrder, verifyPayment, getPaymentSuccess, downloadReceipt } = require('../controllers/paymentController')
 
-const multerErrorHandler = require("../middlewaares/multerErrorHandler");
-const { saveReturnTo } = require("../middlewaares/saveReturnTo")
+const { saveReturnToUser } = require("../middlewaares/saveReturnToUser")
 
+const multerErrorHandlerUser = require("../middlewaares/multerErrorHandlerUser");
 
 router.get('/', restrictUnauthenticatedRoutes, (req, res) => {
     const token = req.cookies.jwt
@@ -85,7 +85,7 @@ router.get('/profile/:_id/wishlist', verifytoken, getprofileWishlist)
 router.get('/profile/:_id/hiStory', verifytoken, getprofilePurchaseHistory)
 router.get('/profile/:_id/cart', verifytoken, getprofileCart)
 router.get('/logout', userLogOut)
-router.get('/profile/:_id/editProfile', saveReturnTo, verifytoken, getEditProfile)
+router.get('/profile/:_id/editProfile', saveReturnToUser, verifytoken, getEditProfile)
 router.get('/profile/:_id/cart/checkOut', verifytoken, getChekoutPage)
 router.get('/payment-success', verifytoken, getPaymentSuccess)
 router.get("/order/:_id/receipt", verifytoken, downloadReceipt)
@@ -106,7 +106,7 @@ router.post('/removeCoupon', verifytoken, removeCoupon)
 router.post('/addToWishList', verifytoken, addToWishList)
 router.post(
     "/profile/upload-photo/:_id",
-    uploadProfilePic.single("profile"), verifytoken,
+    uploadProfilePic.single("profile"), verifytoken,multerErrorHandlerUser,
     postUploadProfilePic
 );
 

@@ -27,7 +27,8 @@
                                                 class="btn btn-danger">Cancel</a>
                                         </div>
 
-                                        <form action="/admin/courses/<%= course._id %>/chapters/add" method="POST"
+                                        <form action="/admin/courses/<%= course._id %>/chapters/add" method="POST"   enctype="multipart/form-data"
+
                                             class="mt-4">
 
                                             <div class="mb-3">
@@ -37,7 +38,7 @@
 
                                             <div class="mb-3">
                                                 <label class="form-label">Upload Lecture Video</label>
-                                                <input type="file" class="form-control" name="lectureVideo"
+                                                <input type="file" class="form-control" name="lectureVideo" 
                                                     accept="video/*">
                                             </div>
 

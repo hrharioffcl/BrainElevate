@@ -1,6 +1,6 @@
 const multer = require("multer");
 
-function multerErrorHandler(err, req, res, next) {
+function multerErrorHandlerUser(err, req, res, next) {
   if (err instanceof multer.MulterError) {
     switch (err.code) {
       case "LIMIT_INVALID_FORMAT":
@@ -19,13 +19,13 @@ function multerErrorHandler(err, req, res, next) {
         req.flash("error", "Upload failed. Please try again.");
     }
 
-    const redirectTo = req.session.returnTo
+    const redirectTo =   req.session.UserReturnTo
     console.log("redirectto:",redirectTo)
-    delete req.session.returnTo
+    delete   req.session.UserReturnTo
     return res.redirect(redirectTo);
   }
 
   next(err);
 }
 
-module.exports = multerErrorHandler;
+module.exports = multerErrorHandlerUser;

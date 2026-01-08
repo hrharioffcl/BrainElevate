@@ -1,7 +1,6 @@
 const express = require("express")
 const { verifyadmintoken } = require('../middlewaares/adminAuthMiddleware')
 const { restrictauthadminaccess } = require('../middlewaares/restrictauthadminaccess')
-const{saveReturnTo}=require("../middlewaares/saveReturnTo")
 const { 
   adminlogin, getadminlogin, getforgotpassword, 
   getverifyotp, getresetpassword, adminlogout 
@@ -19,6 +18,8 @@ const {
   geteditstudent, editstudent 
 } = require("../controllers/managestudentcontroller")
 
+
+
 const { 
   adddetails, updatedetails, addchapter, 
   geteditchapter, editchapter, deletecourse, getcoursemanagement,
@@ -28,7 +29,10 @@ const {
 } = require("../controllers/managecoursecontroller")
 
 const uploadCourseThumbnail= require("../middlewaares/uploadCourseThumbnail");
+const {saveReturnToCreateCourse,saveReturnToUpdateCourse,saveReturnToCreateChapter,saveReturnToUpdateChapter} =require("../middlewaares/saveReturnToAdmin")
+const {multerErrorHandlerCreateCourse,multerErrorHandlerUpdateCourse,multerErrorHandlerCreateChapter,multerErrorHandlerUpdateChapter}=require("../middlewaares/multerErrorHandlerAdmin")
 
+const videoUploader = require("../middlewaares/videoUploader");
 
 const router = express.Router()
 
@@ -73,32 +77,40 @@ router.post('/deletestudent/:id', deletestudent)
 
 // Course Management
 router.get('/courses', getcoursemanagement)
-router.get('/addnewcourse', saveReturnTo,getaddnewcourse)
+router.get('/addnewcourse',saveReturnToCreateCourse,getaddnewcourse)
 // router.post('/addnewcourse', adddetails)
 
-router.get('/coursesmangement/update/:course_id',saveReturnTo, getupdatecourse)
+router.get('/coursesmangement/update/:course_id',saveReturnToUpdateCourse, getupdatecourse)
 // router.post('/coursesmangement/update/', updatedetails)
 
 router.post('/coursesmangement/delete/:course_id', deletecourse)
 router.post(
   "/addnewcourse",
-  uploadCourseThumbnail.single("thumbnail"),
+  uploadCourseThumbnail.single("thumbnail"),multerErrorHandlerCreateCourse,
   adddetails
 );
 
 router.post(
   "/coursesmangement/update/:course_id",
-  uploadCourseThumbnail.single("thumbnail"),
+  uploadCourseThumbnail.single("thumbnail"),multerErrorHandlerUpdateCourse,
   updatedetails
 );
 
 
 // Chapter Mnagement
-router.get('/courses/:course_id/addchapter', getaddnewchapter)
-router.post('/courses/:course_id/chapters/add', addchapter)
+router.get('/courses/:course_id/addchapter',saveReturnToCreateChapter, getaddnewchapter)
+router.post(
+  '/courses/:course_id/chapters/add',
+  videoUploader.single("lectureVideo"),multerErrorHandlerCreateChapter,
+  addchapter
+);
 
-router.get('/courses/:course_id/chapters/:chapter_id/edit', geteditchapter)
-router.post('/courses/:course_id/chapters/:chapter_id/edit', editchapter)
+router.get('/courses/:course_id/chapters/:chapter_id/edit',saveReturnToUpdateChapter, geteditchapter)
+router.post(
+  '/courses/:course_id/chapters/:chapter_id/edit',
+  videoUploader.single("lectureVideo"),multerErrorHandlerUpdateChapter,
+  editchapter
+);
 
 
 // Coupon Management

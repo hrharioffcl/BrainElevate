@@ -2,6 +2,10 @@ const course = require("../models/coursesSchema")
 const category = require("../models/categorySchema")
 const chapter = require("../models/chapterScheema")
 const coupons = require("../models/couponSchema")
+const { cloudinary } = require('../config/cloudinary')
+const s3=require("../config/s3")
+const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
+
 
 exports.getcoursemanagement = async (req, res) => {
     try {
@@ -92,11 +96,11 @@ exports.adddetails = async (req, res) => {
     console.log(req.body)
     try {
         const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
-        let thumbnail ;
+        let thumbnail;
         if (req.file) {
-            thumbnail.public_id=req.file.filename,
-            thumbnail.url=req.file.path
-          
+            thumbnail.public_id = req.file.filename,
+                thumbnail.url = req.file.path
+
         }
         // Trim spaces
         const cleanName = name.trim();
@@ -131,12 +135,12 @@ exports.adddetails = async (req, res) => {
         if (newcourse.status === "draft") {
             req.flash("success", "Course added to draft succesfully");
         }
-    if (req.session.returnTo) delete req.session.returnTo;
+        if (req.session.returnTo) delete req.session.returnTo;
         return res.redirect(`/admin/coursesmangement/update/${newcourse.id}`)
-    } catch (error) {
-        console.log(error)
-        if (error.name === "ValidationError") {
-            req.flash("error", error.message);
+    } catch (err) {
+        console.log(err)
+        if (err.name === "ValidationError") {
+            req.flash("error", err.message);
         }
         return res.redirect("/admin/addnewcourse");
     }
@@ -148,7 +152,6 @@ exports.adddetails = async (req, res) => {
 exports.updatedetails = async (req, res) => {
     console.log("req.body:", req.body);
     console.log("typeof req.body.status:", typeof req.body.status);
-
     try {
         console.log("FORM SUBMITTED")
         const id = req.params.course_id
@@ -164,19 +167,19 @@ exports.updatedetails = async (req, res) => {
             req.flash("error", "course not found");
             return res.redirect("/admin/addnewcourse");
         }
-let thumbnail =existing.thumbnail
-         if (req.file) {
-            
-      // Optional: delete old thumbnail
-      if (existing.thumbnail?.public_id) {
-        await cloudinary.uploader.destroy(course.thumbnail.public_id);
-      }
+        let thumbnail = existing.thumbnail
+        if (req.file) {
 
-      thumbnail = {
-        public_id: req.file.filename,
-        url: req.file.path
-      };
-    }
+            // Optional: delete old thumbnail
+            if (existing.thumbnail?.public_id) {
+                await cloudinary.uploader.destroy(existing.thumbnail.public_id);
+            }
+
+            thumbnail = {
+                public_id: req.file.filename,
+                url: req.file.path
+            };
+        }
 
         let points = [];
         if (Array.isArray(learnPoints)) {
@@ -197,7 +200,7 @@ let thumbnail =existing.thumbnail
         existing.ogPrice = ogPrice
         existing.duration = duration;
         existing.category = category
-        existing.thumbnail=thumbnail;
+        existing.thumbnail = thumbnail;
         await existing.save();
         console.log(existing)
         if (existing.status === "saved") {
@@ -209,15 +212,15 @@ let thumbnail =existing.thumbnail
         if (existing.status === "draft") {
             req.flash("success", "Course added to draft succesfully");
         }
-    if (req.session.returnTo) delete req.session.returnTo;
+        // if (req.session.returnTo) delete req.session.returnTo;
 
         return res.redirect(`/admin/coursesmangement/update/${existing._id}`)
 
 
-    } catch (error) {
-        console.log(error)
-        if (error.name === "ValidationError") {
-            req.flash("error", error.message);
+    } catch (err) {
+        console.log("erroris",err.name)
+        if (err.name === "ValidationError") {
+            req.flash("error", err.message);
         }
         return res.redirect(`/admin/coursesmangement/update/${req.params.course_id}`)
 
@@ -231,7 +234,16 @@ exports.addchapter = async (req, res) => {
     try {
         const courseId = req.params.course_id
         const { title, lectureVideo, lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
-        const newChapter = await chapter.create({ title, lectureDescription, lectureNotes, order, status, courseId })
+
+        let videoUrl = null;
+        let videoKey = null;
+
+        if (req.file) {
+            videoUrl = req.file.location; // ✅ S3 URL
+            videoKey = req.file.key
+        }
+        const newChapter = await chapter.create({ title, lectureDescription, lectureVideo: videoUrl, lectureVideoKey: videoKey, lectureNotes, order, status, courseId })
+
         console.log(newChapter)
         req.flash("success", "Chapter added successfully!");
 
@@ -280,7 +292,8 @@ exports.geteditchapter = async (req, res) => {
 exports.editchapter = async (req, res) => {
     try {
         const { course_id, chapter_id } = req.params
-        const { title, lectureVideo, lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
+        const { title,  lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
+
         const existingchapter = await chapter.findById(chapter_id)
         //updaate existing chapter details
         existingchapter.title = title;
@@ -288,6 +301,20 @@ exports.editchapter = async (req, res) => {
         existingchapter.lectureNotes = lectureNotes;
         existingchapter.status = status;
         existingchapter.order = order;
+
+        if (req.file) {
+            if (existingchapter.lectureVideoKey) {
+                await s3.send(
+                    new DeleteObjectCommand({
+                        Bucket: process.env.AWS_BUCKET_NAME,
+                        Key: existingchapter.lectureVideoKey,
+                    })
+                );
+            }
+
+            existingchapter.lectureVideo = req.file.location; // replace video
+            existingchapter.lectureVideoKey = req.file.key
+        }
         await existingchapter.save();
 
         req.flash("success", "Chapter updated successfully");

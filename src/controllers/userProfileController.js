@@ -49,7 +49,7 @@ exports.getprofileProgress = async (req, res) => {
                 id: en.courseId._id,
                 eid: en._id,
                 slug: en.courseId.slug,
-              
+
             }));
 
         // COMPLETED COURSES
@@ -224,12 +224,11 @@ exports.postUploadProfilePic = async (req, res) => {
         console.log(imageUrl)
         console.log(users.profilepic)
         await users.save(); // important!
-
         req.flash("success", "Profile picture updated!");
         return res.redirect(`/profile/${users.fullName}/editProfile`);
 
-    } catch (error) {
-        console.log("Upload Error:", error);
+    } catch (err) {
+        console.log("Upload Error:", err);
         req.flash("error", "Upload failed");
         return res.redirect(`/profile/${users.fullName}/editProfile`);
 

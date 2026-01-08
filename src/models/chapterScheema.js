@@ -16,6 +16,11 @@ const chapterSchema = new mongoose.Schema(
       type: String,        // could be a URL or file path
       default: null,
     },
+    lectureVideoKey: {
+      type: String,        
+      default: null,
+    },
+
     lectureDescription: {
       type: String,
       default: "",

@@ -30,7 +30,7 @@
           </div>
 
           <!-- ✅ Form for editing -->
-          <form action="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/edit" method="POST" class="mt-4">
+          <form action="/admin/courses/<%= course._id %>/chapters/<%= chapter._id %>/edit" method="POST"  enctype="multipart/form-data" class="mt-4">
 
             <!-- Chapter Title -->
             <div class="mb-3">

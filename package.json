@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.965.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^1.30.0",
     "connect-flash": "^0.1.1",
@@ -23,6 +24,7 @@
     "libphonenumber-js": "^1.12.27",
     "mongoose": "^8.18.0",
     "multer": "^2.0.2",
+    "multer-s3": "^3.0.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nanoid": "^5.1.5",
     "ngrok": "^5.0.0-beta.2",
