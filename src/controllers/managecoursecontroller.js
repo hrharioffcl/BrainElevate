@@ -247,7 +247,7 @@ exports.addchapter = async (req, res) => {
         console.log(newChapter)
         req.flash("success", "Chapter added successfully!");
 
-        return res.redirect(`/admin/courses/${courseId}/addchapter`);
+        return res.redirect(`/admin/coursesmangement/update/${courseId}#chapters`);
 
 
     } catch (error) {
@@ -318,7 +318,7 @@ exports.editchapter = async (req, res) => {
         await existingchapter.save();
 
         req.flash("success", "Chapter updated successfully");
-        res.redirect(`/admin/coursesmangement/update/${course_id}`);
+        res.redirect(`/admin/coursesmangement/update/${course_id}#chapters`);
 
     } catch (error) {
         console.error(error);
