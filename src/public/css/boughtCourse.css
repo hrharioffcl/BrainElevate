@@ -36,11 +36,7 @@
 }
 
 
-/* Default (desktop): right aligned */
-.progress-block {
-    display: flex;
-    justify-content: end;
-}
+
 
 /* Mobile styling */
 @media (max-width: 768px) {
@@ -168,4 +164,29 @@
 
 textarea.form-control {
   border-radius: 12px;
+}
+/* continue Learning */
+.clbtn{
+    color:#000000;
+    
+    background-color: #e50ab9ed;
+}
+.clbtn:hover{
+    background-color:#ffffff ;
+    color: #000000;
+}
+
+
+.clbtn2{
+    color:#000000;
+    
+    background-color: #3f9bae;
+}
+.clbtn2:hover{
+    background-color:#ffffff ;
+    color: #000000;
+}
+
+.progressbaar{
+    background-color:#1ac0b2; ;
 }

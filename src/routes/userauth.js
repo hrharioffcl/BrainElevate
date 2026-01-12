@@ -1,7 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
 const { gethome } = require("../controllers/userHomeController")
-const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview, getViewChapter, updateChapterProgress } = require("../controllers/userCourseController")
+const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview, getViewChapter, updateChapterProgress,continueLearning } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -90,7 +90,11 @@ router.get('/profile/:_id/cart/checkOut', verifytoken, getChekoutPage)
 router.get('/payment-success', verifytoken, getPaymentSuccess)
 router.get("/order/:_id/receipt", verifytoken, downloadReceipt)
 router.get('/profile/:_id/myLearning/:slug/:eid', verifytoken, getBoughtCourse)
+router.get('/profile/:fullName/myLearning/:slug/:eid/continue',verifytoken,continueLearning)
 router.get('/profile/:fullName/myLearning/:slug/:eid/:chapterId', verifytoken, getViewChapter)
+
+
+
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);

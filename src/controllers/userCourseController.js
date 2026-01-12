@@ -260,7 +260,19 @@ exports.getBoughtCourse = async (req, res) => {
     }
     const courses = await course.findById(enrolled.courseId)
     const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
-    res.render('boughtCourse', { course: courses, enrolled, chapters: chapters, user })
+
+    const chapterWithProgress = chapters.map(ch => {
+      const progress = enrolled.chaptersProgress.find(
+        cp => cp.chapterId.toString() === ch._id.toString()
+      );
+      return {
+        ...ch.toObject(),
+        progressPercent: progress ? progress.progressPercent : 0,
+        completed:progress?progress.completed:false
+      }
+    })
+
+    res.render('boughtCourse', { course: courses, enrolled, chapters: chapterWithProgress, user })
   } catch (error) {
     console.log(error)
   }
@@ -352,15 +364,15 @@ exports.getViewChapter = async (req, res) => {
     });
     const courses = await course.findById(chapter.courseId)
     const resumeTime = chapterProgress.watchedDuration || 0;
-    const totalChapters = await Chapters.countDocuments({ courseId: chapter.courseId })
-const signedVideoUrl = await getSignedVideoUrl(
-  chapter.lectureVideoKey,
-  900
-);
+    const totalChapters = await Chapters.countDocuments({ courseId: chapter.courseId, status: "published" })
+    const signedVideoUrl = await getSignedVideoUrl(
+      chapter.lectureVideoKey,
+      900
+    );
 
 
     res.render('view-Chapter', {
-      chapter, course: courses, enrolled, resumeTime, nextChapter, totalChapters,signedVideoUrl
+      chapter, course: courses, enrolled, resumeTime, nextChapter, totalChapters, signedVideoUrl
     })
   } catch (error) {
     console.log(error)
@@ -407,28 +419,37 @@ exports.updateChapterProgress = async (req, res) => {
       chapterProgress.watchedDuration,
       watchedDuration
     );
+    console.log(completed)
     //total
+    console.log(totalDuration)
     chapterProgress.totalDuration = totalDuration;
-//progresspercentage
+
+    //progresspercentage
     chapterProgress.progressPercent = Math.round(
       (chapterProgress.watchedDuration / totalDuration) * 100
     );
 
-    if (completed || chapterProgress.progressPercent >= 90) {
+    const completionRatio =
+      chapterProgress.watchedDuration / chapterProgress.totalDuration;
+
+    if (completionRatio >= 0.95) {
       chapterProgress.completed = true;
       chapterProgress.progressPercent = 100;
+    } else {
+      chapterProgress.completed = false;
     }
+
 
     const completedCount = enrollment.chaptersProgress.filter(
       cp => cp.completed
     ).length;
 
-    const totalChapters = enrollment.chaptersProgress.length;
+    const totalChapters = await Chapters.countDocuments({ courseId: enrollment.courseId, status: "published" })
 
     enrollment.overallProgress = Math.round(
       (completedCount / totalChapters) * 100
     );
-
+    enrollment.progress = enrollment.overallProgress
     if (enrollment.overallProgress === 100) {
       enrollment.status = "completed";
     }
@@ -438,6 +459,53 @@ exports.updateChapterProgress = async (req, res) => {
     await enrollment.save();
 
     res.json({ success: true });
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.continueLearning = async (req, res) => {
+  console.log("Route hit--- :)")
+  try {
+    const userId = req.user._id;
+    const eid = req.params.eid
+    const user = await User.findById(userId)
+    const enrolled = await Enrollments.findOne({ studentId: user._id, _id: eid })
+    if (!enrolled) {
+      return res.status(404).send("404 - Page Not Found")
+    }
+    const courses = await course.findById(enrolled.courseId)
+    const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
+    let targetChapter = null;
+
+    console.log("📘 chapters count:", chapters.length);
+    console.log("📊 progress entries:", enrolled.chaptersProgress.length);
+
+    for (const ch of chapters) {
+      console.log(
+        "Checking chapter:",
+        ch._id.toString(),
+        "matched progress:",
+        !!enrolled.chaptersProgress.find(
+          cp => cp.chapterId.toString() === ch._id.toString()
+        )
+      );
+
+      const progress = enrolled.chaptersProgress.find(
+        cp => cp.chapterId.toString() === ch._id.toString()
+      )
+
+      if (!progress || !progress.completed) {
+        targetChapter = ch;
+        break;
+      }
+    }
+    if (!targetChapter) {
+      targetChapter = chapters[chapters.length - 1]
+    }
+    console.log("Route hit :)")
+    return res.redirect(`/profile/${user.fullName}/myLearning/${courses.slug}/${enrolled._id}/${targetChapter._id}`)
 
   } catch (error) {
     console.log(error)
