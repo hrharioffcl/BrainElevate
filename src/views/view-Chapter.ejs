@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= course.name %> – <%= chapter.title %></title>
+
+  <!-- Existing styles -->
+  <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/coursepage.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- New page-specific CSS -->
+  <link rel="stylesheet" href="/css/course-play.css" />
+  <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+
+</head>
+
+<body>
+  <style>
+      .course-header-section{
+        padding: 2% 10%;
+    }
+    .course-header-left h1{
+color:#0fd2c4
+    }
+.course-mains{
+    padding: 50px 0;
+    max-width: calc(100% - 500px);
+    margin:auto;
+}
+
+.nav-tabs .nav-link {
+  color: #888;
+}
+
+.nav-tabs .nav-link.active {
+  color: #0fd2c4; /* your accent color */
+  border-bottom: 2px solid #0fd2c4;
+}
+
+
+  </style>
+
+<%- include("partials/header") %>
+
+<!-- COURSE HERO (same as course page) -->
+<section class="course-header-section">
+  <div class="row course-header container">
+    <div class=" col-12 col-md-6 course-header-left mt-3 p-3 ">
+      <h1 ><%= chapter.title %></h1>
+        <p >
+        Created by <%= course.author %>
+      </p> 
+    </div>
+    <div class=" col-12 col-md-3 course-header-right text-white mt-3 p-3">
+     
+     <p ><%= course.name %></p>
+      <p>Lesson <%=chapter.order %> / <%=totalChapters %> </p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section class="course-mains">
+  <div class="container">
+
+    <!-- VIDEO PLAYER -->
+    <div class="video-wrapper mb-4">
+     <video
+  id="lectureVideo"
+  class="video-js vjs-default-skin vjs-big-play-centered"
+  controls
+  preload="metadata"
+  width="1000%"
+  height="500%"
+  data-setup='{}'
+>
+        <source src="<%= signedVideoUrl%>" type="video/mp4" />
+      </video>
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs mb-3  text-decoration-none">
+      <li class="nav-item">
+        <button class="nav-link active " data-bs-toggle="tab" data-bs-target="#desc">
+          Description
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link " data-bs-toggle="tab" data-bs-target="#notes">
+          Lecture Notes
+        </button>
+      </li>
+    </ul>
+
+    <!-- TAB CONTENT -->
+    <div class="tab-content bg-white p-4 rounded shadow-sm">
+
+      <div class="tab-pane fade show active" id="desc">
+        <h5>Lecture Description</h5>
+        <p><%= chapter.lectureDescription %></p>
+      </div>
+
+      <div class="tab-pane fade" id="notes">
+        <h5>Lecture Notes</h5>
+        <p><%= chapter.lectureNotes %></p>
+
+        <% if (chapter.lecturePdf) { %>
+          <a href="<%= chapter.lecturePdf %>" target="_blank" class="btn btn-outline-primary mt-2">
+            Download PDF
+          </a>
+        <% } %>
+      </div>
+
+    </div>
+
+    <!-- NEXT CHAPTER -->
+    <% if (nextChapter) { %>
+      <div class="d-flex justify-content-end mt-4">
+        <a
+          href="/courses/<%= course.slug %>/learn/<%= nextChapter._id %>"
+          class="btn btn-dark"
+        >
+          Next Chapter →
+        </a>
+      </div>
+    <% } %>
+
+  </div>
+</section>
+
+<%- include("partials/footer") %>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+<script>
+  // Values from backend
+  const enrollmentId = "<%= enrolled._id %>";
+  const chapterId = "<%= chapter._id %>";
+  const resumeTime = "<%= resumeTime %>";
+
+  // Init Video.js
+  const player = videojs("lectureVideo", {
+    playbackRates: [], 
+    controlBar: {
+      pictureInPictureToggle: false
+    }
+  });
+
+  let maxWatchedTime = resumeTime;
+  let progressTimer = null;
+
+  // ▶ Resume playback
+  player.ready(() => {
+    if (resumeTime > 3) {
+      player.currentTime(resumeTime);
+    }
+  });
+
+  //  Track max watched time (anti-skip)
+  player.on("timeupdate", () => {
+    maxWatchedTime = Math.max(maxWatchedTime, player.currentTime());
+  });
+
+  //  Prevent skipping ahead
+  player.on("seeking", () => {
+    if (player.currentTime() > maxWatchedTime + 2) {
+      player.currentTime(maxWatchedTime);
+    }
+  });
+
+  // Send progress every 10 seconds while playing
+  player.on("play", () => {
+    if (!progressTimer) {
+      progressTimer = setInterval(sendProgress, 10000);
+    }
+  });
+
+  // Save progress on pause
+  player.on("pause", sendProgress);
+
+  // On video end mark completed
+  player.on("ended", () => {
+    sendProgress(true);
+    clearInterval(progressTimer);
+    progressTimer = null;
+  });
+
+  //Send progress to backend
+  async function sendProgress(completed = false) {
+    const currentTime = Math.floor(player.currentTime());
+    const duration = Math.floor(player.duration());
+
+    if (!duration || currentTime < 2) return;
+
+    try {
+      await fetch("/api/progress/chapter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          enrollmentId,
+          chapterId,
+          watchedDuration: currentTime,
+          totalDuration: duration,
+          completed
+        })
+      });
+    } catch (err) {
+      console.error("Progress update failed", err);
+    }
+  }
+
+  // right click avoided
+  player.el().addEventListener("contextmenu", e => e.preventDefault());
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) player.pause();
+  });
+</script>
+
+
+</body>
+</html>

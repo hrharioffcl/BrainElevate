@@ -1,7 +1,7 @@
 const express = require("express")
 const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
 const { gethome } = require("../controllers/userHomeController")
-const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview } = require("../controllers/userCourseController")
+const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview, getViewChapter, updateChapterProgress } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
 const { restrictUnauthenticatedRoutes } = require("../middlewaares/restrictUserUnauthenticatedRoutes");
@@ -90,7 +90,7 @@ router.get('/profile/:_id/cart/checkOut', verifytoken, getChekoutPage)
 router.get('/payment-success', verifytoken, getPaymentSuccess)
 router.get("/order/:_id/receipt", verifytoken, downloadReceipt)
 router.get('/profile/:_id/myLearning/:slug/:eid', verifytoken, getBoughtCourse)
-
+router.get('/profile/:fullName/myLearning/:slug/:eid/:chapterId', verifytoken, getViewChapter)
 
 router.post("/signup", restrictUnauthenticatedRoutes, signup);
 router.post("/verify-otp", verifyOtp);
@@ -106,7 +106,7 @@ router.post('/removeCoupon', verifytoken, removeCoupon)
 router.post('/addToWishList', verifytoken, addToWishList)
 router.post(
     "/profile/upload-photo/:_id",
-    uploadProfilePic.single("profile"), verifytoken,multerErrorHandlerUser,
+    uploadProfilePic.single("profile"), verifytoken, multerErrorHandlerUser,
     postUploadProfilePic
 );
 
@@ -117,6 +117,12 @@ router.post('/create-order', verifytoken, createOrder)
 router.post("/verify-payment", verifytoken, verifyPayment);
 router.post('/tryFreeCourse', tryFreeCourse)
 router.post('/course/:courseName/review', postAddReview)
+
+router.post(
+    "/api/progress/chapter",
+    verifytoken,
+    updateChapterProgress
+);
 
 
 

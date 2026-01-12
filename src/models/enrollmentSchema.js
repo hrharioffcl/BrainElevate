@@ -12,6 +12,37 @@ const enrollmentSchema = new mongoose.Schema(
             ref: "Course",
             required: true
         },
+
+        chaptersProgress: [
+            {
+                chapterId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Chapter",
+                    required: true
+                },
+                watchedDuration: {
+                    type: Number, // seconds
+                    default: 0
+                },
+                totalDuration: {
+                    type: Number, // seconds
+                    default: 0
+                },
+                progressPercent: {
+                    type: Number,
+                    min: 0,
+                    max: 100,
+                    default: 0
+                },
+                completed: {
+                    type: Boolean,
+                    default: false
+                },
+                lastWatchedAt: {
+                    type: Date
+                }
+            }
+        ],
         progress: {
             type: Number,
             min: 0,

@@ -3,7 +3,7 @@ const category = require("../models/categorySchema")
 const chapter = require("../models/chapterScheema")
 const coupons = require("../models/couponSchema")
 const { cloudinary } = require('../config/cloudinary')
-const s3=require("../config/s3")
+const s3 = require("../config/s3")
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 
@@ -218,7 +218,7 @@ exports.updatedetails = async (req, res) => {
 
 
     } catch (err) {
-        console.log("erroris",err.name)
+        console.log("erroris", err.name)
         if (err.name === "ValidationError") {
             req.flash("error", err.message);
         }
@@ -292,7 +292,7 @@ exports.geteditchapter = async (req, res) => {
 exports.editchapter = async (req, res) => {
     try {
         const { course_id, chapter_id } = req.params
-        const { title,  lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
+        const { title, lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
 
         const existingchapter = await chapter.findById(chapter_id)
         //updaate existing chapter details
