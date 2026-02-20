@@ -58,7 +58,7 @@ exports.createOrder = async (req, res) => {
        console.log("COURSES USED IN ORDER:", cart.items.map(i => i.course.name));
      const user = await User.findById(userId)
     const options = {
-      amount: Number(amount )* 100, // convert to paise
+      amount: parseInt(amount )* 100, // convert to paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`
     };

@@ -44,13 +44,13 @@
                     <tr class="cart-row">
                       <td>
                         <div class="d-flex align-items-center">
-                          <a href="/courses/<%= item.courseId._id %>">
-                            <img src="<%= item.courseId.thumbnail %>" alt="<%= item.courseId.name %>"
+                          <a href="/courses/<%= item.courseId.slug %>">
+                            <img src="<%= item.courseId.thumbnail.url %>" alt="<%= item.courseId.name %>"
                               class="cart-course-img">
                           </a>
                           <div class="cart-details">
                             <h6 class="mb-1 cart-title">
-                              <a href="/courses/<%= item.courseId._id %>" class="cartCourse">
+                              <a href="/courses/<%= item.courseId.slug %>" class="cartCourse">
                                 <%= item.courseId.name %>
                               </a>
                             </h6>

@@ -90,7 +90,7 @@ exports.getcourse = async (req, res) => {
       const cart = await Cart.findOne({ cartUser: user._id }).populate({
         path: 'items',
         populate: { path: 'course', model: 'Course' },
-        select: 'name author thumbnail price details'
+        select: 'name author thumbnail price details slug'
       })
       if (cart) {
         cartCourseIds = cart.items.map((i) => {
@@ -157,7 +157,7 @@ exports.getcoursedetails = async (req, res) => {
       const cart = await Cart.findOne({ cartUser: user._id }).populate({
         path: 'items',
         populate: { path: 'course', model: 'Course' },
-        select: 'name author thumbnail price details'
+        select: 'name author thumbnail price details slug'
       })
       if (cart) {
         cartCourseIds = cart.items.map((i) => {
@@ -268,7 +268,8 @@ exports.getBoughtCourse = async (req, res) => {
       return {
         ...ch.toObject(),
         progressPercent: progress ? progress.progressPercent : 0,
-        completed:progress?progress.completed:false
+        completed:progress?progress.completed:false,
+        totalDuration:progress?(progress.totalDuration/60).toFixed(2):0
       }
     })
 
@@ -466,9 +467,11 @@ exports.updateChapterProgress = async (req, res) => {
 }
 
 exports.continueLearning = async (req, res) => {
-  console.log("Route hit--- :)")
+
   try {
+      console.log("Route hit--- :)")
     const userId = req.user._id;
+    console.log(userId)
     const eid = req.params.eid
     const user = await User.findById(userId)
     const enrolled = await Enrollments.findOne({ studentId: user._id, _id: eid })
@@ -504,7 +507,7 @@ exports.continueLearning = async (req, res) => {
     if (!targetChapter) {
       targetChapter = chapters[chapters.length - 1]
     }
-    console.log("Route hit :)")
+    console.log(enrolled._id)
     return res.redirect(`/profile/${user.fullName}/myLearning/${courses.slug}/${enrolled._id}/${targetChapter._id}`)
 
   } catch (error) {

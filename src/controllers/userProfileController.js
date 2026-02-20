@@ -92,7 +92,7 @@ exports.getprofileWishlist = async (req, res) => {
     const userid = req.user._id
     const users = await user.findById(userid)
     const wishlist = await Wishlist.find({ userId: users._id })
-        .populate('courseId', 'name author thumbnail price details rating reviewCount');
+        .populate('courseId', 'name author thumbnail price details rating reviewCount slug');
     res.render('userWishlist', { user: users, wishlist })
 }
 //profile/purchase History
@@ -111,7 +111,7 @@ exports.getprofileCart = async (req, res) => {
         let cart = await Cart.findOne({ cartUser: users._id }).populate({
             path: 'items',
             populate: { path: 'course', model: 'Course' },
-            select: 'name author thumbnail price details'
+            select: 'name author thumbnail price details slug'
         })
         if (!cart) {
             cart = await Cart.create({ cartUser: users._id })

@@ -75,6 +75,13 @@
     .progress-text p {
         font-size: 10px;
     }
+
+    .clbtn2{
+margin-top: 1rem;
+margin-bottom: 1rem;
+padding-right: 10%;
+padding-left: 10%;
+    }
 }
 
 
@@ -181,6 +188,7 @@ textarea.form-control {
     color:#000000;
     
     background-color: #3f9bae;
+    
 }
 .clbtn2:hover{
     background-color:#ffffff ;
@@ -189,4 +197,26 @@ textarea.form-control {
 
 .progressbaar{
     background-color:#1ac0b2; ;
+}
+
+
+
+.chapter-list {
+  max-width: 900px;
+}
+
+.chapter-row {
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.chapter-row:hover {
+  background-color: #f5f7f9;
+  transform: translateX(2px);
+  transition: all 0.2s ease;
+}
+
+.chapter-row h5 {
+  font-weight: 600;
 }

@@ -28,14 +28,19 @@
                     <h1>
                         <%= course.name %>
                     </h1>
+                    <p>
+                      Instructor :  <%= course.author %>
+                    </p>
                     <hr>
                     <p>
                         <%= course.details %>
                     </p>
+
+                    
                     <% if (enrolled.progress===0 ) { %>
 
                         <a href="/profile/<%=user.fullName %>/mylearning/<%= course.slug %>/<%= enrolled._id %>/continue"
-                            class="btn rounded-pill clbtn"><strong>Lets Start Learning</strong>
+                            class="btn rounded-pill clbtn me-2"><strong>Lets Start Learning</strong>
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
                                 <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
@@ -66,7 +71,7 @@
                         <% } else { %>
 
                             <a href="/profile/<%=user.fullName %>/mylearning/<%= course.slug %>/<%= enrolled._id %>/continue"
-                                class="btn rounded-pill clbtn"><strong>Continue Learning</strong>
+                                class="btn rounded-pill clbtn me-2"><strong>Continue Learning</strong>
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
                                     <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
@@ -97,7 +102,7 @@
 
                             <% } %>
 
-                                <a href="" class="btn rounded-pill clbtn2 ms-4 "><strong>Write A review</strong>
+                                <a href="#writeAreview" class="btn rounded-pill clbtn2  "><strong>Write A review</strong>
 
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
 <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
@@ -155,57 +160,56 @@
             <!-- Chapters -->
             <!-- Chapters -->
             <div class="chapters-section mt-4">
-                <h2>Chapters</h2>
+  <h2>Chapters</h2>
 
-                <div class="row">
+  <div class="list-group chapter-list">
 
-                    <% chapters.forEach((chapter)=> { %>
-                        <div class="col-12 col-md-3 mb-4">
-                            <a href="/profile/<%= user.fullName %>/myLearning/<%= course.slug %>/<%= enrolled._id %>/<%= chapter._id %>"
-                                class="text-decoration-none">
+    <% chapters.forEach((chapter)=> { %>
+      <a
+        href="/profile/<%= user.fullName %>/myLearning/<%= course.slug %>/<%= enrolled._id %>/<%= chapter._id %>"
+        class="list-group-item list-group-item-action chapter-row">
 
-                                <div class="chapter-card p-3">
+        <div class="d-flex justify-content-between align-items-center">
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h4 class="mb-1 text-white">
-                                            <%= chapter.order %> . <%= chapter.title %>
-                                        </h4>
+          <!-- Left side -->
+          <div>
+            <h5 class="mb-1">
+              <%= chapter.order %>. <%= chapter.title %>
+            </h5>
+            <small class="text-muted">
+              Total <%= chapter.totalDuration %> mins
+            </small>
+          </div>
 
-                                        <!-- <% if (chapter.completed) { %>
-                                            <span class="badge bg-success">Completed</span>
-                                            <% } %> -->
-                                    </div>
+          <!-- Right side -->
+          <div class="text-end" style="min-width:140px">
+            
 
-
-
-                                    <!-- Progress Bar -->
-                                    <div class="progress mt-2" style="height: 10px;">
-                                        <div class="progress-bar progressbaar text-dark " role="progressbar"
-                                            style="width: <%= chapter.progressPercent %>%"
-                                            aria-valuenow="<%= chapter.progressPercent %>" aria-valuemin="0"
-                                            aria-valuemax="100">
-                                            <!-- <strong> <%= chapter.progressPercent %> %</strong> -->
-                                        </div>
-                                    </div>
-
-                                    <small class="text-white">
-                                        <%= chapter.progressPercent %>% completed
-                                    </small>
-
-                                </div>
-                            </a>
-                        </div>
-                        <% }) %>
-
-
-                </div>
+            <div class="progress" style="height: 8px;">
+              <div
+                class="progress-bar progressbaar"
+                role="progressbar"
+                style="width: <%= chapter.progressPercent %>%"
+                aria-valuenow="<%= chapter.progressPercent %>"
+                aria-valuemin="0"
+                aria-valuemax="100">
+              </div>
             </div>
+            <small class="d-block mb-1">
+              <%= chapter.progressPercent %>%  completed
+            </small>
+          </div>
 
+        </div>
+      </a>
+    <% }) %>
 
+  </div>
+</div>
 
 
             <!-- ADD REVIEW SECTION (STYLISH STAR RATING) -->
-            <div class="reviews-section mt-5 pt-4 mb-5">
+            <div class="reviews-section mt-5 pt-4 mb-5" id="writeAreview">
                 <h2>Add a Review</h2>
                 <hr>
 

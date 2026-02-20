@@ -13,24 +13,25 @@ body {
 /* ========== Course Header Layout ========== */
 .course-header {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
-    position: relative;
+    gap: 40px;
 }
 
 .course-header-section {
+        height: 260px; /* FIXED HEIGHT */
+
     width: 100%;
     background-color: #111;
     color: #fff;
     position: relative;
-    padding: 40px 0;
+    padding: 60px 0 120px 0; /* bottom padding important */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    
 }
 
 /* Left side of header (course info) */
 .course-header-left {
     flex: 1;
-    margin-right: 200px;
     /* leave space for the sidebar card */
 }
 
@@ -45,6 +46,10 @@ body {
     line-height: 1.6;
     color: #dcdcdc;
     margin-bottom: 12px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    
 }
 
 .creator {
@@ -68,15 +73,14 @@ body {
 
 /* ========== Sidebar Card (Over Header) ========== */
 .course-sidebar {
-    position: absolute;
-    top: 0;
-    right: 0;
+ 
     width: 300px;
+flex-shrink: 0;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     padding: 0;
-    transform: translateY(30px);
+    transform: translateY(0.5rem); /* pushes card down */
 }
 
 .course-sidebar .card-body {
@@ -192,10 +196,12 @@ body {
     .course-header {
         flex-direction: column;
     }
+.course-header-section {
+    height: auto;        /* remove fixed height */
+    padding: 40px 0;     /* normal padding */
+}
 
-    .course-header-left {
-        margin-right: 0;
-    }
+  
 
     .course-sidebar {
         position: static;

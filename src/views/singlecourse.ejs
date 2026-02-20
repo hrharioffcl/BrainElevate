@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/coursepage.css" />
 </head>
 
+<style></style>
 <body>
     <!-- Navbar Partial -->
     <%- include('partials/header') %>
@@ -25,9 +26,11 @@
                     <h1>
                         <%= course.name %>
                     </h1>
-                    <p class="subtitle">
-                        <%= course.details %>
-                    </p>
+
+               <p class="subtitle">
+    <%= course.details %>
+</p>
+
                     <p class="creator">Created by <strong>
                             <%= course.author %>
                         </strong></p>
