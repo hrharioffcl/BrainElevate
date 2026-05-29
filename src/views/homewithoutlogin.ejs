@@ -8,183 +8,58 @@
 
   <!-- External CSS & Icons -->
   <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/landing-page.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-  <style>
-    .carousel-item img {
- max-height: 600px;   /* change this value to what looks best */
-  object-fit: cover;  /* crops image neatly instead of stretching */
-}
-    .aboutus{
-      background-color: #A5D6D3;
-       color:#ffffff;
-       padding-top: 0.5rem;
-    }
-    .aboutus p{
-      color: #000000;
-    }
-     .aboutus h6{
-      color: #ff0000d3;
-    }
-      .aboutus small{
-      color: #ff0000d3;
-    }
-    .cta-section {
-  background: #000000 ;/* same teal background */
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  margin-top: 0; /* sits flush above footer */
-}
-
-.cta-section h1 {
-        font-family: 'Segoe UI', sans-serif;
-
-  font-weight: 500;
-}
-
-.cta-section p {
-  font-size: 1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.cta-section .btn {
-  font-size: 1.2rem;
-  align-items: center;
-}
-
-    .section-title {
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .section-title .line {
-      display: inline-block;
-      width: 40px;
-      height: 2px;
-      background: #40e0d0;
-      margin-right: 10px;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-    }
-
-    main {
-      flex: 1;
-    }
-
-    footer {
-      color: #4beada;
-      padding: 10px 0;
-      text-align: left;
-    }
-
-
-    /* Hero Section */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: 89vh;
-      /* full screen */
-      background: url('/images/front-view-young-beautiful-lady-red-t-shirt-black-jeans-holding-different-copybooks-files-smiling-with-bag-white.jpg') no-repeat center center;
-      background-size: cover;
-      background-position: bottom;
-      display: flex;
-      align-items: center;
-      padding-left: 5%;
-         color: black;
-      text-align: left;
-      margin  :0;    }
-
-    .hero-content {
-      max-width: 600px;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: bold;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-top: 15px;
-    }
-
-    
-  .joinnow-btn {
-
-      color:  #4BEADA;
-      font-weight: bold;
-      border-radius: 6px;
-      padding: 6px 12px;
-    }
-    .join-btn {
-      background: white;
-      color: #4BEADA;
-      font-weight: bold;
-      border-radius: 6px;
-      padding: 6px 12px;
-    }
-
-  </style>
 </head>
 
 <body>
-    <!-- Main Content -->
+  <!-- Main Content -->
   <main>
-  <!-- Navbar -->
-     <%- include('partials/header') %>
-
-
-
+    <!-- Navbar -->
+    <%- include('partials/header') %>
 
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
         <h1>Advance Your Career in a Digitalized World</h1>
         <p>We provide you with unrestricted access to the greatest courses from top specialists, allowing you to learn
-          countless practical lessons in a range of topics.  <a class="btn joinnow-btn btn-danger" href="/signup">Join Now</a></p>
+          countless practical lessons in a range of topics.</p>
+        <a class="hero-cta-btn" href="/signup">Join Now</a>
       </div>
     </section>
 
-   
-
-    <section class="section aboutus ">
-
+    <!-- About Us Section -->
+    <section class="section aboutus">
       <div class="container">
-        <div class="row mb-3">
+        <div class="row g-4 align-items-center">
           <!-- Left column -->
           <div class="col-lg-6">
             <p class="section-title text-danger">
-              <span class="line"></span> About Us
+              <span class="line "></span> About Us
             </p>
-            <h1 style="font-size:3rem">We Help Grow <br>Student Careers.</h1>
+            <h1 class="aboutus-title">We Help Grow <br>Student Careers.</h1>
             <p>We've been doing this for over a decade since we always want to give learning services that aren't taught
               in schools.</p>
           </div>
 
           <!-- Right column -->
           <div class="col-lg-6 text-dark">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-4">
               <!-- Image column -->
-              <div class="col-md-9 g-0 p-0 m-0">
-                <img src="/images/pexels-charlotte-may-5966011.jpg" alt="Logo" class="img-fluid" style="max-width:370px;">
+              <div class="col-md-9 d-flex justify-content-center justify-content-md-start">
+                <div class="about-img-container m-0">
+                  <img src="/images/pexels-charlotte-may-5966011.jpg" alt="About Us Stats Image" class="img-fluid">
+                </div>
               </div>
               <!-- Text column -->
-              <div class="col-md-3 g-0 p-0 m-0">
+              <div class="col-md-3 aboutus-stats">
                 <h2 class="text-danger">3M</h2>
                 <h6>students already enrolled</h6>
-                <h2  class="text-danger">1.2K+</h2>
-                <h6>courses are available with various categories</h6>
-                <h2  class="text-danger">600 </h2>
+                <h2 class="text-danger">1.2K+</h2>
+                <h6>courses available in various categories</h6>
+                <h2 class="text-danger">600</h2>
                 <h6>Experienced authors who will teach you</h6>
               </div>
             </div>
@@ -192,115 +67,110 @@
         </div>
       </div>
     </section>
-    <!-- !-- Features Section -->
+
+    <!-- Features Section -->
     <section class="section">
       <div class="container">
-        <div class="row mb-4">
+        <div class="row g-5 align-items-center">
+          <!-- Left Grid (Features list) -->
           <div class="col-lg-6">
-            <div class="col-md-6">
-              <div class="feature-card ">
-                <i class="bi bi-chat-dots text-danger"></i>
-                <h6 class="text-danger">Discussion 24/7</h6>
-                <p>The community always there for you if you have difficulty learning the course, join through telegram.
-                </p>
-                <hr>
+            <div class="row g-4">
+              <div class="col-12 col-md-6">
+                <div class="feature-card">
+                  <i class="bi bi-chat-dots text-danger"></i>
+                  <h6 class="text-danger">Discussion 24/7</h6>
+                  <p>The community is always there for you if you have difficulty learning the course. Join through Telegram.</p>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-card ">
-                <i class="bi bi-journal-text text-danger"></i>
-                <h6 class="text-danger">Lecture Notes</h6>
-                <p>Lecture notes available, you don’t have to take notes manually.</p>
-                <hr>
+              <div class="col-12 col-md-6">
+                <div class="feature-card">
+                  <i class="bi bi-journal-text text-danger"></i>
+                  <h6 class="text-danger">Lecture Notes</h6>
+                  <p>Lecture notes are available, so you don’t have to take notes manually.</p>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <div class="feature-card">
-                <i class="bi bi-check2-circle text-danger"></i>
-                <h6 class="text-danger">Practice for Free</h6>
-                <p>Test your skills with practice tests that have been provided on our platform.</p>
-                <hr>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="col-md-12">
-              <div class="feature-card ">
-             
-            <p class="section-title text-danger">
-              <span class="line" ></span> Why us
-            </p>
-                <h2 style="color: #A5D6D3;">Our Special Features <br>We Build For You</h2>
-                <p>BrainElevate is a platform that helps students in advancing their career by providing solutions for
-                  simple and flexible online learning, allowing you to study anywhere and anytime at affordable prices.
-                </p>
-
-              </div>
-              <div class="col-md-6">
-                <div >
-                  <img src="/images/pexels-george-pak-7972525.jpg" alt="Logo" 
-                     class="img-fluid rounded" style="max-width:580px; height:280px;",>
-                  <hr>
+              <div class="col-12 col-md-6">
+                <div class="feature-card">
+                  <i class="bi bi-check2-circle text-danger"></i>
+                  <h6 class="text-danger">Practice for Free</h6>
+                  <p>Test your skills with practice tests that have been provided on our platform.</p>
                 </div>
               </div>
             </div>
           </div>
-      
 
-    </section>
-
-  <!-- Testimonials Section -->
-  <section class="section aboutus">
-    <div class="container">
-      <p class="section-title text-danger ">
-              <span class="line"></span> Testimonials
-            </p>
-      <h2 class="text-center mb-5">What Our Students Say About Us</h2>
-       
-      <div class="row">
-        <div class="col-md-4">
-          <div class="testimonial-card border  p-3 mb-3 rounded fw-boldn ">
-            <p >“Thanks to Brain Elevate Learning I finally understood complex topics in hours — not weeks. The interactive modules, real-world examples and clear explanations made all the differen ce.”
-</p>
-            <h6 >Sukran Memis</h6>
-            <small>Software Engineer</small>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="testimonial-card  border  p-3 mb-3 rounded">
-            <p>“As someone returning to learning after a long break, I was worried I’d fall behind. But Brain Elevate’s friendly pace and great support helped me feel confident again. I got better results than I expec ted.”</p>
-            <h6 >Alika Yuksel</h6>
-            <small>Software Engineer</small>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="testimonial-card  border  p-3 mb-3 rounded">
-            <p>“The courses on Brain Elevate aren’t just theory — they pushed me to apply what I learned. My productivity at work went up, and I now lead a team thanks to the skills I gai ned.”</p>
-            <h6 >Misel Corp</h6>
-            <small>Software Engineer</small>
+          <!-- Right Grid (Why us) -->
+          <div class="col-lg-6">
+            <div class="feature-card why-us-card">
+              <p class="section-title text-danger">
+                <span class="line"></span> Why Us
+              </p>
+              <h2 class="why-us-title">Our Special Features <br>We Build For You</h2>
+              <p class="mb-4">BrainElevate is a platform that helps students in advancing their career by providing solutions for
+                simple and flexible online learning, allowing you to study anywhere and anytime at affordable prices.
+              </p>
+              <img src="/images/pexels-george-pak-7972525.jpg" alt="Why Us Feature Image" class="why-us-img">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
+    <!-- Testimonials Section -->
+    <section class="section testisec">
+      <div class="container">
+        <p class="section-title text-danger">
+          <span class="line"></span> Testimonials
+        </p>
+        <h2 class="text-center mb-5 text-white">What Our Students Say About Us</h2>
+         
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="testimonial-card">
+              <p>“Thanks to Brain Elevate Learning I finally understood complex topics in hours — not weeks. The interactive modules, real-world examples and clear explanations made all the difference.”</p>
+              <div>
+                <h6>Sukran Memis</h6>
+                <small>Software Engineer</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="testimonial-card">
+              <p>“As someone returning to learning after a long break, I was worried I’d fall behind. But Brain Elevate’s friendly pace and great support helped me feel confident again. I got better results than I expected.”</p>
+              <div>
+                <h6>Alika Yuksel</h6>
+                <small>Software Engineer</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="testimonial-card">
+              <p>“The courses on Brain Elevate aren’t just theory — they pushed me to apply what I learned. My productivity at work went up, and I now lead a team thanks to the skills I gained.”</p>
+              <div>
+                <h6>Misel Corp</h6>
+                <small>Software Engineer</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-
-  <section class="cta-section text-center text-white mt-3">
-  <div class="container py-5 text-white">
-    <h1 class="mb-3">Ready to Start Your Courses<br>and Grow Your Career</h1>
-    <p class="mb-4">
-      Experts teach you everything from the comfort of your own home. Improve your career today by 
-      enrolling in excellent courses at affordable prices.
-    </p>
-    <a href="/signup" class="btn btn-dark rounded-pill px-4" style="color: #0dcaf0;">Get Started</a>
-  </div>
-</section>
-
+    <!-- CTA Section -->
+    <section class="cta-section text-center text-white">
+      <div class="container py-5">
+        <h1 class="mb-3">Ready to Start Your Courses<br>and Grow Your Career</h1>
+        <p class="mb-4">
+          Experts teach you everything from the comfort of your own home. Improve your career today by 
+          enrolling in excellent courses at affordable prices.
+        </p>
+        <a href="/signup" class="cta-btn text-decoration-none">Get Started</a>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
   <%- include('partials/footer') %>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </html>

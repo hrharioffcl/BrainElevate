@@ -5,7 +5,7 @@ const restrictUnauthenticatedRoutes = async (req, res, next) => {
     const token = req.cookies.jwt;
 
     if (!token) {
-        // No token → allow access to login/signup
+
         return next();
     }
             console.log("Token here:", req.cookies.jwt);
@@ -17,7 +17,6 @@ const restrictUnauthenticatedRoutes = async (req, res, next) => {
 
         if (!user) {
 
-            // Token valid but user not found in DB → allow access
             return next();
         }
 

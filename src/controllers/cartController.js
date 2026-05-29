@@ -162,7 +162,7 @@ exports.applyCoupon = async (req, res) => {
             req.flash('error', 'Invalid or expired coupon.');
             return res.redirect(`/profile/${user._id}/cart`);
         }
-        const userUsage = await couponUsage.findOne({ userId: user._id, couponId: coupon._id })
+        let userUsage = await couponUsage.findOne({ userId: user._id, couponId: coupon._id })//null aitomatoically applied for first time use
 
         const result = await validateCoupon(cart, coupon, user, userUsage)
 
@@ -177,6 +177,7 @@ exports.applyCoupon = async (req, res) => {
 
         cart.appliedCoupon = coupon._id
         await cart.save();
+
         req.flash('success', `Coupon applied successfully!`);
         res.redirect(`/profile/${user._id}/cart`);
 

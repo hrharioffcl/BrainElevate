@@ -4,6 +4,8 @@ const cartItem = require("../models/cartItemSchema")
 const Razorpay = require("razorpay");
 const Enrollment = require('../models/enrollmentSchema')
 const Order = require("../models/orderSchema")
+const couponUsage = require("../models/couponUsageSchema")
+const coupon = require("../models/couponSchema")
 const mongoose = require('mongoose')
 const PDFDocument = require("pdfkit");
 const path = require("path");
@@ -145,6 +147,32 @@ console.log(razorpay_signature)
         });
         enrollments.push(enrollment);
       }
+if (cart.appliedCoupon) {
+
+  await Coupon.findByIdAndUpdate(
+    cart.appliedCoupon,
+    { $inc: { couponQuantity: -1 } }
+  );
+
+  await couponUsage.findOneAndUpdate(
+    {
+      userId: userId,
+      couponId: cart.appliedCoupon
+    },
+    {
+      $inc: { usageCount: 1 }
+    },
+    {
+      upsert: true,
+      new: true
+    }
+  );
+
+}
+
+
+
+
 
       // Clear cart
 

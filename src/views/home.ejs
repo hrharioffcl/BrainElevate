@@ -2,181 +2,18 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BrainElevate</title>
   <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="/css/home.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Chilanka&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-
-
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      margin: 0;
-      /* prevent overflow */
-
-    }
-
-    main {
-      flex: 1;
-      /* pushes footer to bottom */
-    }
-
-    footer {
-      background: #333;
-      color: #fff;
-      padding: 10px 0;
-    }
-
-
-    /* Hero Section */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: 85vh;
-      /* full screen */
-      background: url('/images/pexels-kindelmedia-7054788.jpg') no-repeat center center;
-      background-size: cover;
-background-position: center bottom 40%;
-      display: flex;
-   justify-content: end;
-      align-items:center;
-      padding-right: 10%;
-      color: black;
-      text-align: left;
-      z-index: 0;
-     
-    }
-
-    .hero-content {
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 5%;
-    }
-
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: bold;
-
-    }
-
-    .hero h2 {
-      font-family: "Poppins", sans-serif;
-
-
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-top: 15px;
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        flex-direction: column;
-        justify-content: center;
-        height: auto;
-        /* allow hero to shrink */
-        padding: 20px;
-        background: #4BEADA;
-        /* fallback for mobile */
-      }
-    }
-
-
-
-
-    .card {
-
-      color: #f8f9fa;
-      transition: all 0.45s ease;
-      height: 100%;
-
-    }
-
-    .card:hover {
-      color: #000;
-      transform: scale(1.03);
-
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
-
-
-    .card-img-top {
-      width: 100%;
-      height: 150px;
-      /* adjust this height as you prefer */
-      object-fit: cover;
-      background: #f8f9fa;
-
-    }
-
-    .category-card {
-      color: #000000;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.1);
-      /* transparent white */
-      backdrop-filter: blur(15px);
-    }
-
-    .category-card:hover {
-      color: #ffffff;
-      transform: translateY(-5px);
-      background-color: #000000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .category-section {
-      position: relative;
-      /* Important for pseudo-element positioning */
-      width: 100%;
-      padding: 5% 0;
-background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover no-repeat;
-      
-    }
-
-    .category-section::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-        background: inherit; /* same background image */
-
-      z-index: 1;
-      
-    }
-
-    .category-section .container {
-      position: relative;
-      z-index: 2;
-      /* ensures content is above overlay */
-    }
-
-
-
-    .banner-section img {
-      max-height: 300px;
-      /* control banner height */
-      object-fit: cover;
-      display: block;
-    }
-
-    .card,
-    .card-img-top,
-    .card-footer {
-      border-radius: 0 !important;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Chilanka&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -184,339 +21,344 @@ background: linear-gradient(to bottom, #A5D6D3, #ffffff) center center / cover n
   <main>
     <%- include('partials/header') %>
 
-      <section class="hero">
-        <div class="hero-content">
-          <h2 style="font-family: 'K2D', sans-serif; color: #fdffff;
-
-;">Welcome, <%= fullName %> 👋</h2><br>
-          <h1 class="typewriter" style="font-family: 'K2D', sans-serif;color: #fff;
-
-">CLICK.LEARN. GROW.</h1>
-        <p>Learn from real-world experts from around the globe.
- Get courses from ₹299.</p>
-          <div class="d-flex justify-content-center "> <a class="btn btn-danger rounded-pill p-6 w-50 "
-              href="/courses">Get Started</a>
-          </div>
-
-      
-
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h2 style="font-family: 'K2D', sans-serif; color: #fdffff;">Welcome, <%= fullName %> 👋</h2><br>
+        <h1 class="typewriter" style="font-family: 'K2D', sans-serif;color: #fff;">CLICK.LEARN. GROW.</h1>
+        <p>Learn from real-world experts from around the globe. Get courses from ₹299.</p>
+        <div class="d-flex justify-content-center">
+          <a class="btn btn-danger rounded-pill p-6 w-50" href="/courses">Get Started</a>
         </div>
-      </section>
+      </div>
+    </section>
 
+    <!-- Category Section -->
+    <section class="category-section">
+      <div class="container my-2">
+        <h2 class="fw-bold text-dark">Browse in Brain Elevate</h2>
+        <p class="text-dark">Browse learning content designed to help your business or career.</p>
 
-      <section class="category-section">
-        <div class="container my-2  ">
-          <h2 class="fw-boldn text-dark ">Browse in Brain Elevate</h2>
-          <p class="text-dark">Browse learning content designed to help your business or career.</p>
-
-          <div class="row g-3 ">
-            <% categories.forEach(cat=> { %>
-              <div class="col-md-3 col-sm-6">
-                <a href="/courses?categories=<%= cat._id %>" class="text-decoration-none">
-                  <div class="card shadow-sm  rounded-3  text-center p-3 h-100 category-card">
-                    <div class="mb-2">
-                      <i class="bi bi-journal-bookmark" style="font-size: 2rem;"></i> <!-- category icon -->
-                    </div>
-                    <h6 class="fw-bold ">
-                      <%= cat.name %>
-                    </h6>
-                    <h6 class="">
-                      <%= cat.coursecount %> Courses <br> <i class="bi bi-arrow-right"></i> <!-- simple right arrow -->
-                        </i> <!-- circle arrow -->
-                    </h6>
-
-
+        <div class="row g-3">
+          <% categories.forEach(cat => { %>
+            <div class="col-md-3 col-sm-6">
+              <a href="/courses?categories=<%= cat._id %>" class="text-decoration-none">
+                <div class="card shadow-sm rounded-3 text-center p-3 h-100 category-card">
+                  <div class="mb-2">
+                    <i class="bi bi-journal-bookmark" style="font-size: 2rem;"></i>
                   </div>
-                </a>
-              </div>
-              <% }) %>
-          </div>
+                  <h6 class="fw-bold">
+                    <%= cat.name %>
+                  </h6>
+                  <h6>
+                    <%= cat.coursecount %> Courses <br>
+                    <i class="bi bi-arrow-right"></i>
+                  </h6>
+                </div>
+              </a>
+            </div>
+          <% }) %>
         </div>
-      </section>
-      <!-- Banner Image Section
-<section class="banner-section bg-dark">
-  <img src="/images/homebanner.png" >
-</section> -->
+      </div>
+    </section>
 
-      <section>
-        <div class="container my-5">
-          <h2 class="fw-bold">Our Latest Courses</h2>
-          <p class="text-muted">Recommended for you</p>
-          <hr>
+    <!-- Latest Courses Section -->
+    <section>
+      <div class="container my-5">
+        <h2 class="fw-bold">Our Latest Courses</h2>
+        <p class="text-muted">Recommended for you</p>
+        <hr>
 
-          <div class="row g-4">
-            <% courses.forEach(course=> { %>
-              <div class="col-md-4 col-lg-3 d-flex">
-                  <div class="card shadow-sm border-0 d-flex flex-column w-100">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-start">
-
-                      <!-- Heart icon wrapped in a form -->
-                      <div>
-
-                        <% if (course.price===0 ) { %>
-                          <span>
-                            <i class="badge  bi-lightning-charge-fill  fs-6  start-0 m-2 text-warning "> Free</i>
-
-                          </span>
-
-                          <% }%>
-                      </div>
-                      <div>
-                      </div>
-                    </div>
-
-                    <!-- Course Image -->
-                                     <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
-
-                    <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.title %>">
-                                     </a>
-
-                    <!-- Card Body -->
-                    <div class="card-body d-flex flex-column">
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="bg-category text-dark p-1" style="font-size: small;">
-                          <%= course.category.name %>
-                        </span>
-
-                        <!-- Price -->
-                        <span>
-                          <p class="fw-bold mb-0 text-dark">₹<%= course.price %>
-                          </p>
-                        </span>
-                      </div>
-
-                      <hr>
-
-                      <!-- Dedicated Name Space -->
-                                       <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
-                      <h6 class="fw-bold text-dark course-name mb-3">
-                        <%= course.name %>
-                      </h6>
-                                       </a>
-                      <!-- Footer -->
-                      <div class="mt-auto d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                          <span class="fw-bold me-2">
-                            <%= course.rating %>
-                          </span>
-                          <span class="text-warning">
-                            <% for (let i=1; i <=5; i++) { %>
-                              <% if (i <=Math.floor(course.rating)) { %>
-                                <i class="bi bi-star-fill"></i>
-                                <% } else if (i - course.rating < 1) { %>
-                                  <i class="bi bi-star-half"></i>
-                                  <% } else { %>
-                                    <i class="bi bi-star"></i>
-                                    <% } %>
-                                      <% } %>
-                          </span>
-                        </div>
-                        <span class="text-danger">
-                          <%= course.duration %>
-                        </span>
-                      </div>
-                    </div>
+        <div class="row g-4">
+          <% courses.forEach(course => { %>
+            <div class="col-md-4 col-lg-3 d-flex">
+              <div class="card shadow-sm border-0 d-flex flex-column w-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-start">
+                  <div>
+                    <% if (course.price === 0) { %>
+                      <span>
+                        <i class="badge bi-lightning-charge-fill fs-6 start-0 m-2 text-warning"> Free</i>
+                      </span>
+                    <% } %>
                   </div>
+                </div>
+
+                <!-- Course Image -->
+                <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
+                  <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.title %>">
                 </a>
+
+                <!-- Card Body -->
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="bg-category text-dark p-1" style="font-size: small;">
+                      <%= course.category.name %>
+                    </span>
+                    <span>
+                      <p class="fw-bold mb-0 text-dark">₹<%= course.price %></p>
+                    </span>
+                  </div>
+
+                  <hr>
+
+                  <!-- Dedicated Name Space -->
+                  <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
+                    <h6 class="fw-bold text-dark course-name mb-3">
+                      <%= course.name %>
+                    </h6>
+                  </a>
+
+                  <!-- Footer -->
+                  <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="fw-bold me-2">
+                        <%= course.rating %>
+                      </span>
+                      <span class="text-warning">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <% if (i <= Math.floor(course.rating)) { %>
+                            <i class="bi bi-star-fill"></i>
+                          <% } else if (i - course.rating < 1) { %>
+                            <i class="bi bi-star-half"></i>
+                          <% } else { %>
+                            <i class="bi bi-star"></i>
+                          <% } %>
+                        <% } %>
+                      </span>
+                    </div>
+                    <span class="text-danger">
+                      <%= course.duration %>
+                    </span>
+                  </div>
+                </div>
               </div>
-
-              <% }) %>
-          </div>
+            </div>
+          <% }) %>
         </div>
-      </section>
+      </div>
+    </section>
 
-
+    <!-- Courses Under 500 Section -->
+    <section>
       <div class="container my-5">
         <h2 class="fw-bold">Courses Under 500</h2>
         <p class="text-muted">Recommended for you</p>
         <hr>
 
         <div class="row g-4">
-          <% lowpricecourse.forEach(course=> { %>
+          <% lowpricecourse.forEach(course => { %>
             <div class="col-md-4 col-lg-3 d-flex">
-                <div class="card shadow-sm border-0 d-flex flex-column w-100">
-                  <div class="card-header bg-white d-flex justify-content-between align-items-start">
-
-                    <!-- Heart icon wrapped in a form -->
-                    <div>
-
-                      <% if (course.price===0 ) { %>
-                        <span>
-                          <i class="badge  bi-lightning-charge-fill  fs-6  start-0 m-2 text-warning "> Free</i>
-
-                        </span>
-
-                        <% }%>
-                    </div>
-                    <div>
-                    </div>
+              <div class="card shadow-sm border-0 d-flex flex-column w-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-start">
+                  <div>
+                    <% if (course.price === 0) { %>
+                      <span>
+                        <i class="badge bi-lightning-charge-fill fs-6 start-0 m-2 text-warning"> Free</i>
+                      </span>
+                    <% } %>
                   </div>
+                </div>
 
                 <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
-                  <!-- Course Image -->
                   <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.title %>">
                 </a>
-                  <!-- Card Body -->
-                  <div class="card-body d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="bg-category text-dark p-1" style="font-size: small;">
-                        <%= course.category.name %>
-                      </span>
 
-                      <!-- Price -->
-                      <span>
-                        <p class="fw-bold mb-0 text-dark">₹<%= course.price %>
-                        </p>
-                      </span>
-                    </div>
+                <!-- Card Body -->
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="bg-category text-dark p-1" style="font-size: small;">
+                      <%= course.category.name %>
+                    </span>
+                    <span>
+                      <p class="fw-bold mb-0 text-dark">₹<%= course.price %></p>
+                    </span>
+                  </div>
 
-                    <hr>
+                  <hr>
 
-                    <!-- Dedicated Name Space -->
-                                     <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
+                  <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
                     <h6 class="fw-bold text-dark course-name mb-3">
                       <%= course.name %>
                     </h6>
-                                     </a>
-                    <!-- Footer -->
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                      <div class="d-flex align-items-center">
-                        <span class="fw-bold me-2">
-                          <%= course.rating %>
-                        </span>
-                        <span class="text-warning">
-                          <% for (let i=1; i <=5; i++) { %>
-                            <% if (i <=Math.floor(course.rating)) { %>
-                              <i class="bi bi-star-fill"></i>
-                              <% } else if (i - course.rating < 1) { %>
-                                <i class="bi bi-star-half"></i>
-                                <% } else { %>
-                                  <i class="bi bi-star"></i>
-                                  <% } %>
-                                    <% } %>
-                        </span>
-                      </div>
-                      <span class="text-danger">
-                        <%= course.duration %>
+                  </a>
+
+                  <!-- Footer -->
+                  <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="fw-bold me-2">
+                        <%= course.rating %>
+                      </span>
+                      <span class="text-warning">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <% if (i <= Math.floor(course.rating)) { %>
+                            <i class="bi bi-star-fill"></i>
+                          <% } else if (i - course.rating < 1) { %>
+                            <i class="bi bi-star-half"></i>
+                          <% } else { %>
+                            <i class="bi bi-star"></i>
+                          <% } %>
+                        <% } %>
                       </span>
                     </div>
+                    <span class="text-danger">
+                      <%= course.duration %>
+                    </span>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
-
-            <% }) %>
+          <% }) %>
         </div>
       </div>
-      </section>
+    </section>
 
-      
+    <!-- Free Courses Section -->
+    <section>
       <div class="container my-5">
         <h2 class="fw-bold">Try Our Free Courses</h2>
         <p class="text-muted">Recommended for you</p>
         <hr>
 
         <div class="row g-4">
-          <% freeCourses.forEach(course=> { %>
+          <% freeCourses.forEach(course => { %>
             <div class="col-md-4 col-lg-3 d-flex">
-                <div class="card shadow-sm border-0 d-flex flex-column w-100">
-                  <div class="card-header bg-white d-flex justify-content-between align-items-start">
-
-                    <!-- Heart icon wrapped in a form -->
-                    <div>
-
-                      <% if (course.price===0 ) { %>
-                        <span>
-                          <i class="badge  bi-lightning-charge-fill  fs-6  start-0 m-2 text-warning "> Free</i>
-
-                        </span>
-
-                        <% }%>
-                    </div>
-                    <div>
-
-                    </div>
+              <div class="card shadow-sm border-0 d-flex flex-column w-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-start">
+                  <div>
+                    <% if (course.price === 0) { %>
+                      <span>
+                        <i class="badge bi-lightning-charge-fill fs-6 start-0 m-2 text-warning"> Free</i>
+                      </span>
+                    <% } %>
                   </div>
+                </div>
 
                 <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
-                  <!-- Course Image -->
                   <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.title %>">
                 </a>
-                  <!-- Card Body -->
-                  <div class="card-body d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                      <span class="bg-category text-dark p-1" style="font-size: small;">
-                        <%= course.category.name %>
-                      </span>
 
-                      <!-- Price -->
-                      <span>
-                        <p class="fw-bold mb-0 text-dark">₹<%= course.price %>
-                        </p>
-                      </span>
-                    </div>
+                <!-- Card Body -->
+                <div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="bg-category text-dark p-1" style="font-size: small;">
+                      <%= course.category.name %>
+                    </span>
+                    <span>
+                      <p class="fw-bold mb-0 text-dark">₹<%= course.price %></p>
+                    </span>
+                  </div>
 
-                    <hr>
+                  <hr>
 
-                    <!-- Dedicated Name Space -->
-                                     <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
+                  <a href="/courses/<%= course.slug %>" class="text-decoration-none w-100 d-flex">
                     <h6 class="fw-bold text-dark course-name mb-3">
                       <%= course.name %>
                     </h6>
-                                     </a>
-                    <!-- Footer -->
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                      <div class="d-flex align-items-center">
-                        <span class="fw-bold me-2">
-                          <%= course.rating %>
-                        </span>
-                        <span class="text-warning">
-                          <% for (let i=1; i <=5; i++) { %>
-                            <% if (i <=Math.floor(course.rating)) { %>
-                              <i class="bi bi-star-fill"></i>
-                              <% } else if (i - course.rating < 1) { %>
-                                <i class="bi bi-star-half"></i>
-                                <% } else { %>
-                                  <i class="bi bi-star"></i>
-                                  <% } %>
-                                    <% } %>
-                        </span>
-                      </div>
-                      <span class="text-danger">
-                        <%= course.duration %>
+                  </a>
+
+                  <!-- Footer -->
+                  <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="fw-bold me-2">
+                        <%= course.rating %>
+                      </span>
+                      <span class="text-warning">
+                        <% for (let i = 1; i <= 5; i++) { %>
+                          <% if (i <= Math.floor(course.rating)) { %>
+                            <i class="bi bi-star-fill"></i>
+                          <% } else if (i - course.rating < 1) { %>
+                            <i class="bi bi-star-half"></i>
+                          <% } else { %>
+                            <i class="bi bi-star"></i>
+                          <% } %>
+                        <% } %>
                       </span>
                     </div>
+                    <span class="text-danger">
+                      <%= course.duration %>
+                    </span>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
-
-            <% }) %>
+          <% }) %>
         </div>
       </div>
-      </section>
+    </section>
 
-      <section>
-      <section>
-        <h1>top rated frontend courses</h1>
-      </section>
+    <!-- Continue Learning Slider Section -->
+    <section class="continue-learning-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Continue Learning</h2>
+          <div class="slider-nav-btns">
+            <button class="slider-nav-btn" id="slide-left" aria-label="Slide Left" disabled>
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="slider-nav-btn" id="slide-right" aria-label="Slide Right">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
 
-      <section>
-        <h1>short courses</h1>
-      </section>
-
-
-      <section>
-        <h1>latest courses</h1>
-      </section>
-      <section>
-
-      </section>
-      <section>
-        <h1>continue learning</h1>
-      </section>
+        <div class="continue-learning-slider" id="learning-slider">
+          <% continueLearning.forEach(course => { %>
+            <a href="/course/<%= course.slug %>" class="course-card">
+              <img src="<%= course.thumbnail %>" alt="<%= course.title %>">
+              <h3><%= course.title %></h3>
+              <p>
+                <span><%= course.progress %>% completed</span>
+              </p>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:<%= course.progress %>%"></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    </section>
   </main>
+
   <%- include('partials/footer') %>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Slider functionality script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const slider = document.getElementById('learning-slider');
+      const slideLeftBtn = document.getElementById('slide-left');
+      const slideRightBtn = document.getElementById('slide-right');
+
+      if (!slider || !slideLeftBtn || !slideRightBtn) return;
+
+      function updateBtnState() {
+        const scrollLeft = slider.scrollLeft;
+        const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+
+        slideLeftBtn.disabled = scrollLeft <= 1;
+        slideRightBtn.disabled = scrollLeft >= maxScrollLeft - 1;
+      }
+
+      slideLeftBtn.addEventListener('click', function() {
+        // Slide left by 1 card length + gap (300px card + 24px gap)
+        slider.scrollBy({ left: -324, behavior: 'smooth' });
+      });
+
+      slideRightBtn.addEventListener('click', function() {
+        // Slide right by 1 card length + gap (300px card + 24px gap)
+        slider.scrollBy({ left: 324, behavior: 'smooth' });
+      });
+
+      slider.addEventListener('scroll', updateBtnState);
+      window.addEventListener('resize', updateBtnState);
+
+      // Run initial check and delayed checks for image loads
+      setTimeout(updateBtnState, 200);
+      setTimeout(updateBtnState, 1000);
+    });
+  </script>
 </body>
 
 </html>

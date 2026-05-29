@@ -18,14 +18,15 @@ body {
 }
 
 .course-header-section {
-        height: 260px; /* FIXED HEIGHT */
-
     width: 100%;
     background-color: #111;
     color: #fff;
     position: relative;
-    padding: 60px 0 120px 0; /* bottom padding important */
+   /* padding: 60px 0 120px 0; bottom padding important */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 4rem 6rem;
+    display: flex;
+    align-items: center;  
     
 }
 

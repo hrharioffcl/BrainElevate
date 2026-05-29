@@ -1,6 +1,7 @@
 
     .course-header-section{
         padding: 5% 10%;
+        
     }
 /* The main content container */
 .content-wrapper {
@@ -34,6 +35,18 @@
     font-size: 10px;
     color: #ffffff;
 }
+
+.course-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+
+
+
+
+
 
 
 

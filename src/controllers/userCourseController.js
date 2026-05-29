@@ -480,6 +480,15 @@ exports.continueLearning = async (req, res) => {
     }
     const courses = await course.findById(enrolled.courseId)
     const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
+    // NO CHAPTERS
+if (!chapters.length) {
+
+    return res.render("courseComingSoon", {
+        user,
+        course: courses
+    });
+
+}
     let targetChapter = null;
 
     console.log("📘 chapters count:", chapters.length);

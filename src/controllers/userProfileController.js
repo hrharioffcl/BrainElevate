@@ -35,7 +35,7 @@ exports.getprofileProgress = async (req, res) => {
         const view = req.query.view;
 
         // Fetch all enrollment documents for this student
-        const enrollments = await Enrollment.find({ studentId: userId })
+        const enrollments = await Enrollment.find({ studentId: userId }).sort({lastAccessed:-1})
             .populate('courseId', 'name author thumbnail price details _id slug');
 
         // IN-PROGRESS COURSES

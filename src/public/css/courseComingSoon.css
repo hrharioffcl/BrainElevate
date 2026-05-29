@@ -1,0 +1,203 @@
+body {
+    margin: 0;
+    padding: 0;
+    background:
+        linear-gradient(
+            135deg,
+            #071017,
+            #0f2027,
+            #203a43
+        );
+
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+
+.coming-soon-wrapper {
+    min-height: 85vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px 20px;
+}
+
+.coming-card {
+
+    width: 100%;
+    max-width: 750px;
+
+    padding: 60px 50px;
+
+    border-radius: 28px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.icon-wrapper {
+
+    width: 110px;
+    height: 110px;
+
+    margin: 0 auto 30px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00d2ff,
+            #3a7bd5
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 45px;
+
+    color: white;
+
+    box-shadow:
+        0 10px 25px rgba(0, 210, 255, 0.35);
+}
+
+.coming-card h1 {
+
+    font-size: 2.7rem;
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+.subtitle {
+
+    font-size: 1.3rem;
+
+    color: #7fe7ff;
+
+    margin-bottom: 20px;
+}
+
+.description {
+
+    color: rgba(255,255,255,0.75);
+
+    line-height: 1.8;
+
+    max-width: 600px;
+
+    margin:
+        0 auto 35px;
+}
+
+.course-meta {
+
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 40px;
+}
+
+.meta-item {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding:
+        12px 20px;
+
+    border-radius: 50px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+}
+
+.button-group {
+
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+.btn {
+
+    padding:
+        14px 26px;
+
+    border-radius: 50px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.3s ease;
+}
+
+.back-btn {
+
+    background:
+        linear-gradient(
+            135deg,
+            #00d2ff,
+            #3a7bd5
+        );
+
+    color: white;
+}
+
+.home-btn {
+
+    border:
+        1px solid rgba(255,255,255,0.2);
+
+    color: white;
+}
+
+.btn:hover {
+
+    transform:
+        translateY(-3px);
+
+    color: white;
+}
+
+@media (max-width: 768px) {
+
+    .coming-card {
+
+        padding:
+            40px 25px;
+    }
+
+    .coming-card h1 {
+
+        font-size: 2rem;
+    }
+
+    .subtitle {
+
+        font-size: 1.05rem;
+    }
+}
