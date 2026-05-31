@@ -7,13 +7,12 @@ const generateusertoken = require("../utils/usertoken")
 const generateadmintoken = require("../utils/admintoken")
 const bcrypt = require("bcrypt")
 
-//create otp logic
+// create otp logic
 const createOtpcode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-
-//SIGNUP ROUTE
+// SIGNUP ROUTE
 exports.signup = async (req, res) => {
     const { fullName, email, password, confirmPassword, terms } = req.body;
 
@@ -26,74 +25,109 @@ exports.signup = async (req, res) => {
         terms: terms === "true" ? "true" : "false"
     };
 
-    //confirm existing user
+    // confirm existing user
     const existinguser = await User.findOne({ email });
     if (existinguser) fieldErrors.email = "*User already exists, try logging in!";
 
-
-    //confirm password check
+    // confirm password check
     if (password !== confirmPassword) fieldErrors.confirmPassword = "*Passwords do not match";
-    //terms and condition check
+    // terms and condition check
     if (terms !== "true") fieldErrors.terms = "*Please accept Terms & Conditions";
 
-    if (Object.keys(fieldErrors).length > 0) {
-        return res.render('signup', { fieldErrors, formData });
-    }
     try {
-
-        //place user without saving anad validate
-        const tempuser = new User({ fullName, email, password })
-        await tempuser.validate()
-
-        //delete otp records
-        await Otp.deleteMany({ email, purpose: "signup" })
-        //otp generate
+        const tempuser = new User({ fullName, email, password });
+        await tempuser.validate();
+        
+        if (Object.keys(fieldErrors).length > 0) {
+            return res.render('signup', { fieldErrors, formData });
+        }
+        
+        await Otp.deleteMany({ email, purpose: "signup" });
+        
         const otpcode = createOtpcode();
-        const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
+        const expiresAt = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes
 
-        await Otp.create({ email, otpcode, purpose: "signup", expiresAt })
-        //send dOTP via email
-        await sendOtp(email, otpcode)
+        req.session.otpExpiresAt = expiresAt.getTime();
 
+        await Otp.create({ email, otpcode, purpose: "signup", expiresAt });
+        await sendOtp(email, otpcode);
 
-        //adding fullname password and email to session
-        req.session.signupData = { fullName, email, password, purpose: "signup" }
+        req.session.signupData = { fullName, email, password, purpose: "signup" };
 
-        console.log("redirecting to verify")
-        res.redirect('/verify-otp')
+        console.log("redirecting to verify");
+        return res.redirect('/verify-otp');
     } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error.name === "ValidationError") {
             for (let field in error.errors) {
-                fieldErrors[field] = error.errors[field].message
+                fieldErrors[field] = error.errors[field].message;
             }
-            return res.render('signup', { fieldErrors, formData })
-
+            if (terms !== "true") {
+                fieldErrors.terms = "*Please accept Terms & Conditions";
+            }
+            return res.render('signup', { fieldErrors, formData });
         }
-
+        return res.status(500).send("An unexpected error occurred during signup.");
     }
 }
 
-//otp verification
+// GET Route to render the OTP page (Make sure your router uses this)
+exports.getVerifyOtp = (req, res) => {
+    const sessionData = req.session.signupData || req.session.forgotPassword || req.session.changeUserPassword;
+    if (!sessionData) {
+        return res.redirect('/signup'); // redirect if user accesses page directly without session
+    }
+    
+    // Calculate remaining time safely
+    const remainingTime = req.session.otpExpiresAt ? Math.max(0, req.session.otpExpiresAt - Date.now()) : 0;
+
+    return res.render("otp", {
+        errorMessage: null,
+        remainingTime: remainingTime
+    });
+}
+
+// OTP verification
 exports.verifyOtp = async (req, res) => {
     try {
-        const { otp1, otp2, otp3, otp4, otp5, otp6 } = req.body
+        const { otp1, otp2, otp3, otp4, otp5, otp6 } = req.body;
         const otp = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
-        //getting purpuse and email from session memmory
-        const { purpose } = req.session.signupData || req.session.forgotPassword||req.session.changeUserPassword;
-        const email = req.session.signupData?.email || req.session.forgotPassword?.email||req.session.changeUserPassword?.email;
-        //find otp in collection
-        const otpRecord = await Otp.findOne({ email, purpose }).sort({ createdAt: -1 });
-        //compare otp
-        if (!otpRecord || otpRecord.otpcode !== otp || otpRecord.expiresAt < Date.now()) {
+        
+        // Safe check for session existence
+        const sessionData = req.session.signupData || req.session.forgotPassword || req.session.changeUserPassword;
+        if (!sessionData) {
             return res.render("otp", {
-                errorMessage: "❌ Invalid or expired OTP"
+                errorMessage: "❌ Session expired or invalid request. Please start over.",
+                remainingTime: 0
             });
         }
-        //signup otp verification
+        
+        const { purpose } = sessionData;
+        const email = sessionData.email;
+        
+        // Find latest OTP
+        const otpRecord = await Otp.findOne({ email, purpose }).sort({ createdAt: -1 });
+        
+        // Compare OTP
+        if (!otpRecord || otpRecord.otpcode !== otp || otpRecord.expiresAt < Date.now()) {
+            const remainingTime = req.session.otpExpiresAt ? Math.max(0, req.session.otpExpiresAt - Date.now()) : 0;
+            console.log("OTP expires at:", req.session.otpExpiresAt);
+console.log("Current time:", Date.now());
+console.log(
+    "Remaining time:",
+    Math.max(0, req.session.otpExpiresAt - Date.now())
+);
+            // CRITICAL: added 'return' to prevent running downstream code!
+            return res.render("otp", {
+                errorMessage: "❌ Invalid or expired OTP",
+                remainingTime: remainingTime
+            });
+        }
+        
+        // Signup OTP verification
         if (purpose === "signup") {
             const { fullName, email, password } = req.session.signupData;
-            //check refferal code exist!!
+            
             let referredBy = null;
             if (req.session.referral) {
                 const referrer = await User.findOne({ referralCode: req.session.referral });
@@ -102,63 +136,92 @@ exports.verifyOtp = async (req, res) => {
                 }
                 req.session.referral = null; // clear after use
             }
-            ///create user if otp verified
-            const user = await User.create({ fullName, email, password, isVerified: true, referralCode: await createrefferalcode(), referredBy ,googleUser:false})
-            await Otp.deleteOne({ _id: otpRecord._id })
-            req.session.signupData = null
+            
+            const user = await User.create({ 
+                fullName, 
+                email, 
+                password, 
+                isVerified: true, 
+                referralCode: await createrefferalcode(), 
+                referredBy, 
+                googleUser: false 
+            });
+            
+            await Otp.deleteOne({ _id: otpRecord._id });
+            req.session.signupData = null;
+            req.session.otpExpiresAt = null;
 
-            //generate jwt
-            const token = generateusertoken(user._id)
+            const token = generateusertoken(user._id);
             res.cookie('jwt', token, {
                 httpOnly: true,
                 maxAge: 1 * 60 * 60 * 1000 // 1 hour
             });
-            console.log("Token:", req.cookies.jwt);
 
-            res.redirect('/home')
-
-
+            return res.redirect('/home');
         }
-        // forgot password otp verification
+        // Forgot password OTP verification
         else if (purpose === "adminforgotpassword") {
-            await Otp.deleteOne({ _id: otpRecord._id })
-            res.redirect('/admin/reset-password')
+            await Otp.deleteOne({ _id: otpRecord._id });
+            req.session.otpExpiresAt = null;
+            return res.redirect('/admin/reset-password');
         } else if (purpose === "forgotpassword") {
-            await Otp.deleteOne({ _id: otpRecord._id })
-            res.redirect('/reset-password')
-        }else if(purpose==='changeUserPassword'){
-               await Otp.deleteOne({ _id: otpRecord._id })
-       req.session.forgotPassword =   req.session.changeUserPassword
-            req.session.changeUserPassword =null
-                 res.redirect('/reset-password')
+            await Otp.deleteOne({ _id: otpRecord._id });
+            req.session.otpExpiresAt = null;
+            return res.redirect('/reset-password');
+        } else if (purpose === 'changeUserPassword') {
+            await Otp.deleteOne({ _id: otpRecord._id });
+            req.session.otpExpiresAt = null;
+            req.session.forgotPassword = req.session.changeUserPassword;
+            req.session.changeUserPassword = null;
+            return res.redirect('/reset-password');
         }
     }
     catch (error) {
-        console.error(error)
-        res.status(500).send("some error occured")
+        console.error(error);
+        return res.status(500).send("Some error occurred during verification.");
     }
-
 }
 
-//resend otp
+// Resend OTP
 exports.resendotp = async function (req, res) {
     try {
-        //getting purpuse and email from session memmory
-      const { purpose } = req.session.signupData || req.session.forgotPassword||req.session.changeUserPassword;
-        const email = req.session.signupData?.email || req.session.forgotPassword?.email||req.session.changeUserPassword?.email;
+        const sessionData = req.session.signupData || req.session.forgotPassword || req.session.changeUserPassword;
+        if (!sessionData) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Session expired. Please restart the process." 
+            });
+        }
+        
+        const { purpose, email } = sessionData;
         await Otp.deleteMany({ email, purpose });
-        const otpcode = createOtpcode()
-        const expiresAt = new Date(Date.now() + 3 * 60 * 1000)
-        await Otp.create({ otpcode, email, purpose, expiresAt })
-        await sendOtp(email, otpcode)
-        res.status(200).send("resend otp  successfully")
+        
+        const otpcode = createOtpcode();
+        const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
 
+        req.session.otpExpiresAt = expiresAt.getTime();
+
+        await Otp.create({
+            otpcode,
+            email,
+            purpose,
+            expiresAt
+        });
+        
+        await sendOtp(email, otpcode);
+        
+        return res.json({
+            success: true,
+            remainingTime: 3 * 60 * 1000 // Send relative timer to UI
+        });
     } catch (error) {
-        console.log(error)
-        res.status(500).send("server error")
+        console.log(error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Server error occurred." 
+        });
     }
 }
-
 
 //login
 exports.login = async (req, res) => {
@@ -241,7 +304,7 @@ exports.forgotpassword = async (req, res) => {
 
             await Otp.create({ email, otpcode, purpose: "forgotpassword", expiresAt })
             //send dOTP via email
-            await sendOtp(email, otpcode)  
+            await sendOtp(email, otpcode)
             req.session.forgotPassword = { email, purpose: "forgotpassword" }
             console.log("redirecting to verify otp")
             res.redirect('/verify-otp')
@@ -285,7 +348,7 @@ exports.resetpassword = async (req, res) => {
     const fieldErrors = {};
     if (!req.session.forgotPassword) {
         return res.redirect('/login');
-       
+
     }
     const { email, purpose } = req.session.forgotPassword
     console.log(purpose)
@@ -295,7 +358,7 @@ exports.resetpassword = async (req, res) => {
         return res.render('resetpassword', { fieldErrors })
     }
     try {
-        if (purpose === "forgotpassword"||purpose==="changeUserPassword") {
+        if (purpose === "forgotpassword" || purpose === "changeUserPassword") {
             const existinguser = await User.findOne({ email });
             const isMatch = await bcrypt.compare(password, existinguser.password)
             if (isMatch) {
@@ -304,12 +367,12 @@ exports.resetpassword = async (req, res) => {
             }
             // set new password
             existinguser.password = password
-            existinguser.googleUser=false
+            existinguser.googleUser = false
             await existinguser.save();
 
             req.session.forgotPassword = null;
 
-req.flash('success',"Password Changed Successfully")
+            req.flash('success', "Password Changed Successfully")
             res.redirect('/login')
         } else if (purpose === "adminforgotpassword") {
 
@@ -385,9 +448,9 @@ exports.adminlogin = async (req, res) => {
             res.redirect('/admin/managerdashboard')
         }
         else if (isadmin.role === "contributer") {
-                        console.log("coontributer daashboard coming soon")
+            console.log("coontributer daashboard coming soon")
 
-         res.redirect('/admin/contributerdashboard')
+            res.redirect('/admin/contributerdashboard')
         }
 
     } catch (error) {
@@ -403,13 +466,13 @@ exports.adminlogout = async (req, res) => {
     res.clearCookie("admin_jwt", {
 
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", 
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
     })
 
     if (req.session) {
         req.session.destroy(() => {
-            res.redirect("/admin/login"); 
+            res.redirect("/admin/login");
         });
     } else {
         res.redirect("/admin/login");
@@ -441,15 +504,15 @@ exports.getresetpassword = (req, res) => {
     res.render('resetpassword', { fieldErrors: {} });
 }
 
-exports.userLogOut =async (req,res)=>{
+exports.userLogOut = async (req, res) => {
     res.clearCookie("jwt", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", 
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
     })
-        if (req.session) {
+    if (req.session) {
         req.session.destroy(() => {
-            res.redirect("/login"); 
+            res.redirect("/login");
         });
     } else {
         res.redirect("/login");

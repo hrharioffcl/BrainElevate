@@ -9,7 +9,7 @@ const restrictauthadminaccess = async (req, res, next) => {
         // No token → allow access to login/signup
         return next();
     }
-            console.log("Token here:", req.cookies.jwt);
+            console.log("Token here:", req.cookies.admin_jwt);
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

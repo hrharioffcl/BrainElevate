@@ -4,20 +4,39 @@ const slugify = require("slugify");
 const courseSchema = new mongoose.Schema(
     {
   name: {
+  type: String,
+  required: [true, "Course name is required"],
+  trim: true,
+  minlength: [3, "Course name must be at least 3 characters"],
+  maxlength: [100, "Course name can be max 100 characters"],
+},
+
+details: {
+  type: String,
+  required: [true, "Course details are required"],
+  trim: true,
+},
+
+author: {
+  type: String,
+  required: [true, "Author name is required"],
+  trim: true,
+}, 
+level: {
     type: String,
-    required: true,
-    trim: true,
-    minlength: [3, "Course name must be at least 3 characters"],
-    maxlength: [100, "Course name can be max 100 characters"],
-  },
-  details: {
-    type: String,
-    trim: true,
-  },
-  description: {
-    type: String,
-    trim: true,
-  },
+    default: "Beginner",
+  }, 
+  thumbnail: {
+  public_id: { type: String },
+  url: { type: String,
+    default:"/images/pexels-yankrukov-8837809.jpg"
+   }
+},
+description: {
+  type: String,
+  required: [true, "Course description is required"],
+  trim: true,
+},
   learnPoints: {
     type: [String], // Array of strings
     validate: {
@@ -26,26 +45,32 @@ const courseSchema = new mongoose.Schema(
       },
       message: "You must add at least 1 and at most 4 learning points.",
   }},
-  author: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  level: {
-    type: String,
-    default: "Beginner",
-  },
-  thumbnail: {
-  public_id: { type: String },
-  url: { type: String,
-    default:"/images/pexels-yankrukov-8837809.jpg"
-   }
+ogPrice: {
+  type: Number,
+  required: [true, "Original price is required"],
+  min: [0, "Price cannot be negative"]
 },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",   // relation to Category schema
+price: {
+  type: Number,
+  required: [true, "Course price is required"],
+  min: [0, "Price cannot be negative"]
+},
+category: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Category",
+  required: [true, "Please select a category"],
+   set: v => v === "" ? undefined : v,
+},
 
-  },
+duration: {
+  type: String,
+  required: [true, "Please select course duration"],
+  enum: ["1-3 months", "3-6 months", "6-12 months"],
+},
+
+ 
+ 
+  
   status: {
     type: String,
     enum: ["draft", "saved", "published"],
@@ -55,18 +80,8 @@ const courseSchema = new mongoose.Schema(
     type: Boolean,
     default: false,
   },
-  ogPrice:{
-type:Number
-  },
-  price:{
-    type:Number,
+ 
 
-  },
-  duration:{
-    type:String,
-     enum: ["1-3 months", "3-6 months", "6-12 months"],
-
-  },
   slug: {
   type: String,
   unique: true,
@@ -104,6 +119,22 @@ courseSchema.pre("save", async function (next) {
 
   this.slug = slug;
   next();
+});
+
+courseSchema.pre("validate", function(next) {
+
+    if (
+        this.ogPrice != null &&
+        this.price != null &&
+        this.ogPrice < this.price
+    ) {
+        this.invalidate(
+            "ogPrice",
+            "Original price must be greater than or equal to course price"
+        );
+    }
+
+    next();
 });
 
 module.exports = mongoose.model("Course", courseSchema);

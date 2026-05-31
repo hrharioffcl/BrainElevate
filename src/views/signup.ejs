@@ -30,12 +30,17 @@
             <div class="mb-3">
               <input type="text" name="fullName" class="form-control" placeholder="Full Name"
                 value="<%= formData?.fullName || '' %>" required>
+                   <% if (fieldErrors?.fullName) { %>
+                <div  class="error field-error">
+                  <%= fieldErrors.fullName %>
+                </div>
+                <% } %>
             </div>
             <div class="mb-3">
               <input type="email" name="email" class="form-control" placeholder="Email"
                 value="<%= formData?.email || '' %>">
               <% if (fieldErrors?.email) { %>
-                <div class="error">
+                <div  class="error field-error">
                   <%= fieldErrors.email %>
                 </div>
                 <% } %>
@@ -45,7 +50,7 @@
                 value="<%= formData?.password || '' %>" required>
               <span class="toggle-password">👁</span>
               <% if (fieldErrors?.password) { %>
-                <div class="error">
+                <div  class="error field-error">
                   <%= fieldErrors.password %>
                 </div>
                 <% } %>
@@ -54,7 +59,7 @@
               <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password"
                 value="<%= formData?.confirmPassword || '' %>" required>
               <% if (fieldErrors?.confirmPassword) { %>
-                <div class="error">
+                <div  class="error field-error">
                   <%= fieldErrors.confirmPassword %>
                 </div>
                 <% } %>
@@ -66,7 +71,7 @@
                 I have read and agreed to the Terms of Service and Privacy Policy
               </label>
               <% if (fieldErrors?.terms) { %>
-                <div class="error">
+                <div  class="error field-error">
                   <%= fieldErrors.terms %>
                 </div>
                 <% } %>
@@ -100,6 +105,37 @@
 </body>
 <!--togglepassword jscode-->
 <script>
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', function () {
+
+        const container = this.closest('.mb-3');
+
+        if (container) {
+            const error = container.querySelector('.error');
+
+            if (error) {
+                error.remove();
+            }
+        }
+    });
+});
+
+const termsCheckbox = document.querySelector('#terms');
+
+if (termsCheckbox) {
+    termsCheckbox.addEventListener('change', function () {
+
+        const formCheck = this.closest('.form-check');
+        const error = formCheck.querySelector('.error');
+
+        if (error) {
+            error.remove();
+        }
+    });
+}
+
+
+
   const togglePassword = document.querySelectorAll('.toggle-password');
 
   togglePassword.forEach(span => {

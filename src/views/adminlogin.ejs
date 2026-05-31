@@ -27,20 +27,22 @@
           <form action="/admin/login" method="POST" novalidate>
             <div class="mb-3">
               <input type="email" name="email" class="form-control" placeholder="Email" required>
-           <% if (fieldErrors?.email) { %>
-                <div class="error">
-                  <%= fieldErrors.email %>
-                </div>
-                <% } %>
+          <% if (fieldErrors?.email) { %>
+<div class="error field-error" data-field="email">
+  <%= fieldErrors.email %>
+</div>
+<% } %>
+
+
             </div>
             <div class="mb-3 position-relative">
               <input type="password" name="password" class="form-control" placeholder="Password" required>
               <span class="toggle-password">👁</span>
               <% if (fieldErrors?.password) { %>
-                <div class="error">
-                  <%= fieldErrors.password %>
-                </div>
-                <% } %>
+<div class="error field-error" data-field="password">
+  <%= fieldErrors.password %>
+</div>
+<% } %>
 
             </div>
 
@@ -72,6 +74,25 @@
       }
     });
   });
+
+
+
+
+document.querySelectorAll("input").forEach(input => {
+
+  input.addEventListener("input", () => {
+
+    const error = document.querySelector(
+      `.error[data-field="${input.name}"]`
+    );
+
+    if (error) {
+      error.remove();
+    }
+
+  });
+
+});
 </script>
 
 </html>

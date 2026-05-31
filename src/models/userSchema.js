@@ -5,25 +5,30 @@ const userSchema = new mongoose.Schema(
     {
         fullName: {
             type: String,
-            required: true,
+          required: [true, "*Full name must be at least 4 characters"],
             trim: true,
             minlength: [4, "Full name must be at least 4 characters"],
             maxlength: [30, "Full name can be max 30 characters"],
+             validate(value) {
+        if (!validator.isAlpha(value.replace(/\s/g, ""))) {
+            throw new Error("*Full name can contain only letters");
+        }
+    }
         },
         email: {
             type: String,
-            required: true,
+                     required: [true, "*Please enter a valid email address"],
             unique: true,
             trim: true,
             validate(value) {
                 if (!validator.isEmail(value)) {
-                    throw new Error("*Invalid email address")
+                    throw new Error("*Please enter a valid email address")
                 }
             }
         },
         password: {
             type: String,
-            required: true,
+           required: [true, "*Password must be at least 8 characters long, with at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol."],
             trim: true,
             validate(value) {
                 if (!validator.isStrongPassword(value)) {

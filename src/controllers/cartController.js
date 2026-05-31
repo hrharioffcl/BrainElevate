@@ -8,6 +8,8 @@ const Wishlist = require('../models/wishListSchema')
 const Enrollment = require('../models/enrollmentSchema')
 const { validateCoupon } = require("../utils/validateCoupon")
 
+
+
 exports.postBuyNow = async (req, res) => {
     const user = res.locals.user
     const { courseId } = req.body

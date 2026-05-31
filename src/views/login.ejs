@@ -29,7 +29,7 @@
               <input type="email" name="email" class="form-control" placeholder="Email"
                 value="<%= formData?.email || '' %>" required>
               <% if (fieldErrors?.email) { %>
-                <div class="error">
+                <div class="error field-error">
                   <%= fieldErrors.email %>
                 </div>
                 <% } %>
@@ -38,7 +38,7 @@
               <input type="password" name="password" class="form-control" placeholder="Password" required>
               <span class="toggle-password">👁</span>
               <% if (fieldErrors?.password) { %>
-                <div class="error">
+                <div class="error field-error">
                   <%= fieldErrors.password %>
                 </div>
                 <% } %>
@@ -80,6 +80,38 @@
 </body>
 <!--togglepassword jscode-->
 <script>
+
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', function () {
+
+        const container = this.closest('.mb-3');
+
+        if (container) {
+            const error = container.querySelector('.error');
+
+            if (error) {
+                error.remove();
+            }
+        }
+    });
+});
+
+const termsCheckbox = document.querySelector('#terms');
+
+if (termsCheckbox) {
+    termsCheckbox.addEventListener('change', function () {
+
+        const formCheck = this.closest('.form-check');
+        const error = formCheck.querySelector('.error');
+
+        if (error) {
+            error.remove();
+        }
+    });
+}
+
+
+
   const togglePassword = document.querySelectorAll('.toggle-password');
 
   togglePassword.forEach(span => {

@@ -70,7 +70,7 @@ exports.getcoursemanagement = async (req, res) => {
 
 exports.getaddnewcourse = async (req, res) => {
     const categories = await category.find({ status: "active" })
-    res.render('course-form', { course: null, existingchapater: null, categories })
+    res.render('course-form', { course: null, existingchapater: null, categories,formData:{} ,error:null})
 }
 
 exports.getupdatecourse = async (req, res) => {
@@ -79,7 +79,7 @@ exports.getupdatecourse = async (req, res) => {
     const existingchapater = await chapter.find({ courseId: id })
     const categories = await category.find({ status: "active" })
 
-    res.render('course-form', { course: existingcourse, existingchapater, categories })
+    res.render('course-form', { course: existingcourse, existingchapater, categories ,formData:{} ,error:null})
 }
 exports.getaddnewchapter = async (req, res) => {
     const existingcourse = await course.findById(req.params.course_id);
@@ -94,9 +94,23 @@ exports.getaddnewchapter = async (req, res) => {
 
 exports.adddetails = async (req, res) => {
     console.log(req.body)
+     console.log("CONTROLLER HIT");
+    console.log(req.body);
     try {
-        const { name, details, author, status, description, level, learnPoints, price, category, duration } = req.body
-        let thumbnail;
+      const {
+  name,
+  details,
+  author,
+  status,
+  description,
+  level,
+  learnPoints,
+  price,
+  category,
+  duration,
+  ogPrice
+} = req.body;
+        let thumbnail={};
         if (req.file) {
             thumbnail.public_id = req.file.filename,
                 thumbnail.url = req.file.path
@@ -124,7 +138,7 @@ exports.adddetails = async (req, res) => {
         }
         const newcourse = await course.create({
             name, details, author, status, description, level,
-            learnPoints: points, price, category, duration, thumbnail
+            learnPoints: points, price, category, duration, thumbnail,ogPrice
         });
         if (newcourse.status === "saved") {
             req.flash("success", "Course saved succesfully");
@@ -137,13 +151,25 @@ exports.adddetails = async (req, res) => {
         }
         if (req.session.returnTo) delete req.session.returnTo;
         return res.redirect(`/admin/coursesmangement/update/${newcourse.id}`)
-    } catch (err) {
-        console.log(err)
-        if (err.name === "ValidationError") {
-            req.flash("error", err.message);
-        }
-        return res.redirect("/admin/addnewcourse");
+    }catch (err) {
+    console.log("FULL ERROR:", err);
+
+    let firstError = "Something went wrong";
+
+    if (err.name === "ValidationError") {
+        firstError = Object.values(err.errors)[0].message;
     }
+
+    const categories = await category.find({ status: "active" })
+    return res.render("course-form", {
+        error: firstError,
+        formData: req.body,
+        categories,
+        course: null,
+        existingchapater: []
+
+    });
+}
 }
 
 

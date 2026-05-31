@@ -40,7 +40,7 @@ router.get('/signup', restrictUnauthenticatedRoutes, (req, res) => {
     res.render('signup', { fieldErrors: {}, formData: {} })
 })
 router.get('/verify-otp', restrictUnauthenticatedRoutes, (req, res) => {
-    res.render('otp', { errorMessage: null })
+    res.render('otp', { errorMessage: null,otpExpiresAt: req.session.otpExpiresAt || 0 })
 })
 
 router.get('/login', restrictUnauthenticatedRoutes, (req, res) => {
