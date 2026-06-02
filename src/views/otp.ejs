@@ -76,8 +76,23 @@
 
         .timer-section {
             margin-top: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #64748b;
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #timer-text {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        #timer {
+            font-weight: 700;
+            color: #0f8076;
+            margin-left: 4px;
         }
 
         #resend {
@@ -85,23 +100,22 @@
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: color 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 6px 16px;
+            border-radius: 12px;
+            background-color: rgba(43, 198, 172, 0.1);
+            display: inline-block;
         }
 
         #resend:hover {
-            color: #0f8076;
+            color: #ffffff;
+            background-color: #11998e;
+            box-shadow: 0 4px 12px rgba(17, 153, 142, 0.25);
+            transform: translateY(-1px);
         }
 
-        #resend.disabled {
-            color: #94a3b8;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        #timer {
-            font-weight: 600;
-            color: #0f8076;
-            margin-left: 4px;
+        #resend:active {
+            transform: translateY(0);
         }
 
         .btn-confirm {
@@ -165,8 +179,8 @@
             </div>
 
             <div class="timer-section">
-                <a id="resend" onclick="resendOTP()">Resend Code</a>
-                <span id="timer"></span>
+                <span id="timer-text" style="display: none;">Resend code in <span id="timer"></span></span>
+                <a id="resend" onclick="resendOTP()" style="display: none;">Resend Code</a>
             </div>
 
             <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
@@ -181,105 +195,165 @@
         </form>
     </div>
 
-    <script>
-        // Uses relative remaining milliseconds calculated on the server to prevent device clock drift bugs
-        let remainingTime = <%= typeof remainingTime !== 'undefined' ? remainingTime : 0 %>;
-        console.log(remainingTime);
-        let otpExpiresAt = Date.now() + remainingTime;
-        let countdown;
+   <script>
 
-        function startTimer() {
-            clearInterval(countdown);
+let remainingTime =
+    Number("<%= typeof remainingTime !== 'undefined' ? remainingTime : 0 %>");
 
-            const resendLink = document.getElementById("resend");
-            const timerSpan = document.getElementById("timer");
+if (isNaN(remainingTime) || remainingTime < 0) {
+    remainingTime = 0;
+}
 
-            let time = Math.floor((otpExpiresAt - Date.now()) / 1000);
+let otpExpiresAt = Date.now() + remainingTime;
 
-            if (time <= 0) {
-                resendLink.textContent = "Resend Code";
-                resendLink.classList.remove("disabled");
-                timerSpan.textContent = "";
-                return;
-            }
+let countdown = null;
 
-            resendLink.classList.add("disabled");
+const resendLink = document.getElementById("resend");
+const timerText = document.getElementById("timer-text");
+const timerSpan = document.getElementById("timer");
 
-            countdown = setInterval(() => {
-                time = Math.floor((otpExpiresAt - Date.now()) / 1000);
+function updateUI() {
 
-                if (time <= 0) {
-                    clearInterval(countdown);
-                    resendLink.textContent = "Resend Code";
-                    resendLink.classList.remove("disabled");
-                    timerSpan.textContent = "";
-                    return;
-                }
+    const secondsLeft = Math.max(
+        0,
+        Math.floor((otpExpiresAt - Date.now()) / 1000)
+    );
 
-                let minutes = Math.floor(time / 60);
-                let seconds = time % 60;
+    if (secondsLeft <= 0) {
 
-                resendLink.textContent = "Resend Code";
-                timerSpan.textContent = `(${minutes}:${seconds < 10 ? '0' + seconds : seconds})`;
-            }, 1000);
+        clearInterval(countdown);
+
+        timerText.style.display = "none";
+
+        resendLink.style.display = "inline-block";
+        resendLink.style.pointerEvents = "auto";
+        resendLink.style.opacity = "1";
+
+        return;
+    }
+
+    resendLink.style.display = "none";
+    resendLink.style.pointerEvents = "none";
+
+    timerText.style.display = "inline-block";
+
+    const minutes = Math.floor(secondsLeft / 60);
+    const seconds = secondsLeft % 60;
+
+    timerSpan.textContent =
+        `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+function startTimer() {
+
+    clearInterval(countdown);
+
+    updateUI();
+
+    if (otpExpiresAt > Date.now()) {
+        countdown = setInterval(updateUI, 1000);
+    }
+}
+
+startTimer();
+
+async function resendOTP() {
+
+    if (resendLink.style.display === "none") {
+        return;
+    }
+
+    resendLink.style.pointerEvents = "none";
+    resendLink.textContent = "Sending...";
+
+    try {
+
+        const response = await fetch("/resend-otp", {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+
+            resendLink.textContent = "Resend Code";
+            resendLink.style.pointerEvents = "auto";
+
+            alert(data.message);
+
+            return;
         }
+
+        otpExpiresAt =
+            Date.now() + data.remainingTime;
+
+        resendLink.textContent = "Resend Code";
 
         startTimer();
 
-        function resendOTP() {
-            const resendLink = document.getElementById("resend");
-            if (resendLink.classList.contains("disabled")) return;
+    } catch (err) {
 
-            fetch("/resend-otp", {
-                method: "POST"
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // Update countdown with relative time sent back by backend
-                    otpExpiresAt = Date.now() + data.remainingTime;
-                    startTimer();
-                } else {
-                    alert(data.message || "Failed to resend OTP");
-                }
-            })
-            .catch(err => {
-                console.error("Resend OTP failed:", err);
-            });
+        console.error(err);
+
+        resendLink.textContent = "Resend Code";
+        resendLink.style.pointerEvents = "auto";
+
+        alert("Failed to resend OTP");
+    }
+}
+
+const inputs =
+    document.querySelectorAll('.otp-inputs input');
+
+inputs.forEach((input, index) => {
+
+    input.addEventListener('input', () => {
+
+        input.value =
+            input.value.replace(/[^0-9]/g, '');
+
+        if (
+            input.value &&
+            index < inputs.length - 1
+        ) {
+            inputs[index + 1].focus();
         }
+    });
 
-        // OTP inputs auto-move and paste listeners
-        const inputs = document.querySelectorAll('.otp-inputs input');
+    input.addEventListener('keydown', (e) => {
 
-        inputs.forEach((input, index) => {
-            // Strip out non-numeric characters and advance focus
-            input.addEventListener('input', (e) => {
-                input.value = input.value.replace(/[^0-9]/g, '');
-                if (input.value.length === 1 && index < inputs.length - 1) {
-                    inputs[index + 1].focus();
+        if (
+            e.key === 'Backspace' &&
+            input.value === '' &&
+            index > 0
+        ) {
+            inputs[index - 1].focus();
+        }
+    });
+
+    input.addEventListener('paste', (e) => {
+
+        const pasted =
+            e.clipboardData.getData('text');
+
+        if (
+            /^\d{6}$/.test(pasted)
+        ) {
+
+            pasted.split('').forEach(
+                (digit, i) => {
+                    inputs[i].value = digit;
                 }
-            });
+            );
 
-            // Handle backspace navigation
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && input.value === '' && index > 0) {
-                    inputs[index - 1].focus();
-                }
-            });
+            inputs[5].focus();
 
-            // 6-digit automatic copy/paste support on any input field
-            input.addEventListener('paste', (e) => {
-                const pasteData = e.clipboardData.getData('text').trim();
-                if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {
-                    inputs.forEach((inp, idx) => {
-                        inp.value = pasteData[idx];
-                    });
-                    inputs[5].focus();
-                    e.preventDefault();
-                }
-            });
-        });
-    </script>
+            e.preventDefault();
+        }
+    });
+});
+
+</script>
 </body>
 
 </html>

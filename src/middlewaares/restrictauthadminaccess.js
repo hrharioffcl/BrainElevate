@@ -17,7 +17,7 @@ console.log(decoded.role)
         // ✅ Redirect based on role inside token
         const roleRedirects = {
             super_admin: '/admin/superadmindashboard',
-            editor: '',
+            contributor: '/admin/contributorDashBoard',
             moderator: ''
         };
 

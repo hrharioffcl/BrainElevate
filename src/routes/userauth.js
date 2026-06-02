@@ -1,6 +1,14 @@
 const express = require("express")
-const { signup, verifyOtp, resendotp, login, forgotpassword, resetpassword, userLogOut } = require("../controllers/authcontrollers")
-const { gethome } = require("../controllers/userHomeController")
+const {
+    signup,
+    verifyOtp,
+    resendotp,
+    login,
+    forgotpassword,
+    resetpassword,
+    userLogOut,
+    getVerifyOtp
+} = require("../controllers/authcontrollers");const { gethome } = require("../controllers/userHomeController")
 const { getcourse, getcoursedetails, getBoughtCourse, tryFreeCourse, postAddReview, getViewChapter, updateChapterProgress,continueLearning } = require("../controllers/userCourseController")
 const router = express.Router();
 const { verifytoken } = require("../middlewaares/userAuthMiddleware");
@@ -39,9 +47,11 @@ router.get('/signup', restrictUnauthenticatedRoutes, (req, res) => {
     }
     res.render('signup', { fieldErrors: {}, formData: {} })
 })
-router.get('/verify-otp', restrictUnauthenticatedRoutes, (req, res) => {
-    res.render('otp', { errorMessage: null,otpExpiresAt: req.session.otpExpiresAt || 0 })
-})
+router.get(
+    '/verify-otp',
+    restrictUnauthenticatedRoutes,
+    getVerifyOtp
+);
 
 router.get('/login', restrictUnauthenticatedRoutes, (req, res) => {
     let fieldErrors = {};

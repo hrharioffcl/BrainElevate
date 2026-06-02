@@ -6,7 +6,7 @@ const {
   getverifyotp, getresetpassword, adminlogout 
 } = require("../controllers/authcontrollers")
 
-const { getsuperadmindashboard } = require("../controllers/admindashboard.controller")
+const { getsuperadmindashboard ,getContributorDashboard} = require("../controllers/admindashboard.controller")
 
 const { 
   getmanageadmin, addadmin, deleteadmin, editadmin, 
@@ -53,9 +53,10 @@ router.get('/superadmindashboard', verifyadmintoken, getsuperadmindashboard)
 router.get("/managerdashboard", (req, res) => {
   res.send("Manager Dashboard — coming soon!");
 });
-router.get("/contributerdashboard", (req, res) => {
-  res.send("Manager Dashboard — coming soon!");
-});
+router.get(
+    '/contributordashboard',
+    verifyadmintoken, getContributorDashboard
+);
 
 // Admin Management
 router.get('/manage-admin', verifyadmintoken, getmanageadmin)

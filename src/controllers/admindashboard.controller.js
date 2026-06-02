@@ -15,3 +15,7 @@ res.render('superadmindashboard', {
   })
 
 }
+
+exports.getContributorDashboard = async (req, res) => {
+    res.render('contributor/contributorDashBoard');
+};
