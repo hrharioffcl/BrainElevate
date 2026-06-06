@@ -9,7 +9,7 @@ const chapterSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: true,
+  required: [true, "Chapter title is required"],
       trim: true,
     },
     lectureVideo: {
@@ -41,7 +41,7 @@ const chapterSchema = new mongoose.Schema(
     },
     order: {
       type: Number,        // order/sequence in course
-      required: true,
+  required: [true, "Chapter order is required"],
     },
   },
   {

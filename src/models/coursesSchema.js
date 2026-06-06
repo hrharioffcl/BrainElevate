@@ -70,17 +70,46 @@ duration: {
 
  
  
-  
-  status: {
-    type: String,
-    enum: ["draft", "saved", "published"],
-    default: "draft",
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
- 
+ status: {
+  type: String,
+  enum: [
+    "draft",
+    "saved",
+    "pending",
+    "approved",
+    "rejected",
+    "published"
+  ],
+  default: "draft",
+},
+
+createdBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Admin",
+  default: null
+},
+
+approvedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Admin",
+  default: null
+},
+
+approvedAt: {
+  type: Date,
+  default: null
+},
+
+approvalNote: {
+  type: String,
+  trim: true,
+  default: ""
+},
+
+isDeleted: {
+  type: Boolean,
+  default: false,
+},
 
   slug: {
   type: String,

@@ -444,7 +444,6 @@ exports.adminlogin = async (req, res) => {
     try {
 
         const isadmin = await Admin.findOne({ email });
-       
         if (!isadmin) {
             fieldErrors.email = "Not allowed";
             return res.render('adminlogin', { fieldErrors })
@@ -480,7 +479,7 @@ exports.adminlogin = async (req, res) => {
              console.log(isadmin)
             console.log("coontributer daashboard coming soon")
 
-            res.redirect('/admin/contributorDashBoard')
+            res.redirect('/admin/contributor/contributorDashBoard')
         }
 
     } catch (error) {

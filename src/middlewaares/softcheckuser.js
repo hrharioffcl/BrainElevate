@@ -3,7 +3,7 @@ const User = require("../models/userSchema");
 const softCheckUser = async (req, res, next) => {
     
     const token = req.cookies.jwt
-console.log("one")
+console.log("softCheckUser:", req.originalUrl);
     if (!token) {
 
 

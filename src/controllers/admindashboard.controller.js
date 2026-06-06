@@ -1,3 +1,6 @@
+const course = require("../models/coursesSchema")
+
+
 exports.getsuperadmindashboard =async (req,res)=>{
 res.render('superadmindashboard', {
     adminName: "Miakel Corper",
@@ -15,7 +18,38 @@ res.render('superadmindashboard', {
   })
 
 }
-
 exports.getContributorDashboard = async (req, res) => {
-    res.render('contributor/contributorDashBoard');
+
+    const totalCourses = await course.countDocuments({
+        createdBy: req.admin._id
+    });
+
+    const pendingCourses = await course.countDocuments({
+        createdBy: req.admin._id,
+        status: "pending"
+    });
+
+    const publishedCourses = await course.countDocuments({
+        createdBy: req.admin._id,
+        status: { $in: ["approved", "published"] }
+    });
+
+    const rejectedCourses = await course.countDocuments({
+        createdBy: req.admin._id,
+        status: "rejected"
+    });
+
+    const recentCourses = await course.find({
+        createdBy: req.admin._id
+    })
+    .sort({ updatedAt: -1 })
+    .limit(5);
+console.log("route hitt2")
+    res.render("contributor/contributorDashBoard", {
+        totalCourses,
+        pendingCourses,
+        publishedCourses,
+        rejectedCourses,
+        recentCourses
+    });
 };

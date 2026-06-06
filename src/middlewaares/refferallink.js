@@ -1,5 +1,6 @@
 const createReferralLink = async (req,res,next)=>{
     console.log("two")
+    console.log("createReferralLink:", req.originalUrl);
 try {
     if(req.user&&req.user.isDeleted===false){//req.user from token
        res.locals.referralLink = `http://localhost:8000/signup?ref=${req.user.referralCode}`;

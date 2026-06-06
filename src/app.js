@@ -78,15 +78,16 @@ app.use((req, res, next) => {
     next();
 });
 
-
-app.use("/",softCheckUser,createReferralLink,userroutes)
-app.use("/", softCheckUser,createReferralLink,googleauthRoutes);
-
 app.use('/admin',(req, res, next) => {
     const openPaths = ["/login", "/logout","/forgot-password","/verify-otp","/reset-password"];
     if (openPaths.includes(req.path)) return next();
     verifyadmintoken(req, res, next);
   },adminroutes)
+  
+app.use("/", softCheckUser,createReferralLink,googleauthRoutes);
+
+app.use("/",softCheckUser,createReferralLink,userroutes)
+
 
 
 

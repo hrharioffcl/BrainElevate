@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="d-flex" style="background-color: black;">
+
+  <!-- Sidebar -->
+  <%- include("../partials/contributorSideBar") %>
+<!-- Main Content -->
+    <div class="main-content p-4 w-100"  style="background-color:#000000;">
+      <h4 class="text-white mb-4">Courses</h4>
+
+<!-- Top controls -->
+
+
+  <!-- Filters -->
+<form method="GET" action="/admin/contributor/my-courses" class="d-flex flex-wrap gap-2 mb-3 justify-content-between">
+  <!-- Search -->
+  <input type="text" name="search" value="<%= search %>" 
+         placeholder="Search courses..." 
+         class="form-control search-box rounded-pill" style="max-width: 250px;"
+       onkeypress="if(event.key === 'Enter'){ this.form.submit(); }"> <!-- auto-submit when typing -->
+
+  <!-- Status Filter -->
+  <select name="status" class="form-select custom-select rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+    <option value="all" <%= statusFilter==="all" ? "selected" : "" %>>All Status</option>
+    <option value="draft" <%= statusFilter==="draft" ? "selected" : "" %>>Draft</option>
+    <option value="approved" <%= statusFilter==="published" ? "selected" : "" %>>Published</option>
+    <option value="pending" <%= statusFilter==="pending" ? "selected" : "" %>>Pending Approval</option>
+        <option value="rejected" <%= statusFilter==="Rejected" ? "selected" : "" %>>Rejected</option>
+
+  </select>
+
+  <!-- Level Filter -->
+  <select name="level" class="form-select  custom-select  rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+    <option value="all" <%= levelFilter==="all" ? "selected" : "" %>>All Levels</option>
+    <option value="Beginner" <%= levelFilter==="Beginner" ? "selected" : "" %>>Beginner</option>
+    <option value="Intermediate" <%= levelFilter==="Intermediate" ? "selected" : "" %>>Intermediate</option>
+    <option value="Advanced" <%= levelFilter==="Advanced" ? "selected" : "" %>>Advanced</option>
+  </select>
+
+
+  <!-- Paid/Free Filter -->
+<select name="price" class="form-select custom-select rounded-pill" style="max-width: 180px;" onchange="this.form.submit()">
+  <option value="all" <%= priceFilter === "all" ? "selected" : "" %>>All Courses</option>
+  <option value="free" <%= priceFilter === "free" ? "selected" : "" %>>Free</option>
+  <option value="paid" <%= priceFilter === "paid" ? "selected" : "" %>>Paid</option>
+</select>
+
+
+  <a href="/admin/addnewcourse" class="btn cousre-btn rounded-pill">
+    <i class="bi bi-plus-circle"></i> Add Course
+  </a>
+</form>
+
+
+ 
+<div class="row g-4 justify-content-center coursecard" >
+  <% if (course && course.length > 0) { %>
+    <% course.forEach(course => { %>
+      <div class="col-md-6 col-lg-5 d-flex">
+        <div class="course-card-custom w-100">
+          <!-- Top row: status + actions -->
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="badge
+<% if(course.status==='draft'){ %> bg-secondary <% } %>
+<% if(course.status==='pending'){ %> bg-warning <% } %>
+<% if(course.status==='approved'){ %> bg-success <% } %>
+<% if(course.status==='rejected'){ %> bg-danger <% } %>
+text-white"><%= course.status || "Approved" %></span>
+            <div class="d-flex gap-3">
+              <a href="/admin/coursesmangement/update/<%= course._id %>" class="text-info">
+                <i class="bi bi-pencil-square fs-5"></i>
+              </a>
+            <form action="/admin/coursesmangement/delete/<%= course._id %>" method="POST" style="display:inline;">
+<% if (
+    course.status === "draft" ||
+    course.status === "rejected"
+) { %>
+
+<button
+    type="button"
+    class="btn btn-link text-danger p-0 border-0 bg-transparent"
+    onclick="confirmDelete('<%= course._id %>')">
+
+    <i class="bi bi-trash fs-5"></i>
+
+</button>
+
+<% } %>
+
+</form>
+
+            </div>
+          </div>
+
+          <!-- Course Title -->
+          <h3 class="course-title mt-3 mb-2">
+            <%= course.name %> <br>
+        <br>
+            ₹ <%= course.price %>
+          </h3>
+
+          <!-- Divider -->
+          <hr class="custom-divider mt">
+        
+              <!-- Top row: status + actions -->
+          <div class="d-flex justify-content-between align-items-start">
+            <span class="badge  text-white"><%= course.author %></span>
+            <div class="d-flex gap-3 mt-2">
+           <span class="badge text-white  <% if (course.level === 'Beginner') { %> bg-beginner <% } %>
+       <% if (course.level === 'Intermediate') { %> bg-intermediate <% } %>
+       <% if (course.level === 'Advanced') { %> bg-advanced <% } %>"><%= course.level %></span>
+           
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p class="text-center">No courses available.</p>
+  <% } %>
+</div>
+
+<!-- Pagination -->
+<nav class="d-flex justify-content-center mt-3">
+  <ul class="pagination pagination-dark pagination-sm flex-wrap">
+
+    <!-- Previous -->
+    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+      <a class="page-link rounded-circle"
+     href="admin/contributor/my-courses?page=<%= currentPage-1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     ‹
+  </a>
+    </li>
+
+    <!-- Page Numbers -->
+    <% for(let i = 1; i <= totalPages; i++) { %>
+      <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+      <a class="page-link rounded-circle"
+   href="admin/contributor/my-courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>&search=<%= search %>">
+   <%= i %>
+</a>
+
+      </li>
+    <% } %>
+
+    <!-- Next -->
+    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+      <a class="page-link rounded-circle"
+     href="admin/contributor/my-courses?page=<%= currentPage+1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     ›
+  </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+<%- include("../partials/flashalerts") %>
+
+</body>
+<script>
+  function confirmDelete(courseId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This will delete the course and all related chapters!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Create and submit hidden form
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/coursesmangement/delete/${courseId}`;
+        document.body.appendChild(form);
+        form.submit();
+      }
+    });
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+</html>

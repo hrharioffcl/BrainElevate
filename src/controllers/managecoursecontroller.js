@@ -67,19 +67,123 @@ exports.getcoursemanagement = async (req, res) => {
     }
 };
 
+//mycourses for contributers
+
+exports.getContributorCourses = async (req, res) => {
+    try {
+
+        let page = parseInt(req.query.page) || 1;
+        let limit = 6;
+        let skip = (page - 1) * limit;
+
+        const { search, status, level, price } = req.query;
+
+        let filter = {
+            createdBy: req.admin._id
+        };
+
+        if (search && search.trim() !== "") {
+            filter.name = {
+                $regex: search.trim(),
+                $options: "i"
+            };
+        }
+
+        if (status && status !== "all") {
+            filter.status = status;
+        }
+
+        if (level && level !== "all") {
+            filter.level = level;
+        }
+
+        if (price && price !== "all") {
+            if (price === "free") {
+                filter.price = 0;
+            } else {
+                filter.price = { $gt: 0 };
+            }
+        }
+
+        const totalCourses =
+            await course.countDocuments(filter);
+
+        const existingcourse =
+            await course.find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit);
+
+        res.render(
+            "contributor/coursemanagement-contributor",
+            {
+                course: existingcourse,
+                currentPage: page,
+                totalPages: Math.ceil(totalCourses / limit),
+                search: search || "",
+                statusFilter: status || "all",
+                levelFilter: level || "all",
+                priceFilter: price || "all"
+            }
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+        req.flash(
+            "error",
+            "Failed to load courses"
+        );
+
+        res.redirect(
+            "/admin/contributor/contributorDashBoard"
+        );
+    }
+};
 
 exports.getaddnewcourse = async (req, res) => {
+    console.log(
+        "Logged in:",
+        req.admin.fullName,
+        req.admin.role
+    );
     const categories = await category.find({ status: "active" })
-    res.render('course-form', { course: null, existingchapater: null, categories,formData:{} ,error:null})
+    res.render('course-form', {
+        course: null, existingchapater: null, categories, formData: {}, error: null,
+        role: req.admin.role
+    })
 }
 
 exports.getupdatecourse = async (req, res) => {
     const id = req.params.course_id
     const existingcourse = await course.findById(id)
+    if (req.admin.role === "contributor") {
+
+    if (
+        existingcourse.status === "pending" ||
+        existingcourse.status === "approved" ||
+        existingcourse.status === "published"
+    ) {
+          req.flash(
+        "error",
+        "Course waiting for approval,cannot be edited"
+    );
+        return    res.redirect(
+            "/admin/contributor/my-courses"
+        );
+    }
+}
+    if (
+        req.admin.role === "contributor" &&
+        existingcourse.createdBy?.toString() !== req.admin._id.toString()
+    ) {
+        return res.status(403).send("Access Denied");
+    }
     const existingchapater = await chapter.find({ courseId: id })
     const categories = await category.find({ status: "active" })
 
-    res.render('course-form', { course: existingcourse, existingchapater, categories ,formData:{} ,error:null})
+    res.render('course-form', { course: existingcourse, existingchapater, categories, formData: {}, error: null, role: req.admin.role })
 }
 exports.getaddnewchapter = async (req, res) => {
     const existingcourse = await course.findById(req.params.course_id);
@@ -93,24 +197,25 @@ exports.getaddnewchapter = async (req, res) => {
 }
 
 exports.adddetails = async (req, res) => {
+
     console.log(req.body)
-     console.log("CONTROLLER HIT");
+    console.log("CONTROLLER HIT");
     console.log(req.body);
     try {
-      const {
-  name,
-  details,
-  author,
-  status,
-  description,
-  level,
-  learnPoints,
-  price,
-  category,
-  duration,
-  ogPrice
-} = req.body;
-        let thumbnail={};
+        const {
+            name,
+            details,
+            author,
+            status,
+            description,
+            level,
+            learnPoints,
+            price,
+            category,
+            duration,
+            ogPrice
+        } = req.body;
+        let thumbnail = {};
         if (req.file) {
             thumbnail.public_id = req.file.filename,
                 thumbnail.url = req.file.path
@@ -137,8 +242,20 @@ exports.adddetails = async (req, res) => {
             points = [learnPoints.trim()];
         }
         const newcourse = await course.create({
-            name, details, author, status, description, level,
-            learnPoints: points, price, category, duration, thumbnail,ogPrice
+            name,
+            details,
+            author,
+            status,
+            description,
+            level,
+            learnPoints: points,
+            price,
+            category,
+            duration,
+            thumbnail,
+            ogPrice,
+
+            createdBy: req.admin._id
         });
         if (newcourse.status === "saved") {
             req.flash("success", "Course saved succesfully");
@@ -151,25 +268,25 @@ exports.adddetails = async (req, res) => {
         }
         if (req.session.returnTo) delete req.session.returnTo;
         return res.redirect(`/admin/coursesmangement/update/${newcourse.id}`)
-    }catch (err) {
-    console.log("FULL ERROR:", err);
+    } catch (err) {
+        console.log("FULL ERROR:", err);
 
-    let firstError = "Something went wrong";
+        let firstError = "Something went wrong";
 
-    if (err.name === "ValidationError") {
-        firstError = Object.values(err.errors)[0].message;
+        if (err.name === "ValidationError") {
+            firstError = Object.values(err.errors)[0].message;
+        }
+
+        const categories = await category.find({ status: "active" })
+        return res.render("course-form", {
+            error: firstError,
+            formData: req.body,
+            categories,
+            course: null,
+            existingchapater: [],
+            role: req.admin.role
+        });
     }
-
-    const categories = await category.find({ status: "active" })
-    return res.render("course-form", {
-        error: firstError,
-        formData: req.body,
-        categories,
-        course: null,
-        existingchapater: []
-
-    });
-}
 }
 
 
@@ -187,7 +304,12 @@ exports.updatedetails = async (req, res) => {
 
         const existing = await course.findById(id)
 
-
+        if (
+            req.admin.role === "contributor" &&
+            existing.createdBy?.toString() !== req.admin._id.toString()
+        ) {
+            return res.status(403).send("Access Denied");
+        }
 
         if (!existing) {
             req.flash("error", "course not found");
@@ -259,8 +381,18 @@ exports.updatedetails = async (req, res) => {
 exports.addchapter = async (req, res) => {
     try {
         const courseId = req.params.course_id
-        const { title, lectureVideo, lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
 
+        console.log(req.params)
+        const { title, lectureVideo, lectureDescription, lectureNotes, lecturePdf, order } = req.body
+        const status = "draft";
+        const existingcourse =
+            await course.findById(courseId);
+        if (
+            req.admin.role === "contributor" &&
+            existingcourse.createdBy?.toString() !== req.admin._id.toString()
+        ) {
+            return res.status(403).send("Access Denied");
+        }
         let videoUrl = null;
         let videoKey = null;
 
@@ -318,14 +450,15 @@ exports.geteditchapter = async (req, res) => {
 exports.editchapter = async (req, res) => {
     try {
         const { course_id, chapter_id } = req.params
-        const { title, lectureDescription, lectureNotes, lecturePdf, status, order } = req.body
+
+        const { title, lectureDescription, lectureNotes, lecturePdf,  order } = req.body
 
         const existingchapter = await chapter.findById(chapter_id)
         //updaate existing chapter details
         existingchapter.title = title;
         existingchapter.lectureDescription = lectureDescription;
         existingchapter.lectureNotes = lectureNotes;
-        existingchapter.status = status;
+
         existingchapter.order = order;
 
         if (req.file) {

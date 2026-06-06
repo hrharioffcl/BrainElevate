@@ -27,7 +27,7 @@ if (req.user) {
             await Enrollment.find({
                 studentId: req.user._id,
                 progress: {
-                    $gt: 0,
+                  
                     $lt: 100
                 }
             })
