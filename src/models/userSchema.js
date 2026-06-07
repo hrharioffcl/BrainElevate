@@ -53,13 +53,6 @@ const userSchema = new mongoose.Schema(
   trim: true,
   unique: true,
   sparse: true,
-  validate: {
-    validator: function(value) {
-      if (!value) return true;
-      return /^[0-9]{10}$/.test(value);
-    },
-    message: "Contact number must contain exactly 10 digits"
-  }
 },
         countryCode: {
             type: String,

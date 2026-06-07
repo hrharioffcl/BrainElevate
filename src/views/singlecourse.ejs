@@ -2,262 +2,324 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-        <%= course.name %>
-    </title>
-    <link rel="stylesheet" href="/css/header.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/coursepage.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= course.name %>
+  </title>
+  <link rel="stylesheet" href="/css/header.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/coursepage.css" />
 </head>
 
 <style></style>
+
 <body>
-    <!-- Navbar Partial -->
-    <%- include('partials/header') %>
+  <!-- Navbar Partial -->
+  <%- include('partials/header') %>
 
-        <!-- Full-Width Header Section -->
-        <section class="course-header-section">
-            <div class="course-header container">
-                <div class="course-header-left">
-                    <h1>
-                        <%= course.name %>
-                    </h1>
+    <!-- Full-Width Header Section -->
+    <section class="course-header-section">
+      <div class="course-header container">
+        <div class="course-header-left">
+          <h1>
+            <%= course.name %>
+          </h1>
 
-               <p class="subtitle">
-    <%= course.details %>
-</p>
+          <p class="creator">Created by <strong>
+              <%= course.author %>
+            </strong></p>
+          <p class="subtitle">
+            <%= course.details %>
+          </p>
 
-                    <p class="creator">Created by <strong>
-                            <%= course.author %>
-                        </strong></p>
-                    <h3 class="course-info">
-                        Duration: <%= course.duration %> <br>
-                            Level:<%= course.level %>
+          <h3 class="course-info">
+            Duration: <%= course.duration %> <br>
+              Level:<%= course.level %>
 
-                    </h3>
-                </div>
-
-                <!-- Sidebar Card on Top Right -->
-                <div class="card course-sidebar">
-                    <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.name %>">
-                    <div class="card-body">
-                        <div class="course-price mb-3">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <h6 class="text-muted text-decoration-line-through">₹<%= course.ogPrice %>
-                                </h6>
-                                <h2 class="ms-2">₹<%= course.price %>
-                                </h2>
-                            </div>
-
-                            <% if (!course.inCart && !course.enrolled&&!course.freeCourse) { %>
-                                <form action="/buyNow" method="POST">
-                                    <input type="hidden" name="courseId" value="<%= course._id %>">
-                                    <button type="submit">Buy Course Now</button>
-                                </form>
-                                <% } %>
-
-
-
-                                    <% if (course.inCart) { %>
-                                        <a href="/profile/<%= user.fullName %>/cart" class="btn ">
-                                            Go To Cart
-                                        </a>
-
-                                        <% } else if (course.enrolled) { %>
-                                            <a href="/profile/<%= user.fullName %>/mylearning/<%= course.slug %>/<%= course.eid %>"
-                                                class="btn ">
-                                                Continue Learning
-                                            </a>
-                                            <% } else if (course.freeCourse) { %>
-                                                <form action="/tryFreeCourse" method="POST">
-                                                    <input type="hidden" name="courseId" value="<%= course._id %>">
-                                                    <button style="background-color: goldenrod;" type="submit">Try
-                                                        Course For Free</button>
-                                                </form>
-
-                                                </a>
-                                                <% } else { %>
-                                                    <form action="/addToCart" method="POST">
-                                                        <input type="hidden" name="courseId" value="<%= course._id %>">
-                                                        <button type="submit" class="btn btn-outline-primary">Add To
-                                                            Cart</button>
-                                                    </form>
-                                                    <% } %>
-
-
-
-                        </div>
-                        <div class="course-description">
-                            <h6>Course Description</h6>
-                            <p>
-                                <%= course.details %>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Content Below Header -->
-        <section class="course-main-section">
-            <div class="course-main container">
-                <h2>What You'll Learn</h2>
-                <ul>
-
-                    <% course.learnPoints.forEach(point=> { %>
-                        <li>
-
-
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                version="1.1" width="1.5em" height="1.5em" viewBox="0 0 256 256" xml:space="preserve">
-                                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
-                                    transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
-                                    <polygon
-                                        points="8.46,74.19 0,65.73 38.88,26.84 54.7,42.66 70.59,26.76 79.05,35.23 54.7,59.58 38.88,43.77 "
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(16, 223, 241); fill-rule: nonzero; opacity: 1;"
-                                        transform="  matrix(1 0 0 1 0 0) " />
-                                    <polygon points="61.19,23.53 90,15.81 82.28,44.63 "
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(16, 223, 241); fill-rule: nonzero; opacity: 1;"
-                                        transform="  matrix(1 0 0 1 0 0) " />
-                                </g>
-                            </svg>
-
-
-                            <%= point %>
-                        </li>
-                        <% }) %>
-                </ul>
-
-
-
-                <h2>Course Description</h2>
-                <p>
-                    <%= course.description %>
-                </p>
-                <!-- Reviews go here -->
-              <section class="reviews-section mt-5">
-  <div class="container">
-
-    <h2 class="mb-4">Customer Reviews</h2>
-
-    <div class="row">
-
-      <!-- LEFT: Rating Summary -->
-      <div class="col-md-4">
-
-        <!-- Average -->
-        <h1 class="fw-bold">
-          <%= reviewStats.avgRating.toFixed(1) %>
-          <span class="fs-5 text-muted">/ 5</span>
-        </h1>
-
-        <!-- Stars -->
-        <div class="mb-2">
-          <% for (let i = 1; i <= 5; i++) { %>
-            <i class="bi <%= i <= Math.round(reviewStats.avgRating) ? 'bi-star-fill text-warning' : 'bi-star text-muted' %>"></i>
-          <% } %>
+          </h3>
         </div>
 
-        <p class="text-muted">
-          <%= reviewStats.totalReviews %> global ratings
-        </p>
- 
-        <hr>
-
-        <% const total = reviewStats.totalReviews || 1; %>
-
-        <!-- Star breakdown -->
-        <% [5,4,3,2,1].forEach(star => { %>
-          <a href="?rating=<%= star %>" class="text-decoration-none text-dark">
-            <div class="d-flex align-items-center mb-2">
-
-              <span style="width:50px"><%= star %> ★</span>
-
-              <div class="progress flex-grow-1 mx-2" style="height: 8px;">
-                <div
-                  class="progress-bar bg-warning"
-                  style="width: <%= (reviewStats['star' + star] / total) * 100 %>%">
-                </div>
+        <!-- Sidebar Card on Top Right -->
+        <div class="card course-sidebar">
+          <img src="<%= course.thumbnail.url %>" class="card-img-top" alt="<%= course.name %>">
+          <div class="card-body">
+            <div class="course-price mb-3">
+              <div class="d-flex align-items-center justify-content-center">
+                <h6 class="text-muted text-decoration-line-through">₹<%= course.ogPrice %>
+                </h6>
+                <h2 class="ms-2">₹<%= course.price %>
+                </h2>
               </div>
 
-              <small class="text-muted">
-                <%= Math.round((reviewStats['star' + star] / total) * 100) %>%
-              </small>
+              <% if (!course.inCart && !course.enrolled&&!course.freeCourse) { %>
+                <form action="/buyNow" method="POST">
+                  <input type="hidden" name="courseId" value="<%= course._id %>">
+                  <button type="submit">Buy Course Now</button>
+                </form>
+                <% } %>
+
+
+
+                  <% if (course.inCart) { %>
+                    <a href="/profile/<%= user.fullName %>/cart" class="btn ">
+                      Go To Cart
+                    </a>
+
+                    <% } else if (course.enrolled) { %>
+                      <a href="/profile/<%= user.fullName %>/mylearning/<%= course.slug %>/<%= course.eid %>"
+                        class="btn ">
+                        Continue Learning
+                      </a>
+                      <% } else if (course.freeCourse) { %>
+                        <form action="/tryFreeCourse" method="POST">
+                          <input type="hidden" name="courseId" value="<%= course._id %>">
+                          <button style="background-color: goldenrod;" type="submit">Try
+                            Course For Free</button>
+                        </form>
+
+                        </a>
+                        <% } else { %>
+                          <form action="/addToCart" method="POST">
+                            <input type="hidden" name="courseId" value="<%= course._id %>">
+                            <button type="submit" class="btn btn-outline-primary">Add To
+                              Cart</button>
+                          </form>
+                          <% } %>
+
+
 
             </div>
-          </a>
-        <% }) %>
-
-      </div>
-
-      <!-- RIGHT: Review List -->
-      <div class="col-md-8">
-          <%if(rating){ %>
-<div class="d-flex justify-content-between">
-
-<p class="text-muted">
-          Filterd by <%= rating %> stars
-        </p>
-        
-        <a href="/courses/<%= course.slug %>" class="text-decoration-none">
-        <p class="text-muted te">
-       Clear Filter
-        </p>
-        </a>
-        </div>
-         <% } %>
-        <hr>
-        <!-- Reviews -->
-        <% if (review.length === 0) { %>
-          <p class="text-muted">No reviews available.</p>
-        <% } %>
-
-        <% review.forEach(review => { %>
-          <div class="border-bottom pb-4 mb-4">
-
-            <!-- Title -->
-            <h6 class="fw-bold mb-1"><%= review.title %></h6>
-
-            <!-- Stars + number -->
-            <div class="mb-1">
-              <% for (let i = 1; i <= 5; i++) { %>
-                <i class="bi <%= i <= review.rating ? 'bi-star-fill text-warning' : 'bi-star text-muted' %>"></i>
-              <% } %>
-              <span class="ms-2 text-muted"><%= review.rating %>/5</span>
+            <div class="course-description">
+              <h6>Course Description</h6>
+              <p>
+                <%= course.details %>
+              </p>
             </div>
-
-            <!-- Body -->
-            <p class="mb-1"><%= review.comment %></p>
-
-            <!-- Meta -->
-            <small class="text-muted">
-              Reviewed by <%= review.user.fullName %> on   <%= new Date(review.createdAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }) %>
-            </small>
-
           </div>
-        <% }) %>
-
+        </div>
       </div>
+    </section>
+
+    <!-- Main Content Below Header -->
+    <section class="course-main-section mt-4">
+      <div class="course-main container">
+        <h2>What You'll Learn</h2>
+        <ul>
+
+          <% course.learnPoints.forEach(point=> { %>
+            <li>
+
+
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                width="1.5em" height="1.5em" viewBox="0 0 256 256" xml:space="preserve">
+                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                  transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                  <polygon
+                    points="8.46,74.19 0,65.73 38.88,26.84 54.7,42.66 70.59,26.76 79.05,35.23 54.7,59.58 38.88,43.77 "
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(16, 223, 241); fill-rule: nonzero; opacity: 1;"
+                    transform="  matrix(1 0 0 1 0 0) " />
+                  <polygon points="61.19,23.53 90,15.81 82.28,44.63 "
+                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(16, 223, 241); fill-rule: nonzero; opacity: 1;"
+                    transform="  matrix(1 0 0 1 0 0) " />
+                </g>
+              </svg>
+
+
+              <%= point %>
+            </li>
+            <% }) %>
+        </ul>
+
+
+
+        <h2>Course Description</h2>
+        <p>
+          <%= course.description %>
+        </p>
+<section class="chapters-section mt-5">
+
+    <h2>Course Curriculum</h2>
+
+    <div class="list-group">
+
+        <% chapters.forEach(chapter => { %>
+
+            <div class="list-group-item">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <strong>
+                            <%= chapter.order %>.
+                            <%= chapter.title %>
+                        </strong>
+
+                        <br>
+
+                       <%
+const hours = Math.floor(chapter.totalDuration / 3600);
+const minutes = Math.floor((chapter.totalDuration % 3600) / 60);
+%>
+
+<small class="text-muted">
+  <% if(hours > 0){ %>
+    <%= hours %> hr<%= hours > 1 ? "s" : "" %>
+  <% } %>
+
+  <% if(minutes > 0){ %>
+    <%= minutes %> min<%= minutes > 1 ? "s" : "" %>
+  <% } %>
+</small>
+
+                    </div>
+
+                    <div>
+
+                        <i class="bi bi-lock-fill text-secondary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        <% }) %>
 
     </div>
-  </div>
+
 </section>
 
-                
-            </div>
-        </section>
-        <%- include("partials/flashalerts") %>
+        <!-- Reviews go here -->
+        <section class="reviews-section mt-5 mb-5">
+          <div class="container">
 
-            <!-- Footer Partial -->
-            <%- include('partials/footer') %>
+            <h2 class="mb-4">Customer Reviews</h2>
+
+            <div class="row">
+
+              <!-- LEFT: Rating Summary -->
+              <div class="col-md-4">
+
+                <!-- Average -->
+                <h1 class="fw-bold">
+                  <%= reviewStats.avgRating.toFixed(1) %>
+                    <span class="fs-5 text-muted">/ 5</span>
+                </h1>
+
+                <!-- Stars -->
+                <div class="mb-2">
+                  <% for (let i=1; i <=5; i++) { %>
+                    <i
+                      class="bi <%= i <= Math.round(reviewStats.avgRating) ? 'bi-star-fill text-warning' : 'bi-star text-muted' %>"></i>
+                    <% } %>
+                </div>
+
+                <p class="text-muted">
+                  <%= reviewStats.totalReviews %> global ratings
+                </p>
+
+                <hr>
+
+                <% const total=reviewStats.totalReviews || 1; %>
+
+                  <!-- Star breakdown -->
+                  <% [5,4,3,2,1].forEach(star=> { %>
+                    <a href="?rating=<%= star %>" class="text-decoration-none text-dark">
+                      <div class="d-flex align-items-center mb-2">
+
+                        <span style="width:50px">
+                          <%= star %> ★
+                        </span>
+
+                        <div class="progress flex-grow-1 mx-2" style="height: 8px;">
+                          <div class="progress-bar bg-warning"
+                            style="width: <%= (reviewStats['star' + star] / total) * 100 %>%">
+                          </div>
+                        </div>
+
+                        <small class="text-muted">
+                          <%= Math.round((reviewStats['star' + star] / total) * 100) %>%
+                        </small>
+
+                      </div>
+                    </a>
+                    <% }) %>
+
+              </div>
+
+              <!-- RIGHT: Review List -->
+              <div class="col-md-8">
+                <%if(rating){ %>
+                  <div class="d-flex justify-content-between">
+
+                    <p class="text-muted">
+                      Filterd by <%= rating %> stars
+                    </p>
+
+                    <a href="/courses/<%= course.slug %>" class="text-decoration-none">
+                      <p class="text-muted te">
+                        Clear Filter
+                      </p>
+                    </a>
+                  </div>
+                  <% } %>
+                    <hr>
+                    <!-- Reviews -->
+                    <% if (review.length===0) { %>
+                      <p class="text-muted">No reviews available.</p>
+                      <% } %>
+
+                        <% review.forEach(review=> { %>
+                          <div class="border-bottom pb-4 mb-4">
+
+                            <!-- Title -->
+                            <h6 class="fw-bold mb-1">
+                              <%= review.title %>
+                            </h6>
+
+                            <!-- Stars + number -->
+                            <div class="mb-1">
+                              <% for (let i=1; i <=5; i++) { %>
+                                <i
+                                  class="bi <%= i <= review.rating ? 'bi-star-fill text-warning' : 'bi-star text-muted' %>"></i>
+                                <% } %>
+                                  <span class="ms-2 text-muted">
+                                    <%= review.rating %>/5
+                                  </span>
+                            </div>
+
+                            <!-- Body -->
+                            <p class="mb-1">
+                              <%= review.comment %>
+                            </p>
+
+                            <!-- Meta -->
+                            <small class="text-muted">
+                              Reviewed by <%= review.user.fullName %> on <%= new
+                                  Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric' , month: 'short'
+                                  , day: 'numeric' }) %>
+                            </small>
+
+                          </div>
+                          <% }) %>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+    </section>
+    <%- include("partials/flashalerts") %>
+
+      <!-- Footer Partial -->
+      <%- include('partials/footer') %>
 </body>
 
 </html>

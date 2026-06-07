@@ -158,6 +158,10 @@ exports.getaddnewcourse = async (req, res) => {
 exports.getupdatecourse = async (req, res) => {
     const id = req.params.course_id
     const existingcourse = await course.findById(id)
+    if (!existingcourse) {
+    req.flash("error","Course not found");
+    return res.redirect("/admin/courses");
+}
     if (req.admin.role === "contributor") {
 
     if (
@@ -215,6 +219,55 @@ exports.adddetails = async (req, res) => {
             duration,
             ogPrice
         } = req.body;
+        if (!name || !name.trim()) {
+    throw new Error("Course name is required");
+}
+
+if (name.trim().length < 3) {
+    throw new Error("Course name must be at least 3 characters");
+}
+
+if (!details || !details.trim()) {
+    throw new Error("Course details are required");
+}
+
+if (!author || !author.trim()) {
+    throw new Error("Author name is required");
+}
+
+if (!req.file) {
+    throw new Error("Course thumbnail is required");
+}
+
+if (!description || !description.trim()) {
+    throw new Error("Course description is required");
+}
+
+if (!learnPoints || learnPoints.length === 0) {
+    throw new Error("At least one learning point is required");
+}
+
+if (!ogPrice) {
+    throw new Error("Original price is required");
+}
+
+if (!price) {
+    throw new Error("Course price is required");
+}
+
+if (Number(ogPrice) < Number(price)) {
+    throw new Error(
+        "Original price must be greater than or equal to course price"
+    );
+}
+
+if (!category) {
+    throw new Error("Please select a category");
+}
+
+if (!duration) {
+    throw new Error("Please select course duration");
+}
         let thumbnail = {};
         if (req.file) {
             thumbnail.public_id = req.file.filename,
@@ -235,12 +288,15 @@ exports.adddetails = async (req, res) => {
             req.flash("error", "This Course already exists");
             return res.redirect("/admin/addnewcourse");
         }
-        let points = [];
-        if (Array.isArray(learnPoints)) {
-            points = learnPoints.filter(p => p && p.trim() !== "");
-        } else if (typeof learnPoints === "string" && learnPoints.trim() !== "") {
-            points = [learnPoints.trim()];
-        }
+      const points = Array.isArray(learnPoints)
+  ? learnPoints.filter(p => p.trim())
+  : [];
+
+if (points.length === 0) {
+    throw new Error(
+        "At least one learning point is required"
+    );
+}
         const newcourse = await course.create({
             name,
             details,
@@ -257,6 +313,7 @@ exports.adddetails = async (req, res) => {
 
             createdBy: req.admin._id
         });
+        
         if (newcourse.status === "saved") {
             req.flash("success", "Course saved succesfully");
         }
@@ -269,24 +326,24 @@ exports.adddetails = async (req, res) => {
         if (req.session.returnTo) delete req.session.returnTo;
         return res.redirect(`/admin/coursesmangement/update/${newcourse.id}`)
     } catch (err) {
-        console.log("FULL ERROR:", err);
 
-        let firstError = "Something went wrong";
+    const categories =
+        await category.find({
+            status: "active"
+        });
 
-        if (err.name === "ValidationError") {
-            firstError = Object.values(err.errors)[0].message;
-        }
-
-        const categories = await category.find({ status: "active" })
-        return res.render("course-form", {
-            error: firstError,
+    return res.render(
+        "course-form",
+        {
+            error: err.message,
             formData: req.body,
             categories,
             course: null,
             existingchapater: [],
             role: req.admin.role
-        });
-    }
+        }
+    );
+}
 }
 
 
@@ -301,7 +358,18 @@ exports.updatedetails = async (req, res) => {
         console.log(id)
 
         const { name, details, author, status, description, level, learnPoints, price, category, duration, ogPrice } = req.body
+if (!name || !name.trim()) {
+    throw new Error("Course name is required");
+}
 
+if (!details || !details.trim()) {
+    throw new Error("Course details are required");
+}
+if (Number(ogPrice) < Number(price)) {
+    throw new Error(
+        "Original price must be greater than or equal to course price"
+    );
+}
         const existing = await course.findById(id)
 
         if (
@@ -329,12 +397,16 @@ exports.updatedetails = async (req, res) => {
             };
         }
 
-        let points = [];
-        if (Array.isArray(learnPoints)) {
-            points = learnPoints.filter(p => p && p.trim() !== "");
-        } else if (typeof learnPoints === "string" && learnPoints.trim() !== "") {
-            points = [learnPoints.trim()];
-        }
+       
+       const points = Array.isArray(learnPoints)
+  ? learnPoints.filter(p => p.trim())
+  : [];
+
+if (points.length === 0) {
+    throw new Error(
+        "At least one learning point is required"
+    );
+}
 
         //update existing fields
         existing.name = name;
@@ -366,13 +438,34 @@ exports.updatedetails = async (req, res) => {
 
 
     } catch (err) {
-        console.log("erroris", err.name)
-        if (err.name === "ValidationError") {
-            req.flash("error", err.message);
-        }
-        return res.redirect(`/admin/coursesmangement/update/${req.params.course_id}`)
 
-    }
+    const existingcourse =
+        await course.findById(
+            req.params.course_id
+        );
+
+    const existingchapater =
+        await chapter.find({
+            courseId: req.params.course_id
+        });
+
+    const categories =
+        await category.find({
+            status: "active"
+        });
+
+    return res.render(
+        "course-form",
+        {
+            error: err.message,
+            formData: req.body,
+            course: existingcourse,
+            existingchapater,
+            categories,
+            role: req.admin.role
+        }
+    );
+}
 
 
 }
@@ -383,8 +476,14 @@ exports.addchapter = async (req, res) => {
         const courseId = req.params.course_id
 
         console.log(req.params)
-        const { title, lectureVideo, lectureDescription, lectureNotes, lecturePdf, order } = req.body
-        const status = "draft";
+        const {
+    title,
+    lectureDescription,
+    lectureNotes,
+    order,
+    videoDuration
+} = req.body;
+let status ="draft";
         const existingcourse =
             await course.findById(courseId);
         if (
@@ -406,7 +505,21 @@ exports.addchapter = async (req, res) => {
         `/admin/courses/${courseId}/addchapter`
     );
 }
-        const newChapter = await chapter.create({ title, lectureDescription, lectureVideo: videoUrl, lectureVideoKey: videoKey, lectureNotes, order, status, courseId })
+        const newChapter =
+    await chapter.create({
+
+        title,
+        lectureDescription,
+        lectureVideo: videoUrl,
+        lectureVideoKey: videoKey,
+        lectureNotes,
+        order,
+        status,
+        courseId,
+
+        totalDuration:
+            Math.floor(videoDuration)
+    });
 
         console.log(newChapter)
         req.flash("success", "Chapter added successfully!");
@@ -461,8 +574,14 @@ exports.editchapter = async (req, res) => {
     try {
         const { course_id, chapter_id } = req.params
 
-        const { title, lectureDescription, lectureNotes, lecturePdf,  order } = req.body
-
+const {
+    title,
+    lectureDescription,
+    lectureNotes,
+    lecturePdf,
+    order,
+    videoDuration
+} = req.body;
         const existingchapter = await chapter.findById(chapter_id)
         //updaate existing chapter details
         existingchapter.title = title;
@@ -471,24 +590,28 @@ exports.editchapter = async (req, res) => {
 
         existingchapter.order = order;
 
-        if (req.file) {
-            if (existingchapter.lectureVideoKey) {
-                await s3.send(
-                    new DeleteObjectCommand({
-                        Bucket: process.env.AWS_BUCKET_NAME,
-                        Key: existingchapter.lectureVideoKey,
-                    })
-                );
-            }
+       if (req.file) {
 
-            existingchapter.lectureVideo = req.file.location; // replace video
-            existingchapter.lectureVideoKey = req.file.key
-        }
-        if (!req.file) {
-    req.flash("error", "Lecture video is required");
-    return res.redirect(
-        `/admin/courses/${courseId}/addchapter`
-    );
+    if (existingchapter.lectureVideoKey) {
+
+        await s3.send(
+            new DeleteObjectCommand({
+                Bucket:
+                    process.env.AWS_BUCKET_NAME,
+                Key:
+                    existingchapter.lectureVideoKey,
+            })
+        );
+    }
+
+    existingchapter.lectureVideo =
+        req.file.location;
+
+    existingchapter.lectureVideoKey =
+        req.file.key;
+
+    existingchapter.totalDuration =
+        Number(videoDuration);
 }
         await existingchapter.save();
 

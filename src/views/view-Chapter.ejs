@@ -21,6 +21,16 @@
 
 <body>
   <style>
+    .video-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.video-js {
+    width: 100% !important;
+    height: 500px !important;
+}
       .course-header-section{
         padding: 2% 10%;
     }
@@ -75,8 +85,6 @@ color:#0fd2c4
   class="video-js vjs-default-skin vjs-big-play-centered"
   controls
   preload="metadata"
-  width="1000%"
-  height="500%"
   data-setup='{}'
 >
         <source src="<%= signedVideoUrl%>" type="video/mp4" />

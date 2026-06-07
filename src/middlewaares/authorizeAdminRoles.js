@@ -18,7 +18,7 @@ exports.authorizeRoles = (...roles) => {
                 return res.redirect("/admin/contributor/contributorDashBoard");
             }
 
-            if (req.admin.role === "admin") {
+            if (req.admin.role === "manager") {
                 return res.redirect("/admin/managerdashboard");
             }
 

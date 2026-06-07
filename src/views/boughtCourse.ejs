@@ -29,49 +29,18 @@
                         <%= course.name %>
                     </h1>
                     <p>
-                      Instructor :  <%= course.author %>
+                        Instructor : <%= course.author %>
                     </p>
                     <hr>
                     <p>
                         <%= course.details %>
                     </p>
-<div class="course-actions">
-                    
-                    <% if (enrolled.progress===0 ) { %>
+                    <div class="course-actions">
 
-                        <a href="/profile/<%=user.fullName %>/mylearning/<%= course.slug %>/<%= enrolled._id %>/continue"
-                            class="btn rounded-pill clbtn me-2"><strong>Lets Start Learning</strong>
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
-                                <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
-                                    transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
-                                    <linearGradient id="SVGID_2" gradientUnits="userSpaceOnUse" x1="34.5269" y1="33.94"
-                                        x2="62.7893" y2="54.8751">
-                                        <stop offset="0%" style="stop-color:rgb(78,216,223);stop-opacity: 1" />
-                                        <stop offset="99.51%" style="stop-color:rgb(13,121,142);stop-opacity: 1" />
-                                    </linearGradient>
-                                    <path
-                                        d="M 86.328 38.568 L 51.526 3.767 c -2.526 -2.526 -6.62 -2.526 -9.146 0 l -4.187 4.187 c -2.526 2.526 -2.526 6.62 0 9.146 l 18.472 18.472 h -0.981 H 20.502 H 6.467 C 2.895 35.572 0 38.467 0 42.039 v 5.922 c 0 3.572 2.895 6.467 6.467 6.467 h 14.035 h 25.422 h 31.03 V 45 h 6.71 C 87.021 45 88.702 40.942 86.328 38.568 z"
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: url(#SVGID_2); fill-rule: nonzero; opacity: 1;"
-                                        transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-                                    <linearGradient id="SVGID_3" gradientUnits="userSpaceOnUse" x1="73.4354"
-                                        y1="39.2442" x2="38.3172" y2="73.1749">
-                                        <stop offset="0%" style="stop-color:rgb(78,216,223);stop-opacity: 1" />
-                                        <stop offset="99.51%" style="stop-color:rgb(13,121,142);stop-opacity: 1" />
-                                    </linearGradient>
-                                    <path
-                                        d="M 88.049 49.711 L 51.526 86.233 c -2.526 2.526 -6.62 2.526 -9.146 0 l -4.187 -4.187 c -2.526 -2.526 -2.526 -6.62 0 -9.146 l 27.9 -27.9 c 5.593 -5.593 9.622 -17.044 1.11 -25.557 l 20.845 20.845 C 90.65 42.891 90.65 47.109 88.049 49.711 z"
-                                        style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: url(#SVGID_3); fill-rule: nonzero; opacity: 1;"
-                                        transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
-                                </g>
-                            </svg>
-
-                        </a>
-
-                        <% } else { %>
+                        <% if (enrolled.progress===0 ) { %>
 
                             <a href="/profile/<%=user.fullName %>/mylearning/<%= course.slug %>/<%= enrolled._id %>/continue"
-                                class="btn rounded-pill clbtn me-2"><strong>Continue Learning</strong>
+                                class="btn rounded-pill clbtn me-2"><strong>Lets Start Learning</strong>
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
                                     <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
@@ -99,25 +68,84 @@
 
                             </a>
 
+                            <% } else { %>
 
-                            <% } %>
+                                <a href="/profile/<%=user.fullName %>/mylearning/<%= course.slug %>/<%= enrolled._id %>/continue"
+                                    class="btn rounded-pill clbtn me-2"><strong>Continue Learning</strong>
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256"
+                                        xml:space="preserve">
+                                        <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                            transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                                            <linearGradient id="SVGID_2" gradientUnits="userSpaceOnUse" x1="34.5269"
+                                                y1="33.94" x2="62.7893" y2="54.8751">
+                                                <stop offset="0%" style="stop-color:rgb(78,216,223);stop-opacity: 1" />
+                                                <stop offset="99.51%"
+                                                    style="stop-color:rgb(13,121,142);stop-opacity: 1" />
+                                            </linearGradient>
+                                            <path
+                                                d="M 86.328 38.568 L 51.526 3.767 c -2.526 -2.526 -6.62 -2.526 -9.146 0 l -4.187 4.187 c -2.526 2.526 -2.526 6.62 0 9.146 l 18.472 18.472 h -0.981 H 20.502 H 6.467 C 2.895 35.572 0 38.467 0 42.039 v 5.922 c 0 3.572 2.895 6.467 6.467 6.467 h 14.035 h 25.422 h 31.03 V 45 h 6.71 C 87.021 45 88.702 40.942 86.328 38.568 z"
+                                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: url(#SVGID_2); fill-rule: nonzero; opacity: 1;"
+                                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                            <linearGradient id="SVGID_3" gradientUnits="userSpaceOnUse" x1="73.4354"
+                                                y1="39.2442" x2="38.3172" y2="73.1749">
+                                                <stop offset="0%" style="stop-color:rgb(78,216,223);stop-opacity: 1" />
+                                                <stop offset="99.51%"
+                                                    style="stop-color:rgb(13,121,142);stop-opacity: 1" />
+                                            </linearGradient>
+                                            <path
+                                                d="M 88.049 49.711 L 51.526 86.233 c -2.526 2.526 -6.62 2.526 -9.146 0 l -4.187 -4.187 c -2.526 -2.526 -2.526 -6.62 0 -9.146 l 27.9 -27.9 c 5.593 -5.593 9.622 -17.044 1.11 -25.557 l 20.845 20.845 C 90.65 42.891 90.65 47.109 88.049 49.711 z"
+                                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: url(#SVGID_3); fill-rule: nonzero; opacity: 1;"
+                                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                        </g>
+                                    </svg>
 
-                                <a href="#writeAreview" class="btn rounded-pill clbtn2  "><strong>Write A review</strong>
-
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="2rem" height="2rem" viewBox="0 0 256 256" xml:space="preserve">
-<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
-	<path d="M 65.076 20.183 c -0.481 0 -0.966 -0.172 -1.351 -0.523 c -0.818 -0.746 -0.876 -2.014 -0.13 -2.833 l 9.583 -10.505 c 0.746 -0.817 2.014 -0.877 2.833 -0.13 c 0.818 0.746 0.876 2.014 0.13 2.833 l -9.583 10.505 C 66.163 19.962 65.62 20.183 65.076 20.183 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 23.73 19.43 c -0.543 0 -1.086 -0.221 -1.482 -0.654 l -8.895 -9.752 c -0.747 -0.818 -0.689 -2.087 0.13 -2.833 c 0.818 -0.746 2.087 -0.689 2.833 0.13 l 8.895 9.751 c 0.747 0.818 0.689 2.087 -0.13 2.833 C 24.696 19.256 24.213 19.43 23.73 19.43 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 44.747 90 c -1.107 0 -2.005 -0.898 -2.005 -2.005 V 77.157 c 0 -1.107 0.898 -2.005 2.005 -2.005 c 1.107 0 2.005 0.898 2.005 2.005 v 10.838 C 46.752 89.102 45.854 90 44.747 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 85.334 63.101 c -0.306 0 -0.616 -0.069 -0.906 -0.218 l -9.538 -4.848 c -0.987 -0.502 -1.381 -1.71 -0.879 -2.696 c 0.503 -0.987 1.711 -1.38 2.696 -0.879 l 9.538 4.848 c 0.987 0.502 1.381 1.71 0.879 2.696 C 86.769 62.7 86.065 63.101 85.334 63.101 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 4.666 62.192 c -0.74 0 -1.452 -0.411 -1.801 -1.12 c -0.489 -0.994 -0.08 -2.195 0.914 -2.685 l 9.583 -4.715 c 0.993 -0.487 2.196 -0.078 2.684 0.914 c 0.489 0.994 0.08 2.195 -0.914 2.685 l -9.583 4.715 C 5.266 62.126 4.964 62.192 4.666 62.192 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 44.747 0 L 44.747 0 c -1.296 0 -2.458 0.722 -3.031 1.884 l -10.922 22.13 c -0.092 0.185 -0.269 0.314 -0.473 0.344 L 5.898 27.907 c -1.282 0.186 -2.328 1.068 -2.728 2.3 c -0.401 1.233 -0.073 2.561 0.855 3.465 l 17.671 17.226 c 0.148 0.144 0.216 0.352 0.181 0.555 l -4.172 24.323 c -0.219 1.277 0.296 2.545 1.345 3.306 c 1.048 0.762 2.411 0.86 3.561 0.259 l 21.844 -11.486 c 0.09 -0.046 0.191 -0.07 0.291 -0.07 C 50.981 48.127 49.665 24.911 44.747 0 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(32,229,224); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-	<path d="M 44.747 0 L 44.747 0 c 1.296 0 2.458 0.722 3.031 1.884 L 58.7 24.014 c 0.092 0.185 0.269 0.314 0.473 0.344 l 24.422 3.548 c 1.282 0.186 2.328 1.068 2.728 2.3 c 0.401 1.233 0.073 2.561 -0.855 3.465 L 67.797 50.898 c -0.148 0.144 -0.216 0.352 -0.181 0.555 l 4.172 24.323 c 0.219 1.277 -0.296 2.545 -1.345 3.306 c -1.048 0.762 -2.411 0.86 -3.562 0.259 L 45.039 67.857 c -0.091 -0.047 -0.192 -0.071 -0.292 -0.071 C 37.4 48.766 39.041 25.392 44.747 0 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-</g>
-</svg>
                                 </a>
 
-</div>
+
+                                <% } %>
+
+                                    <a href="#writeAreview" class="btn rounded-pill clbtn2  "><strong>Write A
+                                            review</strong>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="2rem"
+                                            height="2rem" viewBox="0 0 256 256" xml:space="preserve">
+                                            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                                transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                                                <path
+                                                    d="M 65.076 20.183 c -0.481 0 -0.966 -0.172 -1.351 -0.523 c -0.818 -0.746 -0.876 -2.014 -0.13 -2.833 l 9.583 -10.505 c 0.746 -0.817 2.014 -0.877 2.833 -0.13 c 0.818 0.746 0.876 2.014 0.13 2.833 l -9.583 10.505 C 66.163 19.962 65.62 20.183 65.076 20.183 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 23.73 19.43 c -0.543 0 -1.086 -0.221 -1.482 -0.654 l -8.895 -9.752 c -0.747 -0.818 -0.689 -2.087 0.13 -2.833 c 0.818 -0.746 2.087 -0.689 2.833 0.13 l 8.895 9.751 c 0.747 0.818 0.689 2.087 -0.13 2.833 C 24.696 19.256 24.213 19.43 23.73 19.43 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 44.747 90 c -1.107 0 -2.005 -0.898 -2.005 -2.005 V 77.157 c 0 -1.107 0.898 -2.005 2.005 -2.005 c 1.107 0 2.005 0.898 2.005 2.005 v 10.838 C 46.752 89.102 45.854 90 44.747 90 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 85.334 63.101 c -0.306 0 -0.616 -0.069 -0.906 -0.218 l -9.538 -4.848 c -0.987 -0.502 -1.381 -1.71 -0.879 -2.696 c 0.503 -0.987 1.711 -1.38 2.696 -0.879 l 9.538 4.848 c 0.987 0.502 1.381 1.71 0.879 2.696 C 86.769 62.7 86.065 63.101 85.334 63.101 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 4.666 62.192 c -0.74 0 -1.452 -0.411 -1.801 -1.12 c -0.489 -0.994 -0.08 -2.195 0.914 -2.685 l 9.583 -4.715 c 0.993 -0.487 2.196 -0.078 2.684 0.914 c 0.489 0.994 0.08 2.195 -0.914 2.685 l -9.583 4.715 C 5.266 62.126 4.964 62.192 4.666 62.192 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 44.747 0 L 44.747 0 c -1.296 0 -2.458 0.722 -3.031 1.884 l -10.922 22.13 c -0.092 0.185 -0.269 0.314 -0.473 0.344 L 5.898 27.907 c -1.282 0.186 -2.328 1.068 -2.728 2.3 c -0.401 1.233 -0.073 2.561 0.855 3.465 l 17.671 17.226 c 0.148 0.144 0.216 0.352 0.181 0.555 l -4.172 24.323 c -0.219 1.277 0.296 2.545 1.345 3.306 c 1.048 0.762 2.411 0.86 3.561 0.259 l 21.844 -11.486 c 0.09 -0.046 0.191 -0.07 0.291 -0.07 C 50.981 48.127 49.665 24.911 44.747 0 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(32,229,224); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                <path
+                                                    d="M 44.747 0 L 44.747 0 c 1.296 0 2.458 0.722 3.031 1.884 L 58.7 24.014 c 0.092 0.185 0.269 0.314 0.473 0.344 l 24.422 3.548 c 1.282 0.186 2.328 1.068 2.728 2.3 c 0.401 1.233 0.073 2.561 -0.855 3.465 L 67.797 50.898 c -0.148 0.144 -0.216 0.352 -0.181 0.555 l 4.172 24.323 c 0.219 1.277 -0.296 2.545 -1.345 3.306 c -1.048 0.762 -2.411 0.86 -3.562 0.259 L 45.039 67.857 c -0.091 -0.047 -0.192 -0.071 -0.292 -0.071 C 37.4 48.766 39.041 25.392 44.747 0 z"
+                                                    style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(62,255,255); fill-rule: nonzero; opacity: 1;"
+                                                    transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                            </g>
+                                        </svg>
+                                    </a>
+
+                    </div>
 
                 </div>
 
@@ -160,52 +188,59 @@
             <!-- Chapters -->
             <!-- Chapters -->
             <div class="chapters-section mt-4">
-  <h2>Chapters</h2>
+                <h2>Chapters</h2>
 
-  <div class="list-group chapter-list">
+                <div class="list-group chapter-list">
 
-    <% chapters.forEach((chapter)=> { %>
-      <a
-        href="/profile/<%= user.fullName %>/myLearning/<%= course.slug %>/<%= enrolled._id %>/<%= chapter._id %>"
-        class="list-group-item list-group-item-action chapter-row">
+                    <% chapters.forEach((chapter)=> { %>
+                        <a href="/profile/<%= user.fullName %>/myLearning/<%= course.slug %>/<%= enrolled._id %>/<%= chapter._id %>"
+                            class="list-group-item list-group-item-action chapter-row">
 
-        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center">
 
-          <!-- Left side -->
-          <div>
-            <h5 class="mb-1">
-              <%= chapter.order %>. <%= chapter.title %>
-            </h5>
-            <small class="text-muted">
-              Total <%= chapter.totalDuration %> mins
-            </small>
-          </div>
+                                <!-- Left side -->
+                                <div>
+                                    <h5 class="mb-1">
+                                        <%= chapter.order %>. <%= chapter.title %>
+                                    </h5>
+                                  <%
+const hours = Math.floor(chapter.totalDuration / 3600);
+const minutes = Math.floor((chapter.totalDuration % 3600) / 60);
+%>
 
-          <!-- Right side -->
-          <div class="text-end" style="min-width:140px">
-            
+<small class="text-muted">
+  <% if(hours > 0){ %>
+    <%= hours %> hr<%= hours > 1 ? "s" : "" %>
+  <% } %>
 
-            <div class="progress" style="height: 8px;">
-              <div
-                class="progress-bar progressbaar"
-                role="progressbar"
-                style="width: <%= chapter.progressPercent %>%"
-                aria-valuenow="<%= chapter.progressPercent %>"
-                aria-valuemin="0"
-                aria-valuemax="100">
-              </div>
+  <% if(minutes > 0){ %>
+    <%= minutes %> min<%= minutes > 1 ? "s" : "" %>
+  <% } %>
+</small>
+                                </div>
+
+                                <!-- Right side -->
+                                <div class="text-end" style="min-width:140px">
+
+
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar progressbaar" role="progressbar"
+                                            style="width: <%= chapter.progressPercent %>%"
+                                            aria-valuenow="<%= chapter.progressPercent %>" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="d-block mb-1">
+                                        <%= chapter.progressPercent %>% completed
+                                    </small>
+                                </div>
+
+                            </div>
+                        </a>
+                        <% }) %>
+
+                </div>
             </div>
-            <small class="d-block mb-1">
-              <%= chapter.progressPercent %>%  completed
-            </small>
-          </div>
-
-        </div>
-      </a>
-    <% }) %>
-
-  </div>
-</div>
 
 
             <!-- ADD REVIEW SECTION (STYLISH STAR RATING) -->

@@ -471,9 +471,9 @@ exports.adminlogin = async (req, res) => {
         if (isadmin.role === "super_admin") {
             res.redirect('/admin/superadmindashboard')
         }
-        else if (isadmin.role === "admin") {
+        else if (isadmin.role === "manager") {
             console.log("manager daashboard coming soon")
-            res.redirect('/admin/managerdashboard')
+            res.redirect('/admin/manager/managerDashBoard')
         }
         else if (isadmin.role === "contributor") {
              console.log(isadmin)

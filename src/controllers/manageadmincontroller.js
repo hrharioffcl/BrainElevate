@@ -1,7 +1,7 @@
 
  const Admin = require("../models/adminschema")
  const { Parser } = require("json2csv");
-
+let validator =require('validator')
 //get admin 
 exports.getmanageadmin =async(req,res)=>{
 let page = parseInt(req.query.page)
@@ -80,8 +80,93 @@ exports.getaddadmin =async(req,res)=>{
 //addadmin modal
 exports.addadmin =async(req,res)=>{
   try {
-     const{fullName,email,password,confirmPassword,role}=req.body
+const {
+    fullName,
+    email,
+    password,
+    confirmPassword,
+    role
+} = req.body;
 
+if (!fullName || !fullName.trim()) {
+    req.flash(
+        "error",
+        "Full name is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (fullName.trim().length < 4) {
+    req.flash(
+        "error",
+        "Full name must be at least 4 characters"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!email || !email.trim()) {
+    req.flash(
+        "error",
+        "Email is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!validator.isEmail(email)) {
+    req.flash(
+        "error",
+        "Please enter a valid email address"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!password || !password.trim()) {
+    req.flash(
+        "error",
+        "Password is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!confirmPassword || !confirmPassword.trim()) {
+    req.flash(
+        "error",
+        "Confirm password is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (password !== confirmPassword) {
+    req.flash(
+        "error",
+        "Passwords do not match"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!validator.isStrongPassword(password)) {
+    req.flash(
+        "error",
+        "Password must contain uppercase, lowercase, number and special character"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
    //confirm existing admin
       const existingadmin = await Admin.findOne({ email });
       if (existingadmin){
@@ -100,7 +185,7 @@ exports.addadmin =async(req,res)=>{
 
 await Admin.create({fullName,email,password,role})
      req.flash("success", "Admin updated successfully");
-res.redirect("/admin/manage-admin/addadmin")
+res.redirect("/admin/manage-admin")
   } catch (error) {
      console.log(error)
      req.flash('error',error.message)
@@ -120,7 +205,93 @@ exports.geteditadmin =async(req,res)=>{
 exports.editadmin = async(req,res)=>{
    try {
     const adminId = req.params.admin_id
-  const {fullName,email,password,confirmPassword,role}= req.body
+const {
+    fullName,
+    email,
+    password,
+    confirmPassword,
+    role
+} = req.body;
+
+if (!fullName || !fullName.trim()) {
+    req.flash(
+        "error",
+        "Full name is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (fullName.trim().length < 4) {
+    req.flash(
+        "error",
+        "Full name must be at least 4 characters"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!email || !email.trim()) {
+    req.flash(
+        "error",
+        "Email is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!validator.isEmail(email)) {
+    req.flash(
+        "error",
+        "Please enter a valid email address"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!password || !password.trim()) {
+    req.flash(
+        "error",
+        "Password is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!confirmPassword || !confirmPassword.trim()) {
+    req.flash(
+        "error",
+        "Confirm password is required"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (password !== confirmPassword) {
+    req.flash(
+        "error",
+        "Passwords do not match"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
+
+if (!validator.isStrongPassword(password)) {
+    req.flash(
+        "error",
+        "Password must contain uppercase, lowercase, number and special character"
+    );
+    return res.redirect(
+        "/admin/manage-admin/addadmin"
+    );
+}
   //checkexisting
    const admin = await Admin.findById(adminId);
     if (!admin) {

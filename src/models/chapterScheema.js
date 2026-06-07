@@ -21,7 +21,10 @@ lectureVideoKey: {
   type: String,
   required: [true, "Lecture video is required"],
 },
-
+totalDuration: {
+    type: Number,
+    default: 0
+},
     lectureDescription: {
       type: String,
       default: "",

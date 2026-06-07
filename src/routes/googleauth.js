@@ -14,6 +14,7 @@ router.get("/auth/google/callback", (req, res, next) => {
     passport.authenticate("google", (err, user, info) => {
 
         if (err) {
+            console.log(err)
             return res.redirect("/login?error=server");
         }
 

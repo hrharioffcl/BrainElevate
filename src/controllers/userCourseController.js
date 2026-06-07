@@ -174,6 +174,7 @@ exports.getcoursedetails = async (req, res) => {
     const courseDet = {
       ...courses.toObject(), inCart, enrolled, eid, freeCourse
     }
+    const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
     console.log('Course inCart flag:', inCart);
     //review
     const { rating } = req.query
@@ -214,7 +215,7 @@ exports.getcoursedetails = async (req, res) => {
       star1: 0
     };
 
-    res.render('singlecourse', { course: courseDet, review, reviewStats, rating })
+    res.render('singlecourse', { course: courseDet, review, reviewStats, rating,chapters })
 
   } catch (error) {
     console.log(error)
@@ -262,16 +263,16 @@ exports.getBoughtCourse = async (req, res) => {
     const chapters = await Chapters.find({ courseId: courses._id, status: "published" }).sort({ order: 1 });
 
     const chapterWithProgress = chapters.map(ch => {
-      const progress = enrolled.chaptersProgress.find(
-        cp => cp.chapterId.toString() === ch._id.toString()
-      );
-      return {
-        ...ch.toObject(),
-        progressPercent: progress ? progress.progressPercent : 0,
-        completed:progress?progress.completed:false,
-        totalDuration:progress?(progress.totalDuration/60).toFixed(2):0
-      }
-    })
+  const progress = enrolled.chaptersProgress.find(
+    cp => cp.chapterId.toString() === ch._id.toString()
+  );
+
+  return {
+    ...ch.toObject(),
+    progressPercent: progress ? progress.progressPercent : 0,
+    completed: progress ? progress.completed : false
+  };
+});
 
     res.render('boughtCourse', { course: courses, enrolled, chapters: chapterWithProgress, user })
   } catch (error) {

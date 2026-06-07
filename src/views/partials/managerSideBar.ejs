@@ -1,0 +1,129 @@
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="sidebar text-white">
+  <div class="profile-section text-center p-3 position-relative">
+    <!-- Logo -->
+    <div>
+      <img src="/images/logo.png" alt="Logo" class="logo-img mb-2">
+    </div>
+
+    <!-- Profile -->
+   <div class="profile-pic-wrapper position-relative d-inline-block">
+
+  <a href="/admin/profile">
+
+    <img
+      src="<%= admin?.profilePic?.url || admin?.profilePic || '/images/defaultdp.svg' %>"
+      alt="Profile"
+      class="profile-img rounded-circle mb-2">
+
+  </a>
+
+  <a
+    href="/admin/profile"
+    class="btn btn-sm edit-btn position-absolute">
+
+    <i class="bi bi-pencil"></i>
+
+  </a>
+
+</div>
+<h5 class="mt-2">
+  <%= admin?.fullName || "Admin" %>
+</h5>
+
+<p class="text" style="color:aqua;">
+  <%= admin?.role || "Contributor" %>
+</p>
+  </div>
+
+  <ul class="nav flex-column px-2">
+
+  <li class="nav-item">
+    <a href="/admin/manager/managerDashBoard" class="nav-link text-white">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a href="/admin/manager/course-approvals" class="nav-link text-white">
+      <i class="bi bi-check2-square"></i> Course Approvals
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a href="/admin/profile" class="nav-link text-white">
+      <i class="bi bi-person"></i> Profile
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a href="/admin/change-password" class="nav-link text-white">
+      <i class="bi bi-key"></i> Change Password
+    </a>
+  </li>
+
+</ul>
+
+
+
+  <!-- Logout -->
+  <div class="logout-section p-3">
+    <a href="/admin/logout"
+       class="btn btn-outline-danger w-100"
+       style="border-radius:50px;">
+      Logout
+    </a>
+  </div>
+
+  <!-- Close button for mobile -->
+  <button class="btn btn-outline-light d-lg-none m-3"
+          data-bs-toggle="collapse"
+          data-bs-target="#sidebarMenu">
+    Close
+  </button>
+</nav>
+
+<script>
+  const currentPath = window.location.pathname;
+  console.log(window.location.pathname);
+  const links = document.querySelectorAll('.sidebar .nav-link');
+
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+
+    if (
+      currentPath === href ||
+      currentPath.startsWith(href)
+    ) {
+      console.log("Current Path:", currentPath);
+
+      link.classList.add('active');
+    }
+  });
+
+  // Add course page -> highlight Add New Course
+  if (currentPath.startsWith("/admin/addnewcourse")) {
+    document
+      .querySelector('a[href="/admin/addnewcourse"]')
+      ?.classList.add("active");
+  }
+
+  // Edit course page -> highlight My Courses
+  if (currentPath.startsWith("/admin/edit-course")) {
+    document
+      .querySelector('a[href="/admin/my-courses"]')
+      ?.classList.add("active");
+  }
+
+  // Course details page -> highlight My Courses
+  if (currentPath.startsWith("/admin/course-details")) {
+    document
+      .querySelector('a[href="/admin/my-courses"]')
+      ?.classList.add("active");
+  }
+  if (currentPath.startsWith("/admin/change-password")) {
+  document
+    .querySelector('a[href="/admin/change-password"]')
+    ?.classList.add("active");
+}
+</script>

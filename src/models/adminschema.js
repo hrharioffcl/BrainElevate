@@ -64,12 +64,7 @@ contactNumber: {
   unique: true,
   sparse: true,
   validate(value) {
-
-    if (!value || value.trim() === "") {
-      throw new Error(
-        "Contact number is required"
-      );
-    }
+  if (!value) return true;
 
     if (!validator.isMobilePhone(value, "en-IN")) {
       throw new Error(
@@ -84,8 +79,9 @@ contactNumber: {
   default: "",
   validate(value) {
 
-    if (!value || value.trim().length < 5) {
+    if (!value) return true;
 
+    if (value.trim().length < 5) {
       throw new Error(
         "Address must contain at least 5 characters"
       );

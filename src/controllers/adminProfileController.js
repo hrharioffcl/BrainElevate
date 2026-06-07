@@ -87,7 +87,7 @@ exports.updateProfile = async (req, res) => {
 
         admin.address =
             address;
-admin.profileCompleted = true;
+        admin.profileCompleted = true;
         await admin.save();
 
         req.flash(
@@ -209,52 +209,52 @@ exports.postChangePassword = async (
     try {
 
         const {
-    currentPassword,
-    newPassword,
-    confirmPassword
-} = req.body;
+            currentPassword,
+            newPassword,
+            confirmPassword
+        } = req.body;
 
-if (
-    !currentPassword ||
-    !currentPassword.trim()
-) {
-    req.flash(
-        "error",
-        "Current password is required"
-    );
+        if (
+            !currentPassword ||
+            !currentPassword.trim()
+        ) {
+            req.flash(
+                "error",
+                "Current password is required"
+            );
 
-    return res.redirect(
-        "/admin/change-password"
-    );
-}
+            return res.redirect(
+                "/admin/change-password"
+            );
+        }
 
-if (
-    !newPassword ||
-    !newPassword.trim()
-) {
-    req.flash(
-        "error",
-        "New password is required"
-    );
+        if (
+            !newPassword ||
+            !newPassword.trim()
+        ) {
+            req.flash(
+                "error",
+                "New password is required"
+            );
 
-    return res.redirect(
-        "/admin/change-password"
-    );
-}
+            return res.redirect(
+                "/admin/change-password"
+            );
+        }
 
-if (
-    !confirmPassword ||
-    !confirmPassword.trim()
-) {
-    req.flash(
-        "error",
-        "Confirm password is required"
-    );
+        if (
+            !confirmPassword ||
+            !confirmPassword.trim()
+        ) {
+            req.flash(
+                "error",
+                "Confirm password is required"
+            );
 
-    return res.redirect(
-        "/admin/change-password"
-    );
-}
+            return res.redirect(
+                "/admin/change-password"
+            );
+        }
 
         const admin =
             await Admin.findById(
@@ -336,45 +336,62 @@ if (
                 "/admin/change-password"
             );
         }
+        const isFirstLogin = admin.mustChangePassword;
 
-        admin.password =
-            newPassword;
+        admin.password = newPassword;
+        admin.passwordChangedAt = new Date();
+        admin.mustChangePassword = false;
+        admin.mustChangePassword = false;
 
-       
+        await admin.save();
 
-        admin.passwordChangedAt =
-            new Date();
+
 
         console.log(
-    "Before save:",
-    admin.mustChangePassword
-);
-
-admin.mustChangePassword = false;
-
-await admin.save();
-
-console.log(
-    "After save:",
-    admin.mustChangePassword
-);
-
-        req.flash(
-            "success",
-            "Password changed successfully"
+            "After save:",
+            admin.mustChangePassword
         );
 
-if (admin.role === "super_admin") {
+       req.flash(
+    "success",
+    "Password changed successfully"
+);
 
+if (admin.role === "super_admin") {
     return res.redirect(
         "/admin/superadmindashboard"
     );
 }
 
+// First login → go to profile completion
+if (isFirstLogin) {
+
+    return res.redirect(
+        "/admin/profile"
+    );
+
+}
+
+// Normal password change later
+if (admin.role === "contributor") {
+
+    return res.redirect(
+        "/admin/contributor/contributorDashBoard"
+    );
+
+}
+
+if (admin.role === "manager") {
+
+    return res.redirect(
+        "/admin/managerdashboard"
+    );
+
+}
+
 return res.redirect(
     "/admin/profile"
 );
-
     } catch (error) {
 
         console.log(error);

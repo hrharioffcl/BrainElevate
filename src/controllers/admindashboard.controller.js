@@ -53,3 +53,59 @@ console.log("route hitt2")
         recentCourses
     });
 };
+
+
+exports.getManagerDashboard = async (req, res) => {
+    try {
+
+        const totalCourses =
+            await course.countDocuments();
+
+        const pendingCourses =
+            await course.countDocuments({
+                status: "pending"
+            });
+
+        const approvedCourses =
+            await course.countDocuments({
+                status: {
+                    $in: ["approved", "published"]
+                }
+            });
+
+        const rejectedCourses =
+            await course.countDocuments({
+                status: "rejected"
+            });
+
+        const recentCourses =
+            await course.find()
+                .sort({ updatedAt: -1 })
+                .limit(5);
+
+        res.render(
+            "manager/manager-dashboard",
+            {
+                admin: req.admin,
+                totalCourses,
+                pendingCourses,
+                approvedCourses,
+                rejectedCourses,
+                recentCourses
+            }
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+        req.flash(
+            "error",
+            "Failed to load dashboard"
+        );
+
+        res.redirect(
+            "/admin/login"
+        );
+    }
+};

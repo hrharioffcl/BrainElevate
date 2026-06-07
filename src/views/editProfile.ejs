@@ -187,28 +187,49 @@
             </section>
 
             <!-- Change Password -->
-            <section class="change-password">
-                <h3 style="margin-bottom:1.5rem;">Change password</h3>
-                <form action="/profile/<%= user._id %>/updatePassword" method="POST">
-                    <label>Current Password</label>
+      <% if (!user.googleUser) { %>
 
-                    <input type="password" name="currentPassword" placeholder="Password"
-                        class="form-control change-password-input">
-                    <p style="font-size:0.85rem; color:#888; margin-top:0.5rem;">(OTP verification required)</p>
+<section class="change-password">
+    <h3 style="margin-bottom:1.5rem;">Change password</h3>
 
-                    <button type="submit" class=" btn-change mt-3">Change Password</button>
+    <form action="/profile/<%= user._id %>/updatePassword" method="POST">
 
+        <label>Current Password</label>
 
-                    
-                    <a href="#" class="delete-link" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                        Delete Account
-                    </a>
+        <input
+            type="password"
+            name="currentPassword"
+            placeholder="Password"
+            class="form-control change-password-input">
 
-                </form>
-                <%- include("partials/deleteModal") %>
+        <p style="font-size:0.85rem; color:#888; margin-top:0.5rem;">
+            (OTP verification required)
+        </p>
 
+        <button
+            type="submit"
+            class="btn-change mt-3">
+            Change Password
+        </button>
 
-            </section>
+    </form>
+</section>
+
+<% } %>
+
+<section class="change-password">
+    <a
+        href="#"
+        class="delete-link"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteAccountModal">
+
+        Delete Account
+
+    </a>
+</section>
+
+<%- include("partials/deleteModal") %>
 
         </div>
 

@@ -44,6 +44,10 @@
         id="lectureVideoInput"
         name="lectureVideo"
         accept="video/*">
+        <input
+    type="hidden"
+    id="videoDuration"
+    name="videoDuration">
 
     <div id="videoPreviewContainer"
          class="mt-3"
@@ -115,7 +119,6 @@
 
 </body>
 <script>
-
 const videoInput =
     document.getElementById(
         "lectureVideoInput"
@@ -129,6 +132,11 @@ const videoPreview =
 const previewContainer =
     document.getElementById(
         "videoPreviewContainer"
+    );
+
+const durationInput =
+    document.getElementById(
+        "videoDuration"
     );
 
 videoInput.addEventListener(
@@ -148,9 +156,26 @@ videoInput.addEventListener(
 
         previewContainer.style.display =
             "block";
+
+        videoPreview.onloadedmetadata =
+    function(){
+
+        durationInput.value =
+            Math.floor(
+                videoPreview.duration
+            );
+
+        URL.revokeObjectURL(
+            videoURL
+        );
+
+        console.log(
+            "Duration:",
+            durationInput.value
+        );
+    };
     }
 );
-
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
