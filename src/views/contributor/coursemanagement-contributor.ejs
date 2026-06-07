@@ -139,7 +139,7 @@ text-white"><%= course.status || "Approved" %></span>
     <!-- Previous -->
     <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
       <a class="page-link rounded-circle"
-     href="admin/contributor/my-courses?page=<%= currentPage-1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     href="/admin/contributor/my-courses?page=<%= currentPage-1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
      ‹
   </a>
     </li>
@@ -148,7 +148,7 @@ text-white"><%= course.status || "Approved" %></span>
     <% for(let i = 1; i <= totalPages; i++) { %>
       <li class="page-item <%= currentPage === i ? 'active' : '' %>">
       <a class="page-link rounded-circle"
-   href="admin/contributor/my-courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>&search=<%= search %>">
+   href="/admin/contributor/my-courses?page=<%= i %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>&search=<%= search %>">
    <%= i %>
 </a>
 
@@ -158,7 +158,7 @@ text-white"><%= course.status || "Approved" %></span>
     <!-- Next -->
     <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
       <a class="page-link rounded-circle"
-     href="admin/contributor/my-courses?page=<%= currentPage+1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
+     href="/admin/contributor/my-courses?page=<%= currentPage+1 %>&search=<%= encodeURIComponent(search) %>&status=<%= statusFilter %>&level=<%= levelFilter %>&price=<%= priceFilter %>">
      ›
   </a>
     </li>

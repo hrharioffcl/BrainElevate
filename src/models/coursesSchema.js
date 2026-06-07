@@ -26,11 +26,15 @@ level: {
     type: String,
     default: "Beginner",
   }, 
-  thumbnail: {
-  public_id: { type: String },
-  url: { type: String,
-    default:"/images/pexels-yankrukov-8837809.jpg"
-   }
+ thumbnail: {
+  public_id: {
+    type: String,
+    required: [true, "Course thumbnail is required"]
+  },
+  url: {
+    type: String,
+    required: [true, "Course thumbnail is required"]
+  }
 },
 description: {
   type: String,

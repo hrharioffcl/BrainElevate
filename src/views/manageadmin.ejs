@@ -204,7 +204,7 @@
                 <% if (admin.role !=='super_admin' ) { %>
                   <tr>
                     <td class="d-flex align-items-center gap-2">
-                      <img src="<%= admin.profilePic %>" class="rounded-circle" width="35" height="35">
+                      <img src="<%= admin.profilePic.url %>" class="rounded-circle" width="35" height="35">
                       <span>
                         <%= admin.fullName %>
                       </span>

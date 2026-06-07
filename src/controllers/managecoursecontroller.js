@@ -400,6 +400,12 @@ exports.addchapter = async (req, res) => {
             videoUrl = req.file.location; // ✅ S3 URL
             videoKey = req.file.key
         }
+        if (!req.file) {
+    req.flash("error", "Lecture video is required");
+    return res.redirect(
+        `/admin/courses/${courseId}/addchapter`
+    );
+}
         const newChapter = await chapter.create({ title, lectureDescription, lectureVideo: videoUrl, lectureVideoKey: videoKey, lectureNotes, order, status, courseId })
 
         console.log(newChapter)
@@ -412,9 +418,13 @@ exports.addchapter = async (req, res) => {
         console.log(error)
 
         if (error.name === "ValidationError") {
-            req.flash("error", error.message);
 
-        } else {
+    const firstError =
+        Object.values(error.errors)[0].message;
+
+    req.flash("error", firstError);
+
+}else {
             console.log(error)
             req.flash("error", "Something went wrong while adding the chapter");
         }
@@ -474,15 +484,28 @@ exports.editchapter = async (req, res) => {
             existingchapter.lectureVideo = req.file.location; // replace video
             existingchapter.lectureVideoKey = req.file.key
         }
+        if (!req.file) {
+    req.flash("error", "Lecture video is required");
+    return res.redirect(
+        `/admin/courses/${courseId}/addchapter`
+    );
+}
         await existingchapter.save();
 
         req.flash("success", "Chapter updated successfully");
         res.redirect(`/admin/coursesmangement/update/${course_id}#chapters`);
 
     } catch (error) {
-        console.error(error);
+        console.log(error)
+if (error.name === "ValidationError") {
 
-        if (error.code === 11000) {
+    const firstError =
+        Object.values(error.errors)[0].message;
+
+    req.flash("error", firstError);
+
+}
+       else if (error.code === 11000) {
             req.flash("error", "Order number already exists in this course");
         } else {
             req.flash("error", "Something went wrong while updating the chapter");
@@ -497,22 +520,34 @@ exports.editchapter = async (req, res) => {
 
 
 exports.deletecourse = async (req, res) => {
-
+ const redirectPath =
+        req.admin.role === "contributor"
+            ? "/admin/contributor/my-courses"
+            : "/admin/courses";
     try {
         const { course_id } = req.params;
         await chapter.deleteMany({ courseId: course_id })
         const deletedcourse = await course.findByIdAndDelete(course_id)
         if (!deletedcourse) {
             req.flash("error", "Course not found");
-            return res.redirect("/admin/courses");
+            return res.redirect(redirectPath);
         }
-        req.flash("success", "Course and related chapters deleted successfully");
-        res.redirect("/admin/courses");
+     req.flash(
+            "success",
+            "Course and related chapters deleted successfully"
+        );
 
-    } catch (error) {
-        console.error(error);
-        req.flash("error", "Something went wrong while deleting the course");
-        res.redirect("/admin/courses");
+        return res.redirect(redirectPath);
+
+
+    }catch (error) {
+
+        req.flash(
+            "error",
+            "Something went wrong while deleting the course"
+        );
+
+        return res.redirect(redirectPath);
     }
 }
 //coupon

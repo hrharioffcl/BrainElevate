@@ -23,5 +23,4 @@ const fileTypes = {
   ],
 };
 
-/* Common8 CommonJS export */
 module.exports = fileTypes;

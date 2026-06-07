@@ -29,4 +29,14 @@ const saveReturnToUpdateChapter= (req, res, next) => {
   next();
 };
 
-module.exports= {saveReturnToCreateCourse,saveReturnToUpdateCourse,saveReturnToCreateChapter,saveReturnToUpdateChapter}
+
+const saveReturnToAdminProfile =(req,res,next)=>{
+if(req.method==="GET"){
+
+  req.session.updateProfilePicAdmin =req.originalUrl;
+}
+
+next()
+}
+
+module.exports= {saveReturnToCreateCourse,saveReturnToUpdateCourse,saveReturnToCreateChapter,saveReturnToUpdateChapter,saveReturnToAdminProfile}

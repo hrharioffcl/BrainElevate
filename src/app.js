@@ -19,7 +19,8 @@ app.use(session({
 }));
 const multerErrorHandlerUser = require("./middlewaares/multerErrorHandlerUser");
 
-
+const {requirePasswordChange} = require( "./middlewaares/requirePasswordChange");
+const { requireProfileCompletion} = require("./middlewaares/requireProfileCompletion");
 
 const { verifyadmintoken } = require("./middlewaares/adminAuthMiddleware");
 const {createReferralLink}= require("./middlewaares/refferallink")
@@ -78,11 +79,32 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/admin',(req, res, next) => {
-    const openPaths = ["/login", "/logout","/forgot-password","/verify-otp","/reset-password"];
-    if (openPaths.includes(req.path)) return next();
-    verifyadmintoken(req, res, next);
-  },adminroutes)
+app.use(
+    "/admin",
+    (req, res, next) => {
+
+        const openPaths = [
+            "/login",
+            "/logout",
+            "/forgot-password",
+            "/verify-otp",
+            "/reset-password"
+        ];
+
+        if (openPaths.includes(req.path)) {
+            return next();
+        }
+
+        verifyadmintoken(
+            req,
+            res,
+            next
+        );
+
+    },
+    requirePasswordChange, requireProfileCompletion,
+    adminroutes
+);
   
 app.use("/", softCheckUser,createReferralLink,googleauthRoutes);
 

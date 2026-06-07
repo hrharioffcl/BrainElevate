@@ -8,7 +8,7 @@ cloudinary.config({
 });
 
 
-// Storage for profile images
+// Storage for profile images for users
 const profileImageStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -18,6 +18,16 @@ const profileImageStorage = new CloudinaryStorage({
   },
 });
 
+//profile image storrage for admins
+const adminProfileImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "BrainElevate/adminProfilePictures",
+    allowed_formats: ["jpg", "png", "jpeg"],
+    transformation: [{ width: 500, height: 500, crop: "fill" }]
+  },
+});
+//course thumbail storage
 const courseThumbnailStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -33,4 +43,4 @@ const courseThumbnailStorage = new CloudinaryStorage({
 
 
 
-module.exports = { cloudinary, profileImageStorage, courseThumbnailStorage };
+module.exports = { cloudinary, profileImageStorage, courseThumbnailStorage ,adminProfileImageStorage};

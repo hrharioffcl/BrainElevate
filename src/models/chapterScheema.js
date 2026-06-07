@@ -12,14 +12,15 @@ const chapterSchema = new mongoose.Schema(
   required: [true, "Chapter title is required"],
       trim: true,
     },
-    lectureVideo: {
-      type: String,        // could be a URL or file path
-      default: null,
-    },
-    lectureVideoKey: {
-      type: String,        
-      default: null,
-    },
+   lectureVideo: {
+  type: String,
+  required: [true, "Lecture video is required"],
+},
+
+lectureVideoKey: {
+  type: String,
+  required: [true, "Lecture video is required"],
+},
 
     lectureDescription: {
       type: String,

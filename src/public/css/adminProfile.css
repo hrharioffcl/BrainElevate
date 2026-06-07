@@ -1,0 +1,58 @@
+ 
+        .profile-card {
+            background: #000;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 12px;
+        }
+
+        .profile-preview {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #1abc9c;
+        }
+
+        .profile-card label {
+            color: #bbb;
+            margin-bottom: 6px;
+        }
+
+        .profile-card .form-control,
+        .profile-card .form-select,
+        .profile-card textarea {
+            background: #111;
+            border: 1px solid #333;
+            color: #fff;
+        }
+
+        .profile-card .form-control:focus,
+        .profile-card .form-select:focus,
+        .profile-card textarea:focus {
+            background: #111;
+            color: #fff;
+            border-color: #1abc9c;
+            box-shadow: none;
+        }
+
+        .profile-card hr {
+            border-color: #333;
+        }
+
+        .profile-card input[readonly] {
+            background: #1a1a1a;
+            color: #999;
+        }
+
+        .upload-btn {
+            background: #1abc9c;
+            color: #fff;
+            border: none;
+        }
+
+        .upload-btn:hover {
+            background: #17a589;
+            color: #fff;
+        }
+  
